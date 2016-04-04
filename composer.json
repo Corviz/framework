@@ -1,0 +1,15 @@
+{
+    "name": "corviz/framework",
+    "description": "Low weight php framework",
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Corviz\\": "./src"
+        }
+    }
+}
