@@ -14,12 +14,22 @@ class ParameterizedString
     /**
      * @var string
      */
-    private $value;
+    private $str;
+
+    /**
+     * @var string
+     */
+    private $strRegExp;
 
     /**
      * @var array
      */
     private $parameters;
+
+    /**
+     * @var string
+     */
+    private $uniqueReplacement = '@ªuniqueª@';
 
     /**
      * @param string $val
@@ -41,12 +51,34 @@ class ParameterizedString
 
             $matches = [];
             $regExp = self::PARAMS_SEARCH_REGEXP;
-            preg_match_all($regExp, $this->value, $matches);
+            preg_match_all($regExp, $this->str, $matches);
             $this->parameters = $matches[2];
 
         }
 
         return $this->parameters;
+
+    }
+
+    /**
+     * @param string $rawString
+     * @return mixed
+     */
+    public function getValues(string $rawString)
+    {
+
+        $regExp = $this->getStrRegExp();
+        $params = $this->getParameters();
+        $matches = [];
+
+        preg_match_all($regExp ,$rawString, $matches);
+        array_shift($matches);
+
+        $map = function($match){
+            return isset($match[0]) ? $match[0] : null;
+        };
+
+        return array_combine($params, array_map($map, $matches));
 
     }
 
@@ -58,15 +90,9 @@ class ParameterizedString
     public function matches(string $strCheck) : bool 
     {
 
-        $replacement = '@ªuniqueª@'; // Just a unique token
-
-        $regExp = preg_replace(self::PARAMS_SEARCH_REGEXP, $replacement, $this->value);
-        $regExp = preg_quote($regExp);
-        $regExp = str_replace($replacement, '(.+)', $regExp);
-        $regExp = "#^$regExp$#";
-
+        $regExp = $this->getStrRegExp();
         return (bool) preg_match_all($regExp, $strCheck);
-        
+
     }
 
     /**
@@ -77,7 +103,7 @@ class ParameterizedString
     public function parse(array $args = []) : string 
     {
 
-        $strAux = $this->value;
+        $strAux = $this->str;
         $params = $this->getParameters();
 
         foreach($args as $argKey => $argValue){
@@ -91,12 +117,27 @@ class ParameterizedString
     }
 
     /**
-     * ParameterizedString constructor.
-     * @param string $value
+     * @return string
      */
-    public function __construct(string $value)
+    private function getStrRegExp() : string
     {
-        $this->value = $value;
+        if(is_null($this->strRegExp)){
+            $regExp = preg_replace(self::PARAMS_SEARCH_REGEXP, $this->uniqueReplacement, $this->str);
+            $regExp = preg_quote($regExp);
+            $regExp = str_replace($this->uniqueReplacement, '(.+)', $regExp);
+            $this->strRegExp = "#^$regExp$#";
+        }
+
+        return $this->strRegExp;
+    }
+
+    /**
+     * ParameterizedString constructor.
+     * @param string $str
+     */
+    public function __construct(string $str)
+    {
+        $this->str = $str;
     }
 
     /**
@@ -104,7 +145,7 @@ class ParameterizedString
      */
     public function __toString()
     {
-        return $this->value;
+        return $this->str;
     }
 
 }
