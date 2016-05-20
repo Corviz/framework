@@ -112,22 +112,22 @@ final class Route
      */
     private static function generateParameterizedString(string $rawString) : ParameterizedString
     {
-        $bs = "/";
-        $startsWithBackslash = substr($rawString, 0, 1) == $bs;
+        $sep = "/";
+        $startsWithBackslash = substr($rawString, 0, 1) == $sep;
         
         //prepend backslash
         if(!$startsWithBackslash){
-            $rawString = $bs.$rawString;
+            $rawString = $sep.$rawString;
         }
 
         //append backslash
-        if(substr($rawString, -1) != $bs){
-            $rawString .= $bs;
+        if(substr($rawString, -1) != $sep){
+            $rawString .= $sep;
         }
 
         //prepend group pieces
         if(!empty(self::$groupStack)){
-            $rawString = $bs.implode($bs, self::$groupStack).$rawString;
+            $rawString = $sep.implode($sep, self::$groupStack).$rawString;
         }
         
         //generate and return the object
