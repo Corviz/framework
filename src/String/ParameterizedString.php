@@ -46,7 +46,6 @@ class ParameterizedString
      */
     public function getParameters() : array
     {
-
         if (is_null($this->parameters)) {
 
             $matches = [];
@@ -57,7 +56,6 @@ class ParameterizedString
         }
 
         return $this->parameters;
-
     }
 
     /**
@@ -66,7 +64,6 @@ class ParameterizedString
      */
     public function getValues(string $rawString)
     {
-
         $regExp = $this->getStrRegExp();
         $params = $this->getParameters();
         $matches = [];
@@ -79,7 +76,6 @@ class ParameterizedString
         };
 
         return array_combine($params, array_map($map, $matches));
-
     }
 
     /**
@@ -89,10 +85,8 @@ class ParameterizedString
      */
     public function matches(string $strCheck) : bool 
     {
-
         $regExp = $this->getStrRegExp();
         return (bool) preg_match_all($regExp, $strCheck);
-
     }
 
     /**
@@ -102,7 +96,6 @@ class ParameterizedString
      */
     public function parse(array $args = []) : string 
     {
-
         $strAux = $this->str;
         $params = $this->getParameters();
 
@@ -113,7 +106,6 @@ class ParameterizedString
         }
 
         return $strAux;
-        
     }
 
     /**

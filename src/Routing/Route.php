@@ -4,16 +4,11 @@ namespace Corviz\Routing;
 
 
 use \Closure;
+use Corviz\Http\Request;
 use Corviz\String\ParameterizedString;
 
 final class Route
 {
-
-    const TYPE_GET = "get";
-    const TYPE_POST = "post";
-    const TYPE_PUT = "put";
-    const TYPE_DELETE = "delete";
-
     /**
      * @var array
      */
@@ -35,75 +30,95 @@ final class Route
     private $parameterizedString;
 
     /**
-     * @var string
+     * @var array
      */
-    private $type;
+    private $methods;
 
     /**
+     * @param array $methods
+     *      Array containing http methods.
+     *      The supported methods are defined by Request::METHOD_* constants
+     * @param string $string
+     * @param Closure $closure
+     * @param string|null $alias
+     */
+    public static function create(array $methods, string $string, Closure $closure, string $alias = null)
+    {
+        self::validateRoute($string);
+
+        $route = new Route();
+        $route->setMethods($methods);
+        $route->setParameterizedString(self::generateParameterizedString($string));
+        $route->setClosure($closure);
+        $route->setAlias($alias);
+        Map::addRoute($route);
+    }
+
+    /**
+     * Creates a route that listens to DELETE http method
      * @param string $string
      * @param Closure $closure
      * @param string|null $alias
      */
     public static function delete(string $string, Closure $closure, string $alias = null)
     {
-        self::addToMap(self::TYPE_DELETE, $string, $closure, $alias);
+        self::create([Request::METHOD_DELETE], $string, $closure, $alias);
     }
     
     /**
+     * Creates a route that listens to GET http method
      * @param string $string
      * @param Closure $closure
      * @param string|null $alias
      */
     public static function get(string $string, Closure $closure, string $alias = null)
     {
-        self::addToMap(self::TYPE_GET, $string, $closure, $alias);
+        self::create([Request::METHOD_GET], $string, $closure, $alias);
     }
 
     /**
+     * Creates a route group
      * @param string $prefix
      * @param Closure $closure
      */
     public static function group(string $prefix, Closure $closure)
     {
-        array_push(self::$groupStack, $prefix);
+        array_push(self::$groupStack, trim($prefix, "/"));
         call_user_func($closure);
         array_pop(self::$groupStack);
     }
 
     /**
+     * Creates a route that listens to POST http method
      * @param string $string
      * @param Closure $closure
      * @param string|null $alias
      */
     public static function post(string $string, Closure $closure, string $alias = null)
     {
-        self::addToMap(self::TYPE_POST, $string, $closure, $alias);
+        self::create([Request::METHOD_POST], $string, $closure, $alias);
     }
 
     /**
+     * Creates a route that listens to PATCH http method
+     * @param string $string
+     * @param Closure $closure
+     * @param string|null $alias
+     */
+    public static function patch(string $string, Closure $closure, string $alias = null)
+    {
+        self::create([Request::METHOD_PATCH], $string, $closure, $alias);
+    }
+
+    /**
+     * Creates a route that listens to PUT http method
      * @param string $string
      * @param Closure $closure
      * @param string|null $alias
      */
     public static function put(string $string, Closure $closure, string $alias = null)
     {
-        self::addToMap(self::TYPE_PUT, $string, $closure, $alias);
-    }
-
-    /**
-     * @param string $type
-     * @param string $string
-     * @param Closure $closure
-     * @param string|null $alias
-     */
-    private static function addToMap(string $type, string $string, Closure $closure, string $alias = null)
-    {
-        $route = new Route();
-        $route->setType($type);
-        $route->setParameterizedString(self::generateParameterizedString($string));
-        $route->setClosure($closure);
-        $route->setAlias($alias);
-        Map::addRoute($route);
+        self::create([Request::METHOD_PUT], $string, $closure, $alias);
     }
 
     /**
@@ -113,25 +128,35 @@ final class Route
     private static function generateParameterizedString(string $rawString) : ParameterizedString
     {
         $sep = "/";
-        $startsWithBackslash = substr($rawString, 0, 1) == $sep;
         
-        //prepend backslash
-        if(!$startsWithBackslash){
-            $rawString = $sep.$rawString;
-        }
-
-        //append backslash
-        if(substr($rawString, -1) != $sep){
-            $rawString .= $sep;
-        }
+        //normalize the string
+        $str = $sep.trim($rawString, $sep).$sep;
 
         //prepend group pieces
         if(!empty(self::$groupStack)){
-            $rawString = $sep.implode($sep, self::$groupStack).$rawString;
+            $groupStr = $sep . implode($sep, self::$groupStack);
+            $str = $groupStr.$str;
         }
-        
+
         //generate and return the object
-        return ParameterizedString::make($rawString);
+        return ParameterizedString::make($str);
+    }
+
+    /**
+     * Valid routes have alphanumeric literal strings or parameters
+     * separated by slashes (/)
+     * Example of valid routes:
+     *  - "user/{id}"
+     *  - "category/car"
+     *
+     * @param string $routeStr
+     */
+    private static function validateRoute(string $routeStr)
+    {
+        $regExp = "/^(\\/?\\{?([a-zA-Z0-9\\-\\_]+)\\}?\\/?)*$/";
+        if(!preg_match($regExp, $routeStr)){
+            throw new \InvalidArgumentException("Invalid route: $routeStr");
+        }
     }
 
     /**
@@ -153,9 +178,9 @@ final class Route
     /**
      * @return string
      */
-    public function getType()
+    public function getMethods()
     {
-        return $this->type;
+        return $this->methods;
     }
 
     /**
@@ -177,17 +202,17 @@ final class Route
     /**
      * @param ParameterizedString $parameterizedString
      */
-    public function setParameterizedString($parameterizedString)
+    public function setParameterizedString(ParameterizedString $parameterizedString)
     {
         $this->parameterizedString = $parameterizedString;
     }
 
     /**
-     * @param string $type
+     * @param array $methods
      */
-    public function setType($type)
+    public function setMethods(array $methods)
     {
-        $this->type = $type;
+        $this->methods = $methods;
     }
 
     private function __construct(){}
