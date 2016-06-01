@@ -9,6 +9,9 @@ use Corviz\String\ParameterizedString;
 
 final class Route
 {
+
+    const REGEXP_VALIDATE_STRING = "/^(?!.*{([\\w-]+)}.*{\\1})(\\/?(([a-zA-Z0-9\\_\\-]+)|(\\{[a-zA-Z][a-zA-Z0-9]*\\}))\\/?)*$/";
+
     /**
      * @var array
      */
@@ -44,8 +47,6 @@ final class Route
      */
     public static function create(array $methods, string $string, Closure $closure, string $alias = null)
     {
-        self::validateRoute($string);
-
         $route = new Route();
         $route->setMethods($methods);
         $route->setParameterizedString(self::generateParameterizedString($string));
@@ -138,13 +139,15 @@ final class Route
             $str = $groupStr.$str;
         }
 
+        self::validateRoute($str);
+
         //generate and return the object
         return ParameterizedString::make($str);
     }
 
     /**
      * Valid routes have alphanumeric literal strings or parameters
-     * separated by slashes (/)
+     * separated by slashes (/) and also does not repeat variable names
      * Example of valid routes:
      *  - "user/{id}"
      *  - "category/car"
@@ -153,8 +156,7 @@ final class Route
      */
     private static function validateRoute(string $routeStr)
     {
-        $regExp = "/^(\\/?\\{?([a-zA-Z0-9\\-\\_]+)\\}?\\/?)*$/";
-        if(!preg_match($regExp, $routeStr)){
+        if(!preg_match(self::REGEXP_VALIDATE_STRING, $routeStr)){
             throw new \InvalidArgumentException("Invalid route: $routeStr");
         }
     }
