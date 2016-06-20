@@ -68,11 +68,11 @@ class Request
             //fill up complex object properties
             self::fillCurrentHeaders($request);
             self::fillCurrentRouteString($request);
-            //TODO Determine if is ajax
-            //TODO Retrieve client IP
+            self::fillCurrentMethod($request);
+            self::fillCurrentAjaxState($request);
+            self::fillCurrentClientIp($request);
+            self::fillCurrentIsSecure($request);
             //TODO Capture rawBody and translate it to data array
-            //TODO Inform method
-            //TODO Determine if its using secure connection (HTTPS)
 
             self::$currentRequest = $request;
         }
@@ -94,6 +94,41 @@ class Request
         ];
     }
 
+    /**
+     * Check if its an ajax call
+     * @param Request $request
+     */
+    private static function fillCurrentAjaxState(Request $request)
+    {
+        $request->setAjax(
+            isset($_SERVER['HTTP_X_REQUESTED_WITH'])
+            && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'
+        );
+    }
+
+    /**
+     * The IP address from which the user is viewing the current page
+     * according to http://php.net/manual/en/reserved.variables.server.php
+     * 'REMOTE_ADDR' section
+     * @param Request $request
+     */
+    private static function fillCurrentClientIp(Request $request)
+    {
+        $request->setClientIp($_SERVER['REMOTE_ADDR']);
+    }
+
+    /**
+     * Determines if the current request was made using a secure
+     * connection (HTTPS)
+     * @param Request $request
+     */
+    private static function fillCurrentIsSecure(Request $request)
+    {
+        $request->setSecure(
+            !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+        );
+    }
+    
     /**
      * Fill up the headers property with the values
      * provided by the client browser
@@ -134,6 +169,15 @@ class Request
     }
 
     /**
+     * Read current HTTP method
+     * @param Request $request
+     */
+    private static function fillCurrentMethod(Request $request)
+    {
+        $request->setMethod($_SERVER['REQUEST_METHOD']);
+    }
+
+        /**
      * Capture the route string
      * @param Request $request
      */
