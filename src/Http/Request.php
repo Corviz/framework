@@ -45,7 +45,7 @@ class Request
     /**
      * @var string|null
      */
-    private $rawContent = null;
+    private $requestBody = null;
 
     /**
      * @var string
@@ -72,7 +72,8 @@ class Request
             self::fillCurrentAjaxState($request);
             self::fillCurrentClientIp($request);
             self::fillCurrentIsSecure($request);
-            //TODO Capture rawBody and translate it to data array
+            $request->setRequestBody(file_get_contents('php://input'));
+            //TODO Translate raw request body to data array
 
             self::$currentRequest = $request;
         }
@@ -232,9 +233,9 @@ class Request
     /**
      * @return null|string
      */
-    public function getRawContent()
+    public function getRequestBody()
     {
-        return $this->rawContent;
+        return $this->requestBody;
     }
 
     /**
@@ -308,11 +309,11 @@ class Request
     }
 
     /**
-     * @param null|string $rawContent
+     * @param null|string $requestBody
      */
-    public function setRawContent(string $rawContent = null)
+    public function setRequestBody(string $requestBody = null)
     {
-        $this->rawContent = $rawContent;
+        $this->requestBody = $requestBody ?: '';
     }
 
     /**

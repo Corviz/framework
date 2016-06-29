@@ -2,6 +2,7 @@
 
 namespace Corviz\Http;
 
+use Corviz\Http\Request;
 
 abstract class RequestDataParser
 {
@@ -11,6 +12,11 @@ abstract class RequestDataParser
      * @var string[]
      */
     private $contentTypes = [];
+
+    /**
+     * @var Request
+     */
+    private $request;
 
     /**
      * @param string $type
@@ -36,20 +42,25 @@ abstract class RequestDataParser
     protected abstract function initialize() : void;
 
     /**
-     * Retrieve the raw body content in a request
-     * @return string
-     */
-    protected function getRawBody() : string
-    {
-        return file_get_contents('php://input');
-    }
-
-    /**
      * Convert a raw body string to array format
-     * @param string $body
      * @return array
      */
-    protected abstract function parseData(string $body) : array;
+    public abstract function getData() : array;
+
+    /**
+     * Gets an array of uploaded files,
+     * from the request
+     * @return UploadedFile[]
+     */
+    public abstract function getFiles() : array;
+    
+    /**
+     * @return \Corviz\Http\Request
+     */
+    protected function getRequest() : Request
+    {
+        return $this->request;
+    }
 
     /**
      * Determine which content types the current
@@ -63,11 +74,13 @@ abstract class RequestDataParser
 
     /**
      * DataParser constructor.
+     * @param Request $request
      * @throws \Exception
      */
-    public final function __construct()
+    public final function __construct(Request $request)
     {
         $this->initialize();
+        $this->request = $request;
 
         if(empty($this->contentTypes)){
             throw new \Exception("A data parser must have support to at least one DataType");
