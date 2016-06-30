@@ -3,7 +3,7 @@
 namespace Corviz\String;
 
 
-class ParameterizedString
+class ParametrizedString
 {
 
     /**
@@ -33,7 +33,7 @@ class ParameterizedString
 
     /**
      * @param string $val
-     * @return ParameterizedString
+     * @return ParametrizedString
      */
     public static function make(string $val)
     {
@@ -124,7 +124,7 @@ class ParameterizedString
     }
 
     /**
-     * ParameterizedString constructor.
+     * ParametrizedString constructor.
      * @param string $str
      */
     public function __construct(string $str)

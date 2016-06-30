@@ -2,7 +2,7 @@
 
 namespace Corviz\Http;
 
-use Corviz\Http\Request;
+use Corviz\File\UploadedFile;
 
 abstract class RequestDataParser
 {
@@ -79,8 +79,8 @@ abstract class RequestDataParser
      */
     public final function __construct(Request $request)
     {
-        $this->initialize();
         $this->request = $request;
+        $this->initialize();
 
         if(empty($this->contentTypes)){
             throw new \Exception("A data parser must have support to at least one DataType");

@@ -5,7 +5,7 @@ namespace Corviz\Routing;
 
 use \Closure;
 use Corviz\Http\Request;
-use Corviz\String\ParameterizedString;
+use Corviz\String\ParametrizedString;
 
 final class Route
 {
@@ -28,9 +28,9 @@ final class Route
     private $closure;
 
     /**
-     * @var ParameterizedString
+     * @var ParametrizedString
      */
-    private $parameterizedString;
+    private $parametrizedString;
 
     /**
      * @var array
@@ -49,7 +49,7 @@ final class Route
     {
         $route = new Route();
         $route->setMethods($methods);
-        $route->setParameterizedString(self::generateParameterizedString($string));
+        $route->setParametrizedString(self::generateParametrizedString($string));
         $route->setClosure($closure);
         $route->setAlias($alias);
         Map::addRoute($route);
@@ -124,9 +124,9 @@ final class Route
 
     /**
      * @param string $rawString
-     * @return ParameterizedString
+     * @return ParametrizedString
      */
-    private static function generateParameterizedString(string $rawString) : ParameterizedString
+    private static function generateParametrizedString(string $rawString) : ParametrizedString
     {
         $sep = "/";
         
@@ -142,7 +142,7 @@ final class Route
         self::validateRoute($str);
 
         //generate and return the object
-        return ParameterizedString::make($str);
+        return ParametrizedString::make($str);
     }
 
     /**
@@ -170,11 +170,11 @@ final class Route
     }
 
     /**
-     * @return ParameterizedString
+     * @return ParametrizedString
      */
-    public function getParameterizedString()
+    public function getParametrizedString()
     {
-        return $this->parameterizedString;
+        return $this->parametrizedString;
     }
 
     /**
@@ -202,11 +202,11 @@ final class Route
     }
 
     /**
-     * @param ParameterizedString $parameterizedString
+     * @param ParametrizedString $parametrizedString
      */
-    public function setParameterizedString(ParameterizedString $parameterizedString)
+    public function setParametrizedString(ParametrizedString $parametrizedString)
     {
-        $this->parameterizedString = $parameterizedString;
+        $this->parametrizedString = $parametrizedString;
     }
 
     /**
