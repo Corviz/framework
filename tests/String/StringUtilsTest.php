@@ -29,10 +29,11 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testStartsWithNeedleGreaterThanHaystackShouldFail(){
+    public function testStartsWithNeedleGreaterThanHaystackShouldFail()
+    {
         $this->assertFalse(
             StringUtils::startsWith("a", "abc"),
-            '"a" may not start with "abc"'
+            '"a" should not start with "abc"'
         );
     }
 
@@ -57,10 +58,11 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function testEndsWithNeedleGreaterThanHaystackShouldFail(){
+    public function testEndsWithNeedleGreaterThanHaystackShouldFail()
+    {
         $this->assertFalse(
             StringUtils::endsWith("a", "abc"),
-            '"a" may not end with "abc"'
+            '"a" should not end with "abc"'
         );
     }
 
