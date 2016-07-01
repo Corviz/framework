@@ -122,6 +122,23 @@ class File
     }
 
     /**
+     * Read the file contents, based on PHP file_get_contents function
+     * This function will return a string containing the contents,
+     * or FALSE on failure
+     * @return boolean|string
+     */
+    public function read()
+    {
+        $contents = false;
+
+        if($this->isFile() && $this->isReadable()){
+            $contents = file_get_contents($this->realPath);
+        }
+
+        return $contents;
+    }
+
+    /**
      * Give the source a new name
      * @param string $newName
      * @return boolean
@@ -138,16 +155,16 @@ class File
     }
 
     /**
+     *
      * @param $data
-     * @param int $flags
-     * @return bool
+     * @return boolean
      */
-    public function write($data, $flags = 0) : boolean
+    public function write($data) : boolean
     {
         $success = false;
 
-        if($this->exists() && $this->isFile()){
-            $success = file_put_contents($this->realPath, $data, $flags) !== false;
+        if($this->isFile() && $this->isWriteable()){
+            $success = file_put_contents($this->realPath, $data) !== false;
         }
 
         return $success;
