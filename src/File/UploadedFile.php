@@ -6,7 +6,6 @@ use Exception;
 
 /**
  * Represents an file received via Php's HTTP post
- * @package Corviz\File
  */
 class UploadedFile extends File
 {

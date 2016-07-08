@@ -4,7 +4,6 @@ namespace Corviz\File;
 
 /**
  * Represents a local file
- * @package Corviz\File
  */
 class File
 {
@@ -17,8 +16,8 @@ class File
     /**
      * Copy the current source to destination
      * @param string $destination
-     * @param boolean $overwrite
-     * @return boolean
+     * @param bool $overwrite
+     * @return bool
      */
     public function copy(string $destination, $overwrite = false) : bool
     {
@@ -36,9 +35,9 @@ class File
 
     /**
      * Remove a file from the disk
-     * @return boolean
+     * @return bool
      */
-    public function delete() : boolean
+    public function delete() : bool
     {
         $removed = null;
 
@@ -53,9 +52,9 @@ class File
 
     /**
      * Checks if the current source exist
-     * @return boolean
+     * @return bool
      */
-    public function exists() : boolean
+    public function exists() : bool
     {
         return $this->realPath && file_exists($this->realPath);
     }
@@ -87,9 +86,9 @@ class File
 
     /**
      * Determines if the source is a directory
-     * @return boolean
+     * @return bool
      */
-    public function isDirectory() : boolean
+    public function isDirectory() : bool
     {
         return is_dir($this->realPath);
     }
@@ -98,25 +97,25 @@ class File
      * Determines if the source is a file
      * @return bool
      */
-    public function isFile() : boolean
+    public function isFile() : bool
     {
         return is_file($this->realPath);
     }
 
     /**
      * Determines if the current item can be read
-     * @return boolean
+     * @return bool
      */
-    public function isReadable() : boolean
+    public function isReadable() : bool
     {
         return is_readable($this->realPath);
     }
 
     /**
      * Determines if the current item can be written
-     * @return boolean
+     * @return bool
      */
-    public function isWriteable() : boolean
+    public function isWriteable() : bool
     {
         return is_writeable($this->realPath);
     }
@@ -125,7 +124,7 @@ class File
      * Read the file contents, based on PHP file_get_contents function
      * This function will return a string containing the contents,
      * or FALSE on failure
-     * @return boolean|string
+     * @return bool|string
      */
     public function read()
     {
@@ -141,9 +140,9 @@ class File
     /**
      * Give the source a new name
      * @param string $newName
-     * @return boolean
+     * @return bool
      */
-    public function rename(string $newName) : boolean
+    public function rename(string $newName) : bool
     {
         $renamed = rename($this->realPath, $newName);
 
@@ -157,9 +156,9 @@ class File
     /**
      *
      * @param $data
-     * @return boolean
+     * @return bool
      */
-    public function write($data) : boolean
+    public function write($data) : bool
     {
         $success = false;
 

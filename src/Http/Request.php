@@ -18,7 +18,7 @@ class Request
     private static $currentRequest = null;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $ajax = false;
 
@@ -50,7 +50,7 @@ class Request
     /**
      * @var string
      */
-    private $routeStr = null;
+    private $routeStr;
 
     /**
      * @var boolean
@@ -178,7 +178,7 @@ class Request
         $request->setMethod($_SERVER['REQUEST_METHOD']);
     }
 
-        /**
+    /**
      * Capture the route string
      * @param Request $request
      */
@@ -201,71 +201,71 @@ class Request
     /**
      * @return string
      */
-    public function getClientIp()
+    public function getClientIp() : string
     {
-        return $this->clientIp;
+        return $this->clientIp ?: '';
     }
 
     /**
      * @return array
      */
-    public function getData()
+    public function getData() : array
     {
-        return $this->data;
+        return $this->data ?: [];
     }
 
     /**
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders() : array
     {
-        return $this->headers;
-    }
-
-    /**
-     * @return null
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getRequestBody()
-    {
-        return $this->requestBody;
+        return $this->headers ?: [];
     }
 
     /**
      * @return string
      */
-    public function getRouteStr()
+    public function getMethod() : string
     {
-        return $this->routeStr;
+        return $this->method ?: '';
+    }
+    
+    /**
+     * @return string
+     */
+    public function getRequestBody() : string
+    {
+        return $this->requestBody ?: '';
     }
 
     /**
-     * @return boolean
+     * @return string
      */
-    public function isAjax() : boolean
+    public function getRouteStr() : string 
+    {
+        return $this->routeStr ?: '';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAjax() : bool
     {
         return $this->ajax;
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
-    public function isSecure() : boolean
+    public function isSecure() : bool
     {
         return $this->secure;
     }
 
     /**
-     * @param boolean $ajax
+     * @param bool $ajax
      */
-    public function setAjax(boolean $ajax)
+    public function setAjax(bool $ajax)
     {
         $this->ajax = $ajax;
     }
@@ -309,11 +309,11 @@ class Request
     }
 
     /**
-     * @param null|string $requestBody
+     * @param string $requestBody
      */
-    public function setRequestBody(string $requestBody = null)
+    public function setRequestBody(string $requestBody)
     {
-        $this->requestBody = $requestBody ?: '';
+        $this->requestBody = $requestBody;
     }
 
     /**
@@ -325,9 +325,9 @@ class Request
     }
 
     /**
-     * @param boolean $secure
+     * @param bool $secure
      */
-    public function setSecure(boolean $secure)
+    public function setSecure(bool $secure)
     {
         $this->secure = $secure;
     }

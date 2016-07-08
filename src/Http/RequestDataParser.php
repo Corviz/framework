@@ -20,9 +20,9 @@ abstract class RequestDataParser
 
     /**
      * @param string $type
-     * @return boolean
+     * @return bool
      */
-    public function canHandle(string $type) : boolean
+    public function canHandle(string $type) : bool
     {
         $response = false;
 
