@@ -1,10 +1,10 @@
 <?php
 
-namespace Corviz\Http;
+namespace Corviz\Http\RequestParser;
 
-use Corviz\File\UploadedFile;
+use Corviz\Http\Request;
 
-abstract class RequestDataParser
+abstract class ContentTypeParser
 {
 
     /**
@@ -37,9 +37,10 @@ abstract class RequestDataParser
     }
 
     /**
-     * @return mixed
+     * Executed every time a new object
+     * is instantiated (substitute for __construct)
      */
-    protected abstract function initialize() : void;
+    protected abstract function initialize();
 
     /**
      * Convert a raw body string to array format
@@ -50,7 +51,7 @@ abstract class RequestDataParser
     /**
      * Gets an array of uploaded files,
      * from the request
-     * @return UploadedFile[]
+     * @return array
      */
     public abstract function getFiles() : array;
     
