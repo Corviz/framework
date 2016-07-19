@@ -5,6 +5,10 @@ namespace Corviz\Http\RequestParser;
 
 use Corviz\Http\Request;
 
+/**
+ * Provided 'application/x-www-form-urlencoded' parser
+ * @package Corviz\Http\RequestParser
+ */
 class FormUrlEncodedParser extends ContentTypeParser
 {
 

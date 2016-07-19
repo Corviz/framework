@@ -28,7 +28,7 @@ class GenericParser extends ContentTypeParser
      */
     protected function initialize() : void
     {
-        //Nothing to do here
+        $this->supports('*/*');
     }
 
     /**
