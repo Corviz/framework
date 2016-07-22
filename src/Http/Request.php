@@ -97,7 +97,7 @@ class Request
 
             //the content type should be the last
             //property to be set
-            $request->setContentType($_SERVER['CONTENT_TYPE']);
+            $request->setContentType($_SERVER['CONTENT_TYPE'] ?: '');
 
             self::$currentRequest = $request;
         }
