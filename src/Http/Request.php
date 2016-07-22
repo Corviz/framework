@@ -3,6 +3,9 @@
 namespace Corviz\Http;
 
 
+use Corviz\Http\RequestParser\ContentTypeParser;
+use Corviz\Http\RequestParser\GenericParser;
+
 class Request
 {
 
@@ -18,6 +21,11 @@ class Request
     private static $currentRequest = null;
 
     /**
+     * @var array
+     */
+    private static $registeredParsers = [];
+
+    /**
      * @var bool
      */
     private $ajax = false;
@@ -28,9 +36,9 @@ class Request
     private $clientIp = null;
 
     /**
-     * @var array
+     * @var string
      */
-    private $data = [];
+    private $contentType = null;
 
     /**
      * @var array
@@ -41,6 +49,16 @@ class Request
      * @var string
      */
     private $method = null;
+
+    /**
+     * @var ContentTypeParser
+     */
+    private $parser = null;
+
+    /**
+     * @var array
+     */
+    private $queryParams = [];
 
     /**
      * @var string|null
@@ -65,15 +83,21 @@ class Request
         if(is_null(self::$currentRequest)){
             $request = new static;
 
+            //fill simple properties
+            $request->setClientIp($_SERVER['REMOTE_ADDR']);
+            $request->setMethod($_SERVER['REQUEST_METHOD']);
+            $request->setQueryParams($_GET);
+            $request->setRequestBody(file_get_contents('php://input'));
+
             //fill up complex object properties
             self::fillCurrentHeaders($request);
             self::fillCurrentRouteString($request);
-            self::fillCurrentMethod($request);
             self::fillCurrentAjaxState($request);
-            self::fillCurrentClientIp($request);
             self::fillCurrentIsSecure($request);
-            $request->setRequestBody(file_get_contents('php://input'));
-            //TODO Translate raw request body to data array
+
+            //the content type should be the last
+            //property to be set
+            $request->setContentType($_SERVER['CONTENT_TYPE']);
 
             self::$currentRequest = $request;
         }
@@ -96,6 +120,21 @@ class Request
     }
 
     /**
+     * @param string $parserName
+     * @throws \Exception
+     */
+    public static function registerParser(string $parserName)
+    {
+        $parser = new $parserName();
+
+        if($parser instanceof ContentTypeParser){
+            self::$registeredParsers []= $parser;
+        }else{
+            throw new \Exception("$parserName is not a valid parser");
+        }
+    }
+
+    /**
      * Check if its an ajax call
      * @param Request $request
      */
@@ -108,17 +147,6 @@ class Request
     }
 
     /**
-     * The IP address from which the user is viewing the current page
-     * according to http://php.net/manual/en/reserved.variables.server.php
-     * 'REMOTE_ADDR' section
-     * @param Request $request
-     */
-    private static function fillCurrentClientIp(Request $request)
-    {
-        $request->setClientIp($_SERVER['REMOTE_ADDR']);
-    }
-
-    /**
      * Determines if the current request was made using a secure
      * connection (HTTPS)
      * @param Request $request
@@ -126,7 +154,8 @@ class Request
     private static function fillCurrentIsSecure(Request $request)
     {
         $request->setSecure(
-            !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off'
+            !empty($_SERVER['HTTPS'])
+            && $_SERVER['HTTPS'] !== 'off'
         );
     }
     
@@ -170,15 +199,6 @@ class Request
     }
 
     /**
-     * Read current HTTP method
-     * @param Request $request
-     */
-    private static function fillCurrentMethod(Request $request)
-    {
-        $request->setMethod($_SERVER['REQUEST_METHOD']);
-    }
-
-    /**
      * Capture the route string
      * @param Request $request
      */
@@ -207,11 +227,27 @@ class Request
     }
 
     /**
+     * @return string
+     */
+    public function getContentType(): string
+    {
+        return $this->contentType;
+    }
+
+    /**
      * @return array
      */
     public function getData() : array
     {
-        return $this->data ?: [];
+        return $this->parser->getData();
+    }
+
+    /**
+     * @return array
+     */
+    public function getFiles() : array
+    {
+        return $this->parser->getFiles();
     }
 
     /**
@@ -228,6 +264,14 @@ class Request
     public function getMethod() : string
     {
         return $this->method ?: '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getQueryParams() : array
+    {
+        return $this->queryParams ?: [];
     }
     
     /**
@@ -279,11 +323,12 @@ class Request
     }
 
     /**
-     * @param array $data
+     * @param string $contentType
      */
-    public function setData(array $data)
+    public function setContentType(string $contentType)
     {
-        $this->data = $data;
+        $this->contentType = $contentType;
+        $this->selectDataParser();
     }
 
     /**
@@ -309,6 +354,14 @@ class Request
     }
 
     /**
+     * @param array $queryParams
+     */
+    public function setQueryParams(array $queryParams)
+    {
+        $this->queryParams = $queryParams;
+    }
+
+    /**
      * @param string $requestBody
      */
     public function setRequestBody(string $requestBody)
@@ -330,6 +383,33 @@ class Request
     public function setSecure(bool $secure)
     {
         $this->secure = $secure;
+    }
+
+    /**
+     * Pick a content type parser
+     * from the list
+     */
+    private function selectDataParser()
+    {
+        /* @var ContentTypeParser $selected */
+        $selected = null;
+
+        //Search trough the registered parsers
+        foreach(self::$registeredParsers as $parser){
+            /* @var ContentTypeParser $parser */
+            if($parser->canHandle($this->getContentType())){
+                $selected = $parser;
+                break;
+            }
+        }
+
+        //If no one was found, pick GenericParser
+        if(is_null($selected)){
+            $selected = new GenericParser();
+        }
+
+        $selected->setRequest($this);
+        $this->parser = $selected;
     }
 
 }

@@ -37,16 +37,18 @@ abstract class ContentTypeParser
     }
 
     /**
-     * Executed every time a new object
-     * is instantiated (substitute for __construct)
-     */
-    protected abstract function initialize();
-
-    /**
      * Convert a raw body string to array format
      * @return array
      */
     public abstract function getData() : array;
+
+    /**
+     * @param Request $request
+     */
+    public function setRequest(Request $request)
+    {
+        $this->request = $request;
+    }
 
     /**
      * Gets an array of uploaded files,
@@ -64,6 +66,12 @@ abstract class ContentTypeParser
     }
 
     /**
+     * Executed every time a new object
+     * is instantiated (substitute for __construct)
+     */
+    protected abstract function initialize();
+
+    /**
      * Determine which content types the current
      * parser supports
      * @param string|string[] $types
@@ -75,12 +83,10 @@ abstract class ContentTypeParser
 
     /**
      * DataParser constructor.
-     * @param Request $request
      * @throws \Exception
      */
-    public final function __construct(Request $request)
+    public final function __construct()
     {
-        $this->request = $request;
         $this->initialize();
 
         if(empty($this->contentTypes)){
