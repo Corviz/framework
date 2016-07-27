@@ -205,15 +205,17 @@ class Request
     private static function fillCurrentRouteString(Request $request)
     {
         //Read data from $_SERVER array
-        $requestUri = $_SERVER['REQUEST_URI'];
+        $requestUri = urldecode($_SERVER['REQUEST_URI']);
         $scriptName = $_SERVER['SCRIPT_NAME'];
 
         //Extract route string from the URI
         $length = strlen(dirname($scriptName));
-        $route = substr(explode('?', $requestUri)[0], $length);
+        $routeAux = substr(explode('?', $requestUri)[0], $length);
+        $route = '/';
 
-        //Normalize slashes
-        $route = '/'.trim(str_replace('\\', '/', $route), '/').'/';
+        if($routeAux && $routeAux != '/'){
+            $route .= trim(str_replace('\\', '/', $routeAux), '/').'/';
+        }
 
         $request->setRouteStr($route);
     }
