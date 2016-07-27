@@ -55,6 +55,7 @@ class Map
                     ->matches($routeStr)
             ){
                 $current = $route;
+                break;
             }
 
         }

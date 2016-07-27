@@ -269,6 +269,13 @@ final class Route
      */
     public function setRouteStr(string $routeStr)
     {
+        //prepend group pieces
+        if(!empty(self::$groupStack)){
+            $sep = "/";
+            $groupStr = $sep . implode($sep, self::$groupStack);
+            $routeStr = $groupStr.$routeStr;
+        }
+
         $this->routeStr = $routeStr;
     }
 
