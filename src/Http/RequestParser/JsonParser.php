@@ -3,15 +3,13 @@
 namespace Corviz\Http\RequestParser;
 
 /**
- * Provided 'application/json' parser
- * @package Corviz\Http\RequestParser
+ * Provided 'application/json' parser.
  */
 class JsonParser extends ContentTypeParser
 {
-
     /**
      * Executed every time a new object
-     * is instantiated (substitute for __construct)
+     * is instantiated (substitute for __construct).
      */
     protected function initialize()
     {
@@ -20,28 +18,30 @@ class JsonParser extends ContentTypeParser
             'application/x-javascript',
             'text/javascript',
             'text/x-javascript',
-            'text/x-json'
+            'text/x-json',
         ]);
     }
 
     /**
-     * Convert a raw body string to array format
+     * Convert a raw body string to array format.
+     *
      * @return array
      */
     public function getData() : array
     {
         $data = json_decode($this->getRequest()->getRequestBody(), true);
+
         return $data;
     }
 
     /**
      * Gets an array of uploaded files,
-     * from the request
+     * from the request.
+     *
      * @return array
      */
     public function getFiles() : array
     {
         return [];
     }
-
 }

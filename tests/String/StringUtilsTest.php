@@ -2,12 +2,10 @@
 
 namespace Tests\Corviz\Framework\String;
 
-
 use Corviz\String\StringUtils;
 
 class StringUtilsTest extends \PHPUnit_Framework_TestCase
 {
-
     /*
      * Method: endsWith
      *------------------------------
@@ -32,7 +30,7 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase
     public function testEndsWithNeedleGreaterThanHaystackShouldFail()
     {
         $this->assertFalse(
-            StringUtils::endsWith("a", "abc"),
+            StringUtils::endsWith('a', 'abc'),
             '"a" should not end with "abc"'
         );
     }
@@ -61,9 +59,8 @@ class StringUtilsTest extends \PHPUnit_Framework_TestCase
     public function testStartsWithNeedleGreaterThanHaystackShouldFail()
     {
         $this->assertFalse(
-            StringUtils::startsWith("a", "abc"),
+            StringUtils::startsWith('a', 'abc'),
             '"a" should not start with "abc"'
         );
     }
-
 }
