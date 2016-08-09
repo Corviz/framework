@@ -2,14 +2,9 @@
 
 namespace Corviz\String;
 
-
 class ParametrizedString
 {
-
-    /**
-     *
-     */
-    const PARAMS_SEARCH_REGEXP = "/(\\{([^\\}]+)\\})/";
+    const PARAMS_SEARCH_REGEXP = '/(\\{([^\\}]+)\\})/';
 
     /**
      * @var string
@@ -33,6 +28,7 @@ class ParametrizedString
 
     /**
      * @param string $val
+     *
      * @return ParametrizedString
      */
     public static function make(string $val)
@@ -41,18 +37,17 @@ class ParametrizedString
     }
 
     /**
-     * Get a list containing all parameters identified
+     * Get a list containing all parameters identified.
+     *
      * @return array
      */
     public function getParameters() : array
     {
         if (is_null($this->parameters)) {
-
             $matches = [];
             $regExp = self::PARAMS_SEARCH_REGEXP;
             preg_match_all($regExp, $this->str, $matches);
             $this->parameters = $matches[2];
-
         }
 
         return $this->parameters;
@@ -60,6 +55,7 @@ class ParametrizedString
 
     /**
      * @param string $rawString
+     *
      * @return mixed
      */
     public function getValues(string $rawString)
@@ -68,10 +64,10 @@ class ParametrizedString
         $params = $this->getParameters();
         $matches = [];
 
-        preg_match_all($regExp ,$rawString, $matches);
+        preg_match_all($regExp, $rawString, $matches);
         array_shift($matches);
 
-        $map = function($match){
+        $map = function ($match) {
             return isset($match[0]) ? $match[0] : null;
         };
 
@@ -79,28 +75,33 @@ class ParametrizedString
     }
 
     /**
-     * Verify if the current string could generate $strCheck
+     * Verify if the current string could generate $strCheck.
+     *
      * @param string $strCheck
+     *
      * @return bool
      */
-    public function matches(string $strCheck) : bool 
+    public function matches(string $strCheck) : bool
     {
         $regExp = $this->getStrRegExp();
+
         return (bool) preg_match_all($regExp, $strCheck);
     }
 
     /**
-     * Generates a final string according to $args
+     * Generates a final string according to $args.
+     *
      * @param array $args
+     *
      * @return string
      */
-    public function parse(array $args = []) : string 
+    public function parse(array $args = []) : string
     {
         $strAux = $this->str;
         $params = $this->getParameters();
 
-        foreach($args as $argKey => $argValue){
-            if(in_array($argKey, $params)){
+        foreach ($args as $argKey => $argValue) {
+            if (in_array($argKey, $params)) {
                 $strAux = str_replace("{{$argKey}}", $argValue, $strAux);
             }
         }
@@ -113,7 +114,7 @@ class ParametrizedString
      */
     private function getStrRegExp() : string
     {
-        if(is_null($this->strRegExp)){
+        if (is_null($this->strRegExp)) {
             $regExp = preg_replace(self::PARAMS_SEARCH_REGEXP, $this->uniqueReplacement, $this->str);
             $regExp = preg_quote($regExp);
             $regExp = str_replace($this->uniqueReplacement, '(.+)', $regExp);
@@ -125,6 +126,7 @@ class ParametrizedString
 
     /**
      * ParametrizedString constructor.
+     *
      * @param string $str
      */
     public function __construct(string $str)
@@ -139,5 +141,4 @@ class ParametrizedString
     {
         return $this->str;
     }
-
 }

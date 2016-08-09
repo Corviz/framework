@@ -2,13 +2,11 @@
 
 namespace Corviz\Routing;
 
-
 use Corviz\Http\Request;
 use Corviz\String\ParametrizedString;
 
 class Map
 {
-
     /**
      * @var array
      */
@@ -19,18 +17,19 @@ class Map
      */
     public static function addRoute(Route $route)
     {
-        self::$routes []= [
-            'action' => $route->getAction(),
-            'alias' => $route->getAlias(),
+        self::$routes [] = [
+            'action'     => $route->getAction(),
+            'alias'      => $route->getAlias(),
             'controller' => $route->getControllerName(),
-            'methods' => $route->getMethods(),
-            'route' => $route->getRouteStr()
+            'methods'    => $route->getMethods(),
+            'route'      => $route->getRouteStr(),
         ];
     }
 
     /**
      * Search for the route that matches the current
-     * request. If not found, returns NULL
+     * request. If not found, returns NULL.
+     *
      * @return array|null
      */
     public static function getCurrentRoute()
@@ -41,28 +40,28 @@ class Map
         $method = $request->getMethod();
 
         //Search for the route
-        foreach(self::$routes as $route){
+        foreach (self::$routes as $route) {
 
             //Check the method
-            if(!in_array($method, $route['methods'])){
+            if (!in_array($method, $route['methods'])) {
                 continue;
             }
 
             //Checks the route string
-            if(
+            if (
                 ParametrizedString
                     ::make($route['route'])
                     ->matches($routeStr)
-            ){
+            ) {
                 $current = $route;
                 break;
             }
-
         }
 
         return $current;
     }
 
-    private function __construct(){}
-
+    private function __construct()
+    {
+    }
 }

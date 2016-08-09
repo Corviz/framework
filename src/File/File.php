@@ -3,29 +3,30 @@
 namespace Corviz\File;
 
 /**
- * Represents a local file
+ * Represents a local file.
  */
 class File
 {
-
     /**
      * @var string
      */
     private $realPath;
 
     /**
-     * Copy the current source to destination
+     * Copy the current source to destination.
+     *
      * @param string $destination
-     * @param bool $overwrite
+     * @param bool   $overwrite
+     *
      * @return bool
      */
     public function copy(string $destination, $overwrite = false) : bool
     {
         $copied = false;
 
-        if($this->isFile()){
+        if ($this->isFile()) {
             $exists = file_exists($destination);
-            if(!$exists || ($exists && $overwrite)){
+            if (!$exists || ($exists && $overwrite)) {
                 $copied = copy($this->realPath, $destination);
             }
         }
@@ -34,16 +35,17 @@ class File
     }
 
     /**
-     * Remove a file from the disk
+     * Remove a file from the disk.
+     *
      * @return bool
      */
     public function delete() : bool
     {
         $removed = null;
 
-        if($this->isDirectory()){
+        if ($this->isDirectory()) {
             $removed = rmdir($this->realPath);
-        }else{
+        } else {
             $removed = unlink($this->realPath);
         }
 
@@ -51,16 +53,18 @@ class File
     }
 
     /**
-     * Checks if the current source exist
+     * Checks if the current source exist.
+     *
      * @return bool
      */
     public function exists() : bool
     {
         return $this->realPath && file_exists($this->realPath);
     }
-    
+
     /**
-     * Current source real path
+     * Current source real path.
+     *
      * @return string
      */
     public function getRealPath() : string
@@ -70,14 +74,15 @@ class File
 
     /**
      * Gets the size of a file.
-     * If the current source is not a file, returns -1
+     * If the current source is not a file, returns -1.
+     *
      * @return int
      */
     public function getSize() : int
     {
         $size = -1;
 
-        if($this->isFile()){
+        if ($this->isFile()) {
             $size = filesize($this->realPath);
         }
 
@@ -85,7 +90,8 @@ class File
     }
 
     /**
-     * Determines if the source is a directory
+     * Determines if the source is a directory.
+     *
      * @return bool
      */
     public function isDirectory() : bool
@@ -94,7 +100,8 @@ class File
     }
 
     /**
-     * Determines if the source is a file
+     * Determines if the source is a file.
+     *
      * @return bool
      */
     public function isFile() : bool
@@ -103,7 +110,8 @@ class File
     }
 
     /**
-     * Determines if the current item can be read
+     * Determines if the current item can be read.
+     *
      * @return bool
      */
     public function isReadable() : bool
@@ -112,25 +120,27 @@ class File
     }
 
     /**
-     * Determines if the current item can be written
+     * Determines if the current item can be written.
+     *
      * @return bool
      */
     public function isWriteable() : bool
     {
-        return is_writeable($this->realPath);
+        return is_writable($this->realPath);
     }
 
     /**
      * Read the file contents, based on PHP file_get_contents function
      * This function will return a string containing the contents,
-     * or FALSE on failure
+     * or FALSE on failure.
+     *
      * @return bool|string
      */
     public function read()
     {
         $contents = false;
 
-        if($this->isFile() && $this->isReadable()){
+        if ($this->isFile() && $this->isReadable()) {
             $contents = file_get_contents($this->realPath);
         }
 
@@ -138,15 +148,17 @@ class File
     }
 
     /**
-     * Give the source a new name
+     * Give the source a new name.
+     *
      * @param string $newName
+     *
      * @return bool
      */
     public function rename(string $newName) : bool
     {
         $renamed = rename($this->realPath, $newName);
 
-        if($renamed){
+        if ($renamed) {
             $this->realPath = realpath($newName);
         }
 
@@ -154,21 +166,21 @@ class File
     }
 
     /**
-     *
      * @param $data
+     *
      * @return bool
      */
     public function write($data) : bool
     {
         $success = false;
 
-        if($this->isFile() && $this->isWriteable()){
+        if ($this->isFile() && $this->isWriteable()) {
             $success = file_put_contents($this->realPath, $data) !== false;
         }
 
         return $success;
     }
-    
+
     /**
      * @param string $path The source of an file
      */
@@ -176,5 +188,4 @@ class File
     {
         $this->realPath = realpath($path) ?: '';
     }
-
 }

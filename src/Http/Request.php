@@ -2,13 +2,11 @@
 
 namespace Corviz\Http;
 
-
 use Corviz\Http\RequestParser\ContentTypeParser;
 use Corviz\Http\RequestParser\GenericParser;
 
 class Request
 {
-
     const METHOD_GET = 'GET';
     const METHOD_POST = 'POST';
     const METHOD_PUT = 'PUT';
@@ -71,7 +69,7 @@ class Request
     private $routeStr;
 
     /**
-     * @var boolean
+     * @var bool
      */
     private $secure = false;
 
@@ -80,8 +78,8 @@ class Request
      */
     public static function current()
     {
-        if(is_null(self::$currentRequest)){
-            $request = new static;
+        if (is_null(self::$currentRequest)) {
+            $request = new static();
 
             //fill simple properties
             $request->setClientIp($_SERVER['REMOTE_ADDR']);
@@ -115,27 +113,29 @@ class Request
             self::METHOD_POST,
             self::METHOD_PUT,
             self::METHOD_PATCH,
-            self::METHOD_DELETE
+            self::METHOD_DELETE,
         ];
     }
 
     /**
      * @param string $parserName
+     *
      * @throws \Exception
      */
     public static function registerParser(string $parserName)
     {
         $parser = new $parserName();
 
-        if($parser instanceof ContentTypeParser){
-            self::$registeredParsers []= $parser;
-        }else{
+        if ($parser instanceof ContentTypeParser) {
+            self::$registeredParsers [] = $parser;
+        } else {
             throw new \Exception("$parserName is not a valid parser");
         }
     }
 
     /**
-     * Check if its an ajax call
+     * Check if its an ajax call.
+     *
      * @param Request $request
      */
     private static function fillCurrentAjaxState(Request $request)
@@ -148,7 +148,8 @@ class Request
 
     /**
      * Determines if the current request was made using a secure
-     * connection (HTTPS)
+     * connection (HTTPS).
+     *
      * @param Request $request
      */
     private static function fillCurrentIsSecure(Request $request)
@@ -158,10 +159,10 @@ class Request
             && $_SERVER['HTTPS'] !== 'off'
         );
     }
-    
+
     /**
      * Fill up the headers property with the values
-     * provided by the client browser
+     * provided by the client browser.
      *
      * @param Request $request
      */
@@ -170,36 +171,35 @@ class Request
         $headers = [];
 
         //Native method exists?
-        if(function_exists('getallheaders')){
+        if (function_exists('getallheaders')) {
 
             //try to use it
-            if(($headers = getallheaders()) === false){
+            if (($headers = getallheaders()) === false) {
                 $headers = [];
             }
-
         }
 
         //No header captured yet? Try to get it myself
-        if(empty($headers)){
+        if (empty($headers)) {
 
             /*
              * Based on a user note provided by joyview
              * at http://php.net/manual/en/function.getallheaders.php
              */
-            foreach($_SERVER as $key => $value){
-                if(substr($key, 0, 5) === 'HTTP_'){
+            foreach ($_SERVER as $key => $value) {
+                if (substr($key, 0, 5) === 'HTTP_') {
                     $newKey = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))));
                     $headers[$newKey] = $value;
                 }
             }
-
         }
 
         $request->setHeaders($headers);
     }
 
     /**
-     * Capture the route string
+     * Capture the route string.
+     *
      * @param Request $request
      */
     private static function fillCurrentRouteString(Request $request)
@@ -213,7 +213,7 @@ class Request
         $routeAux = substr(explode('?', $requestUri)[0], $length);
         $route = '/';
 
-        if($routeAux && $routeAux != '/'){
+        if ($routeAux && $routeAux != '/') {
             $route .= trim(str_replace('\\', '/', $routeAux), '/').'/';
         }
 
@@ -275,7 +275,7 @@ class Request
     {
         return $this->queryParams ?: [];
     }
-    
+
     /**
      * @return string
      */
@@ -287,7 +287,7 @@ class Request
     /**
      * @return string
      */
-    public function getRouteStr() : string 
+    public function getRouteStr() : string
     {
         return $this->routeStr ?: '';
     }
@@ -348,7 +348,7 @@ class Request
     {
         $validMethods = self::getValidMethods();
 
-        if(!in_array($method, $validMethods)){
+        if (!in_array($method, $validMethods)) {
             throw new \InvalidArgumentException("Invalid method: $method");
         }
 
@@ -389,7 +389,7 @@ class Request
 
     /**
      * Pick a content type parser
-     * from the list
+     * from the list.
      */
     private function selectDataParser()
     {
@@ -397,21 +397,20 @@ class Request
         $selected = null;
 
         //Search trough the registered parsers
-        foreach(self::$registeredParsers as $parser){
+        foreach (self::$registeredParsers as $parser) {
             /* @var ContentTypeParser $parser */
-            if($parser->canHandle($this->getContentType())){
+            if ($parser->canHandle($this->getContentType())) {
                 $selected = $parser;
                 break;
             }
         }
 
         //If no one was found, pick GenericParser
-        if(is_null($selected)){
+        if (is_null($selected)) {
             $selected = new GenericParser();
         }
 
         $selected->setRequest($this);
         $this->parser = $selected;
     }
-
 }

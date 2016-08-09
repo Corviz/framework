@@ -2,14 +2,12 @@
 
 namespace Corviz\Routing;
 
-
 use Closure;
 use Corviz\Http\Request;
 
 final class Route
 {
-
-    const REGEXP_VALIDATE_STRING = "/^(?!.*{([\\w-]+)}.*{\\1})(\\/?(([a-zA-Z0-9\\_\\-]+)|(\\{[a-zA-Z][a-zA-Z0-9]*\\}))\\/?)*$/";
+    const REGEXP_VALIDATE_STRING = '/^(?!.*{([\\w-]+)}.*{\\1})(\\/?(([a-zA-Z0-9\\_\\-]+)|(\\{[a-zA-Z][a-zA-Z0-9]*\\}))\\/?)*$/';
 
     /**
      * @var string
@@ -42,45 +40,44 @@ final class Route
     private $routeStr;
 
     /**
-     * Creates a route that listens to all supported
+     * Creates a route that listens to all supported.
+     *
      * @param string $routeStr
-     * @param array $info
+     * @param array  $info
      */
     public static function all(
         string $routeStr,
         array $info
-    )
-    {
+    ) {
         $methods = Request::getValidMethods();
         self::create($methods, $routeStr, $info);
     }
 
     /**
-     * @param array $methods
-     *      Array containing http methods.
-     *      The supported methods are defined by Request::METHOD_* constants
+     * @param array  $methods
+     *                         Array containing http methods.
+     *                         The supported methods are defined by Request::METHOD_* constants
      * @param string $routeStr
-     *      A string that may contain parameters
-     *      that will be passed to the controller.
-     *      For example:
-     *          /home
-     *          /product/{productId}
-     *          /tag/{slug}
-     * @param array $info
-     *      An array containing the following indexes:
-     *      - controller: Name of a controller class
-     *      - action: Method of the defined controller (Default: index)
-     *      - alias: Short name of the route, for easy referencing
+     *                         A string that may contain parameters
+     *                         that will be passed to the controller.
+     *                         For example:
+     *                         /home
+     *                         /product/{productId}
+     *                         /tag/{slug}
+     * @param array  $info
+     *                         An array containing the following indexes:
+     *                         - controller: Name of a controller class
+     *                         - action: Method of the defined controller (Default: index)
+     *                         - alias: Short name of the route, for easy referencing
      */
     public static function create(
         array $methods,
         string $routeStr,
         array $info
-    )
-    {
+    ) {
         self::validateRoute($routeStr);
 
-        $route = new Route();
+        $route = new self();
         $route->setMethods($methods);
         $route->setAction(isset($info['action']) ? $info['action'] : 'index');
         $route->setAlias(isset($info['alias']) ? $info['alias'] : '');
@@ -92,79 +89,80 @@ final class Route
     }
 
     /**
-     * Creates a route that listens to DELETE http method
+     * Creates a route that listens to DELETE http method.
+     *
      * @param string $routeStr
-     * @param array $info
+     * @param array  $info
      */
     public static function delete(
         string $routeStr,
         array $info
-    )
-    {
+    ) {
         self::create([Request::METHOD_DELETE], $routeStr, $info);
     }
-    
+
     /**
-     * Creates a route that listens to GET http method
+     * Creates a route that listens to GET http method.
+     *
      * @param string $routeStr
-     * @param array $info
+     * @param array  $info
      */
     public static function get(
         string $routeStr,
         array $info
-    )
-    {
+    ) {
         self::create([Request::METHOD_GET], $routeStr, $info);
     }
 
     /**
-     * Creates a route group
-     * @param string $prefix
+     * Creates a route group.
+     *
+     * @param string  $prefix
      * @param Closure $closure
      */
     public static function group(string $prefix, Closure $closure)
     {
-        array_push(self::$groupStack, trim($prefix, "/"));
+        array_push(self::$groupStack, trim($prefix, '/'));
         call_user_func($closure);
         array_pop(self::$groupStack);
     }
 
     /**
-     * Creates a route that listens to POST http method
+     * Creates a route that listens to POST http method.
+     *
      * @param string $routeStr
-     * @param array $info
+     * @param array  $info
      */
     public static function post(
         string $routeStr,
         array $info
-    )
-    {
+    ) {
         self::create([Request::METHOD_POST], $routeStr, $info);
     }
 
     /**
-     * Creates a route that listens to PATCH http method
+     * Creates a route that listens to PATCH http method.
+     *
      * @param string $routeStr
-     * @param array $info
+     * @param array  $info
      */
     public static function patch(
         string $routeStr,
         array $info
-    )
-    {
+    ) {
         self::create([Request::METHOD_PATCH], $routeStr, $info);
     }
 
     /**
-     * Creates a route that listens to PUT http method
+     * Creates a route that listens to PUT http method.
+     *
      * @param string $routeStr
-     * @param array $info
+     * @param array  $info
      */
     public static function put(
         string $routeStr,
         array $info
-    )
-    {
+    ) {
         self::create([Request::METHOD_PUT], $routeStr, $info);
     }
 
@@ -173,21 +171,21 @@ final class Route
      * separated by slashes (/) and also does not repeat variable names
      * Example of valid routes:
      *  - "user/{id}"
-     *  - "category/car"
+     *  - "category/car".
      *
      * @param string $routeStr
      */
     private static function validateRoute(string $routeStr)
     {
-        if($routeStr == '/'){
+        if ($routeStr == '/') {
             return;
         }
 
-        if(!$routeStr){
+        if (!$routeStr) {
             throw new \InvalidArgumentException("Route can't be empty");
         }
 
-        if(!preg_match(self::REGEXP_VALIDATE_STRING, $routeStr)){
+        if (!preg_match(self::REGEXP_VALIDATE_STRING, $routeStr)) {
             throw new \InvalidArgumentException("Invalid route: $routeStr");
         }
     }
@@ -270,15 +268,16 @@ final class Route
     public function setRouteStr(string $routeStr)
     {
         //prepend group pieces
-        if(!empty(self::$groupStack)){
-            $sep = "/";
-            $groupStr = $sep . implode($sep, self::$groupStack);
+        if (!empty(self::$groupStack)) {
+            $sep = '/';
+            $groupStr = $sep.implode($sep, self::$groupStack);
             $routeStr = $groupStr.$routeStr;
         }
 
         $this->routeStr = $routeStr;
     }
 
-    private function __construct(){}
-
+    private function __construct()
+    {
+    }
 }

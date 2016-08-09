@@ -2,19 +2,16 @@
 
 namespace Corviz\Http\RequestParser;
 
-
 use Corviz\Http\Request;
 
 /**
- * Provided 'application/x-www-form-urlencoded' parser
- * @package Corviz\Http\RequestParser
+ * Provided 'application/x-www-form-urlencoded' parser.
  */
 class FormUrlEncodedParser extends ContentTypeParser
 {
-
     /**
      * Executed every time a new object
-     * is instantiated (substitute for __construct)
+     * is instantiated (substitute for __construct).
      */
     protected function initialize()
     {
@@ -22,7 +19,8 @@ class FormUrlEncodedParser extends ContentTypeParser
     }
 
     /**
-     * Convert a raw body string to array format
+     * Convert a raw body string to array format.
+     *
      * @return array
      */
     public function getData() : array
@@ -57,12 +55,12 @@ class FormUrlEncodedParser extends ContentTypeParser
 
     /**
      * Gets an array of uploaded files,
-     * from the request
+     * from the request.
+     *
      * @return array
      */
     public function getFiles() : array
     {
         return [];
     }
-
 }
