@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Corviz\Behaviour;
 
 interface Cacheable
@@ -24,7 +23,7 @@ interface Cacheable
      * Store the current object in the cache
      * and returns true if the success was
      * complete successfully.
-     * Otherwise, returns false
+     * Otherwise, returns false.
      *
      * @return bool
      */
