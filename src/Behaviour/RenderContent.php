@@ -2,7 +2,7 @@
 
 namespace Corviz\Behaviour;
 
-interface RenderContents
+interface RenderContent
 {
     /**
      * Outputs content to user interface.
