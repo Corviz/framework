@@ -8,6 +8,7 @@ use Corviz\Http\Request;
 final class Route
 {
     const REGEXP_VALIDATE_STRING = '/^(?!.*{([\\w-]+)}.*{\\1})(\\/?(([a-zA-Z0-9\\_\\-]+)|(\\{[a-zA-Z][a-zA-Z0-9]*\\}))\\/?)*$/';
+    const SEPARATOR = '/';
 
     /**
      * @var string
@@ -75,8 +76,6 @@ final class Route
         string $routeStr,
         array $info
     ) {
-        self::validateRoute($routeStr);
-
         $route = new self();
         $route->setMethods($methods);
         $route->setAction(isset($info['action']) ? $info['action'] : 'index');
@@ -122,9 +121,18 @@ final class Route
      */
     public static function group(string $prefix, Closure $closure)
     {
-        array_push(self::$groupStack, trim($prefix, '/'));
-        call_user_func($closure);
-        array_pop(self::$groupStack);
+        $prefix = trim($prefix, self::SEPARATOR);
+
+        if($prefix) {
+            array_push(self::$groupStack, $prefix);
+        }
+
+        //Call group closure
+        $closure();
+
+        if($prefix) {
+            array_pop(self::$groupStack);
+        }
     }
 
     /**
@@ -267,13 +275,25 @@ final class Route
      */
     public function setRouteStr(string $routeStr)
     {
+        $sep = self::SEPARATOR;
+        $routeStr = trim($routeStr, $sep);
+
+        //normalize string
+        if($routeStr){
+            $routeStr .= $sep;
+        }
+        $routeStr = $sep.$routeStr;
+
         //prepend group pieces
         if (!empty(self::$groupStack)) {
-            $sep = '/';
-            $groupStr = $sep.implode($sep, self::$groupStack);
-            $routeStr = $groupStr.$routeStr;
+            $groupStr = implode($sep, self::$groupStack);
+            $routeStr = $sep.$groupStr.$routeStr;
         }
 
+        //validate route
+        self::validateRoute($routeStr);
+
+        //assign route string
         $this->routeStr = $routeStr;
     }
 

@@ -95,7 +95,9 @@ class Request
 
             //the content type should be the last
             //property to be set
-            $request->setContentType($_SERVER['CONTENT_TYPE'] ?: '');
+            $request->setContentType(
+                isset($_SERVER['CONTENT_TYPE']) ? $_SERVER['CONTENT_TYPE'] : ''
+            );
 
             self::$currentRequest = $request;
         }
@@ -396,13 +398,18 @@ class Request
         /* @var ContentTypeParser $selected */
         $selected = null;
 
-        //Search trough the registered parsers
-        foreach (self::$registeredParsers as $parser) {
-            /* @var ContentTypeParser $parser */
-            if ($parser->canHandle($this->getContentType())) {
-                $selected = $parser;
-                break;
+        //Has content?
+        if(!empty($this->getContentType())){
+
+            //Search trough the registered parsers
+            foreach (self::$registeredParsers as $parser) {
+                /* @var ContentTypeParser $parser */
+                if ($parser->canHandle($this->getContentType())) {
+                    $selected = $parser;
+                    break;
+                }
             }
+
         }
 
         //If no one was found, pick GenericParser
