@@ -123,14 +123,14 @@ final class Route
     {
         $prefix = trim($prefix, self::SEPARATOR);
 
-        if($prefix) {
+        if ($prefix) {
             array_push(self::$groupStack, $prefix);
         }
 
         //Call group closure
         $closure();
 
-        if($prefix) {
+        if ($prefix) {
             array_pop(self::$groupStack);
         }
     }
@@ -279,7 +279,7 @@ final class Route
         $routeStr = trim($routeStr, $sep);
 
         //normalize string
-        if($routeStr){
+        if ($routeStr) {
             $routeStr .= $sep;
         }
         $routeStr = $sep.$routeStr;
