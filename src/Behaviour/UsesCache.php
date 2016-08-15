@@ -2,7 +2,7 @@
 
 namespace Corviz\Behaviour;
 
-interface Cacheable
+interface UsesCache
 {
     /**
      * Determines if the current object can
@@ -13,7 +13,7 @@ interface Cacheable
     public function isCached() : bool;
 
     /**
-     * Read the contents from the cache.
+     * Read and returns the contents from the cache.
      *
      * @return mixed
      */

@@ -2,7 +2,7 @@
 
 namespace Corviz\Behaviour;
 
-interface Jsonable
+interface ConvertsToJson
 {
     /**
      * Returns the current object

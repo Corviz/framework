@@ -5,7 +5,7 @@ namespace Corviz\Behaviour;
 interface Renderable
 {
     /**
-     * @return mixed
+     * Outputs content to user interface
      */
     public function render();
 }
