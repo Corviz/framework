@@ -399,7 +399,7 @@ class Request
         $selected = null;
 
         //Has content?
-        if(!empty($this->getContentType())){
+        if (!empty($this->getContentType())) {
 
             //Search trough the registered parsers
             foreach (self::$registeredParsers as $parser) {
@@ -409,7 +409,6 @@ class Request
                     break;
                 }
             }
-
         }
 
         //If no one was found, pick GenericParser
