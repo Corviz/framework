@@ -31,8 +31,8 @@ class UploadedFile extends File
     }
 
     /**
-     * Get the original name file,
-     * informed by HTTP request;
+     * Get the original name file, informed by
+     * HTTP request.
      *
      * @return string
      */
