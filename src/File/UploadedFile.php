@@ -5,7 +5,7 @@ namespace Corviz\File;
 use Exception;
 
 /**
- * Represents an file received via Php's HTTP post.
+ * Represents an file received via Php's HTTP request.
  */
 class UploadedFile extends File
 {
@@ -15,6 +15,25 @@ class UploadedFile extends File
     private $originalName;
 
     /**
+     * @var string
+     */
+    private $mimeType;
+
+    /**
+     * Returns the MIME content type for the file
+     * informed by HTTP request.
+     *
+     * @return string
+     */
+    public function getMimeType() : string
+    {
+        return $this->mimeType;
+    }
+
+    /**
+     * Get the original name file,
+     * informed by HTTP request;
+     *
      * @return string
      */
     public function getOriginalName() : string
@@ -24,13 +43,16 @@ class UploadedFile extends File
 
     /**
      * UploadedFile constructor.
+     * The original file name and mime-type are
+     * received from the request itself.
      *
      * @param string $path
      * @param string $originalName
+     * @param string $mimeType
      *
      * @throws Exception
      */
-    public function __construct(string $path, string $originalName)
+    public function __construct(string $path, string $originalName, string $mimeType)
     {
         parent::__construct($path);
         $this->originalName = $originalName;

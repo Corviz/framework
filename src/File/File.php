@@ -63,6 +63,19 @@ class File
     }
 
     /**
+     * Returns the MIME content type for the file
+     * based on 'mime_content_type' function.
+     * Please, visit http://php.net/manual/en/function.mime-content-type.php
+     * for more information.
+     *
+     * @return string
+     */
+    public function getMimeType() : string
+    {
+        return mime_content_type($this->realPath);
+    }
+
+    /**
      * Current source real path.
      *
      * @return string

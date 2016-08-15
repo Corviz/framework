@@ -75,7 +75,9 @@ class MultipartFormDataParser extends ContentTypeParser
         //The current file was uploaded successfully?
         if (!$file['error']) {
             $uploadedFile = new UploadedFile(
-                $file['tmp_name'], $file['name']
+                $file['tmp_name'],
+                $file['name'],
+                $file['type']
             );
         }
 
@@ -99,7 +101,9 @@ class MultipartFormDataParser extends ContentTypeParser
             //The current file was uploaded successfully?
             if (!$file[$idx]['error']) {
                 $uploadedFile = new UploadedFile(
-                    $file[$idx]['tmp_name'], $file[$idx]['name']
+                    $file[$idx]['tmp_name'],
+                    $file[$idx]['name'],
+                    $file[$idx]['type']
                 );
             }
 
