@@ -55,18 +55,17 @@ final class Route
     }
 
     /**
-     * @param array  $methods
-     *                         Array containing http methods.
+     * Build a new route and add it to the Map.
+     *
+     * @param array  $methods  Array containing http methods.
      *                         The supported methods are defined by Request::METHOD_* constants
-     * @param string $routeStr
-     *                         A string that may contain parameters
+     * @param string $routeStr A string that may contain parameters
      *                         that will be passed to the controller.
      *                         For example:
-     *                         /home
-     *                         /product/{productId}
-     *                         /tag/{slug}
-     * @param array  $info
-     *                         An array containing the following indexes:
+     *                         - /home
+     *                         - /product/{productId}
+     *                         - /tag/{slug}
+     * @param array  $info     An array containing the following indexes:
      *                         - controller: Name of a controller class
      *                         - action: Method of the defined controller (Default: index)
      *                         - alias: Short name of the route, for easy referencing
