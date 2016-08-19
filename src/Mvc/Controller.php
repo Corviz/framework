@@ -4,5 +4,4 @@ namespace Corviz\Mvc;
 
 class Controller
 {
-
 }

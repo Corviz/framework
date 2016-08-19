@@ -9,7 +9,7 @@ class ControllerDispatcher
     /**
      * @param string $controllerName
      * @param string $action
-     * @param array $parameters
+     * @param array  $parameters
      *
      * @return mixed
      */
@@ -68,14 +68,14 @@ class ControllerDispatcher
         string $action
     ) {
         //Check for invalid class
-        if (! $controller instanceof Controller) {
+        if (!$controller instanceof Controller) {
             throw new \InvalidArgumentException(
                 'Invalid controller'
             );
         }
 
         //Check for action
-        if (! method_exists($controller, $action)) {
+        if (!method_exists($controller, $action)) {
             throw new \InvalidArgumentException(
                 "Action not found: $action"
             );
