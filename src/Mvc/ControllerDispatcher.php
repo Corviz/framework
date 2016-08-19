@@ -34,7 +34,7 @@ class ControllerDispatcher
 
     /**
      * @param string $className
-     * @param $method
+     * @param string $method
      *
      * @return array
      */
@@ -59,7 +59,7 @@ class ControllerDispatcher
     }
 
     /**
-     * @param \Corviz\Mvc\Controller $controller
+     * @param object $controller
      * @param string $action
      */
     private static function validate(
