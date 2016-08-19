@@ -24,12 +24,13 @@ class ControllerDispatcher
         self::validate($controller, $action);
 
         //Mount parameters array
+        $defaults = self::getDefaultValues($controllerName, $action);
         $paramsArray = array_replace(
-            self::getDefaultValues($controllerName, $action),
-            $parameters
+            $defaults,
+            array_intersect_key($parameters, $defaults)
         );
 
-        return $controller->$action(...$paramsArray);
+        return $controller->$action(...array_values($paramsArray));
     }
 
     /**
