@@ -7,11 +7,12 @@ php:
 
 before_script:
   - composer self-update
-  - composer install --prefer-source
+  - composer install --prefer-source --ignore-platform-reqs
 
 matrix:
   allow_failures:
     - php: nightly
+    - php: hhvm
 
 sudo: false
 
