@@ -41,7 +41,6 @@ class Map
 
         //Search for the route
         foreach (self::$routes as $route) {
-
             //Check the method
             if (!in_array($method, $route['methods'])) {
                 continue;
@@ -49,7 +48,7 @@ class Map
 
             //Check number of slashes
             if (
-                substr_count($route['route'],'/')
+                substr_count($route['route'], '/')
                 != substr_count($routeStr, '/')
             ) {
                 continue;
@@ -64,7 +63,6 @@ class Map
                 $current = $route;
                 break;
             }
-
         }
 
         return $current;
