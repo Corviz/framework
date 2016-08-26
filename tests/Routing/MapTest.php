@@ -43,13 +43,28 @@ class MapTest extends \PHPUnit_Framework_TestCase
     {
         //setup
         $this->clearMap();
-        Route::all('posts/{id}', ['controller' => 'Post', 'alias' => 'route1']);
-        Route::all('posts/save', ['controller' => 'Post', 'alias' => 'route2']);
 
-        $this->setCurrentRequest(Request::METHOD_GET, '/posts/save/');
+        Route::all('posts/edit/{id}', ['controller' => 'Test', 'alias' => 'route1']);
+        Route::all('{somePage}', ['controller' => 'Test', 'alias' => 'route2']);
+        Route::all('posts/{id}', ['controller' => 'Test', 'alias' => 'route3']);
+
+        //Test 1
+        $this->setCurrentRequest(Request::METHOD_GET, '/posts/1/');
 
         $data = Map::getCurrentRoute();
-        $this->assertEquals('route2', $data['alias'], 'incorrect route selected in test case 1');
+        $this->assertEquals('route3', $data['alias'], 'incorrect route selected in test case 1');
+
+        //Test 2
+        $this->setCurrentRequest(Request::METHOD_GET, '/posts/edit/1/');
+
+        $data = Map::getCurrentRoute();
+        $this->assertEquals('route1', $data['alias'], 'incorrect route selected in test case 2');
+
+        //Test 3
+        $this->setCurrentRequest(Request::METHOD_GET, '/home/');
+
+        $data = Map::getCurrentRoute();
+        $this->assertEquals('route2', $data['alias'], 'incorrect route selected in test case 3');
     }
 
     /**

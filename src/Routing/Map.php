@@ -47,6 +47,14 @@ class Map
                 continue;
             }
 
+            //Check number of slashes
+            if (
+                substr_count($route['route'],'/')
+                != substr_count($routeStr, '/')
+            ) {
+                continue;
+            }
+
             //Checks the route string
             if (
                 ParametrizedString
@@ -56,11 +64,15 @@ class Map
                 $current = $route;
                 break;
             }
+
         }
 
         return $current;
     }
 
+    /**
+     * Map constructor.
+     */
     private function __construct()
     {
     }
