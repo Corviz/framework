@@ -18,6 +18,7 @@ class Container
      * @param string $name
      * @param string $className
      * @param string|array $args
+     * @param bool $asSingleton
      */
     public function set(
         string $name,
