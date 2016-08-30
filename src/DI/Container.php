@@ -5,9 +5,9 @@ namespace Corviz\DI;
 class Container
 {
     /**
-     * @var \SplObjectStorage
+     * @var array
      */
-    private $dependencies;
+    private $dependencies = [];
 
     /**
      * @var array
@@ -30,7 +30,7 @@ class Container
         //the container should use a previously
         //set dependency
         if (is_string($args)) {
-            $args = $this->getDependency($name);
+            $args = [$this->getDependency($name)];
         }
 
         //Register dependency info in the container
@@ -55,7 +55,7 @@ class Container
         //Checks if object was registered previously
         if (isset($this->map[$name])) {
             //Reads class information
-            $info = $this->map['name'];
+            $info = $this->map[$name];
 
             //Creates a new instance
             if (
@@ -71,14 +71,6 @@ class Container
 
         //Does not have a map, can't find desired dependency
         throw new \Exception("Unknown dependency: $name");
-    }
-
-    /**
-     * Container constructor.
-     */
-    public function __construct()
-    {
-        $this->dependencies = new \SplObjectStorage();
     }
 
     /**
