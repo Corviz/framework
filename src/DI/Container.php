@@ -15,10 +15,10 @@ class Container
     private $map = [];
 
     /**
-     * @param string $name
-     * @param string $className
+     * @param string       $name
+     * @param string       $className
      * @param string|array $args
-     * @param bool $asSingleton
+     * @param bool         $asSingleton
      */
     public function set(
         string $name,
@@ -35,19 +35,20 @@ class Container
 
         //Register dependency info in the container
         $this->map[$name] = [
-            'className' => $className,
-            'args' => $args,
-            'isSingleton' => $asSingleton
+            'className'   => $className,
+            'args'        => $args,
+            'isSingleton' => $asSingleton,
         ];
     }
 
     /**
-     * Retrieve a previously set dependency
+     * Retrieve a previously set dependency.
      *
      * @param string $name
      *
-     * @return object
      * @throws \Exception
+     *
+     * @return object
      */
     private function getDependency(string $name)
     {
