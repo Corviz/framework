@@ -39,6 +39,10 @@ class Container
             'args'        => $args,
             'isSingleton' => $asSingleton,
         ];
+
+        if (isset($this->dependencies[$name])) {
+            unset($this->dependencies[$name]);
+        }
     }
 
     /**

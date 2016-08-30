@@ -26,10 +26,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $container = new Container();
 
         $container->set('DB', MySql::class);
-        $this->assertTrue($container->DB instanceof MySql, "Expecting MySql instance");
+        $this->assertTrue($container->DB instanceof MySql, 'Expecting MySql instance');
 
         $container->set('DB', Postgres::class);
-        $this->assertTrue($container->DB instanceof Postgres, "Expecting Postgres instance");
+        $this->assertTrue($container->DB instanceof Postgres, 'Expecting Postgres instance');
     }
 }
 
