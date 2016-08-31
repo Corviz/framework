@@ -2,7 +2,7 @@
 
 namespace Corviz\Behaviour;
 
-interface UsesCache
+interface Cacheable
 {
     /**
      * Determines if the current object can
