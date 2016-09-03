@@ -4,86 +4,113 @@ namespace Corviz\DI;
 
 class Container
 {
-    /**
-     * @var array
-     */
-    private $dependencies = [];
-
-    /**
-     * @var array
-     */
     private $map = [];
+    private $singletonObjects = [];
 
     /**
-     * @param string       $name
-     * @param string       $className
-     * @param string|array $args
-     * @param bool         $asSingleton
-     */
-    public function set(
-        string $name,
-        string $className,
-        $args = [],
-        bool $asSingleton = true
-    ) {
-        //If $args is a string, it means that
-        //the container should use a previously
-        //set dependency
-        if (is_string($args)) {
-            $args = [$this->getDependency($name)];
-        }
-
-        //Register dependency info in the container
-        $this->map[$name] = [
-            'className'   => $className,
-            'args'        => $args,
-            'isSingleton' => $asSingleton,
-        ];
-
-        if (isset($this->dependencies[$name])) {
-            unset($this->dependencies[$name]);
-        }
-    }
-
-    /**
-     * Retrieve a previously set dependency.
-     *
      * @param string $name
      *
      * @throws \Exception
      *
      * @return object
      */
-    private function getDependency(string $name)
+    public function get(string $name) : object
     {
-        //Checks if object was registered previously
-        if (isset($this->map[$name])) {
-            //Reads class information
-            $info = $this->map[$name];
+        if ($this->isSingleton($name)) {
 
-            //Creates a new instance
-            if (
-                !$info['isSingleton']
-                || ($info['isSingleton'] && !isset($this->dependencies[$name]))
-            ) {
-                $this->dependencies[$name] = new $info['className'](...$info['args']);
-            }
+            /*
+             * Object is instantiated as
+             * singleton already. Just fetch it.
+             */
+            return $this->singletonObjects[$name];
 
-            //Returns stored object
-            return $this->dependencies[$name];
+        } elseif ($this->isDefined($name)) {
+
+            /*
+             * Creates a new instance
+             * using map information.
+             */
+            return $this->build($name);
+
+        } elseif (class_exists($name)) {
+
+            /*
+             * Class exists but it is
+             * not mapped yet.
+             */
+            $this->generateMap($name);
+            return $this->get($name);
+
         }
 
-        //Does not have a map, can't find desired dependency
-        throw new \Exception("Unknown dependency: $name");
+        throw new \Exception("Couldn't create '$name'");
     }
 
     /**
-     * @param $name
+     * @param string $name
+     * @param mixed  $definition
+     *
+     * @throws \Exception
+     */
+    public function set(string $name, $definition)
+    {
+        if ($this->isSingleton($name)) {
+            throw new \Exception('Can\'t set a singleton twice.');
+        }
+
+        $this->map[$name] = $definition;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $definition
+     */
+    public function setSingleton(string $name, $definition)
+    {
+        $this->set($name, $definition);
+        $this->singletonObjects[$name] = $this->get($name);
+    }
+
+    /**
+     * @param string $name
+     */
+    private function generateMap(string $name)
+    {
+        //TODO implementation
+    }
+
+    /**
+     * @param string $name
      *
      * @return object
      */
-    public function __get($name)
+    private function build(string $name) : object
     {
-        return $this->getDependency($name);
+        $map = $this->map[$name];
+        $instance = null;
+
+        //TODO build logic
+
+        return $instance;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    private function isDefined(string $name) : bool
+    {
+        return isset($this->map[$name]);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    private function isSingleton(string $name) : bool
+    {
+        return isset($this->singletonObjects[$name]);
     }
 }
