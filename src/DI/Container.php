@@ -4,49 +4,74 @@ namespace Corviz\DI;
 
 class Container
 {
-    /**
-     * @var array
-     */
-    private $dependencies = [];
-
-    /**
-     * @var array
-     */
     private $map = [];
+    private $singletonObjects = [];
 
     /**
-     * @param string       $name
-     * @param string       $className
-     * @param string|array $args
-     * @param bool         $asSingleton
+     * @param string $name
+     *
+     * @throws \Exception
+     *
+     * @return object
      */
-    public function set(
-        string $name,
-        string $className,
-        $args = [],
-        bool $asSingleton = true
-    ) {
-        //If $args is a string, it means that
-        //the container should use a previously
-        //set dependency
-        if (is_string($args)) {
-            $args = [$this->getDependency($name)];
+    public function get(string $name)
+    {
+        if ($this->isSingleton($name)) {
+            /*
+             * Object is instantiated as
+             * singleton already. Just fetch it.
+             */
+            return $this->singletonObjects[$name];
+        } elseif ($this->isDefined($name)) {
+            /*
+             * Creates a new instance
+             * using map information.
+             */
+            return $this->build($name);
+        } elseif (class_exists($name)) {
+            /*
+             * Class exists but it is
+             * not mapped yet.
+             */
+            $this->set(
+                $name,
+                method_exists($name, '__construct') ?
+                    $this->generateArgumentsMap($name) : []
+            );
+
+            return $this->get($name);
         }
 
-        //Register dependency info in the container
-        $this->map[$name] = [
-            'className'   => $className,
-            'args'        => $args,
-            'isSingleton' => $asSingleton,
-        ];
-
-        if (isset($this->dependencies[$name])) {
-            unset($this->dependencies[$name]);
-        }
+        throw new \Exception("Couldn't create '$name'");
     }
 
     /**
-     * Retrieve a previously set dependency.
+     * @param string $name
+     * @param mixed  $definition
+     *
+     * @throws \Exception
+     */
+    public function set(string $name, $definition)
+    {
+        if ($this->isSingleton($name)) {
+            throw new \Exception('Can\'t set a singleton twice.');
+        }
+
+        $this->map[$name] = $definition;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $definition
+     */
+    public function setSingleton(string $name, $definition)
+    {
+        $this->set($name, $definition);
+        $this->singletonObjects[$name] = $this->get($name);
+    }
+
+    /**
+     * Build an object according to the map information.
      *
      * @param string $name
      *
@@ -54,36 +79,111 @@ class Container
      *
      * @return object
      */
-    private function getDependency(string $name)
+    private function build(string $name)
     {
-        //Checks if object was registered previously
-        if (isset($this->map[$name])) {
-            //Reads class information
-            $info = $this->map[$name];
+        $instance = null;
+        $map = $this->map[$name];
 
-            //Creates a new instance
-            if (
-                !$info['isSingleton']
-                || ($info['isSingleton'] && !isset($this->dependencies[$name]))
-            ) {
-                $this->dependencies[$name] = new $info['className'](...$info['args']);
-            }
-
-            //Returns stored object
-            return $this->dependencies[$name];
+        if (is_array($map)) {
+            $params = $this->getParamsFromMap($map);
+            $instance = new $name(...$params);
+        } elseif ($map instanceof \Closure) {
+            $instance = $map($this);
+        } elseif (is_object($map)) {
+            $instance = clone $map;
+        } elseif (is_string($map)) {
+            $instance = $this->get($map);
+        } else {
+            throw new \Exception('Invalid map');
         }
 
-        //Does not have a map, can't find desired dependency
-        throw new \Exception("Unknown dependency: $name");
+        return $instance;
     }
 
     /**
-     * @param $name
+     * Generates a map that wil be used by 'build()' method
+     * to generate the args.
      *
-     * @return object
+     * @param mixed  $class
+     * @param string $method
+     *
+     * @throws \Exception
+     *
+     * @return array
      */
-    public function __get($name)
+    private function generateArgumentsMap(
+        $class,
+        string $method = '__construct'
+    ) : array {
+        $arguments = [];
+        $refMethod = new \ReflectionMethod($class, $method);
+
+        /* @var $parameter \ReflectionParameter */
+        foreach ($refMethod->getParameters() as $parameter) {
+            $arg = [
+                'value'   => null,
+                'isClass' => false,
+            ];
+
+            if ($parameter->isDefaultValueAvailable()) {
+                //Parameter has a default value, just pass it
+                $arg['value'] = $parameter->getDefaultValue();
+            } elseif ($parameter->hasType()) {
+                /* @var $pClass \ReflectionClass */
+                $pClass = $parameter->getClass();
+
+                //Only possible to pass get classes
+                if (is_null($pClass)) {
+                    $pName = $parameter->getName();
+                    throw new \Exception("Parameter '$pName' is not a class");
+                }
+
+                $arg['value'] = $pClass->getName();
+                $arg['isClass'] = true;
+            } else {
+                throw new \Exception('Could not define a value');
+            }
+
+            $arguments [] = $arg;
+        }
+
+        return $arguments;
+    }
+
+    /**
+     * @param array $mapArray
+     *
+     * @return array
+     */
+    private function getParamsFromMap(array &$mapArray)
     {
-        return $this->getDependency($name);
+        $params = [];
+
+        foreach ($mapArray as $item) {
+            $params [] = $item['isClass'] ?
+                $this->get($item['value']) : $item['value'];
+        }
+
+        return $params;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    private function isDefined(string $name) : bool
+    {
+        return isset($this->map[$name]);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    private function isSingleton(string $name) : bool
+    {
+        return isset($this->singletonObjects[$name]);
     }
 }

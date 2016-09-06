@@ -11,6 +11,9 @@ class Controller
      */
     private $diContainer;
 
+    /**
+     * @return \Corviz\DI\Container
+     */
     protected function getContainer() : Container
     {
         return $this->diContainer;
@@ -27,7 +30,9 @@ class Controller
     }
 
     /**
-     * @param string $name
+     * @param $name
+     *
+     * @return object
      */
     public function __get($name)
     {
