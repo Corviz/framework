@@ -14,7 +14,7 @@ class Container
      *
      * @return object
      */
-    public function get(string $name) : object
+    public function get(string $name)
     {
         if ($this->isSingleton($name)) {
 
@@ -38,7 +38,11 @@ class Container
              * Class exists but it is
              * not mapped yet.
              */
-            $this->generateMap($name);
+            $this->set(
+                $name,
+                method_exists($name, '__construct') ?
+                    $this->generateArgumentsMap($name) : []
+            );
             return $this->get($name);
 
         }
@@ -72,26 +76,100 @@ class Container
     }
 
     /**
-     * @param string $name
-     */
-    private function generateMap(string $name)
-    {
-        //TODO implementation
-    }
-
-    /**
+     * Build an object according to the map information.
+     *
      * @param string $name
      *
      * @return object
+     *
+     * @throws \Exception
      */
-    private function build(string $name) : object
+    private function build(string $name)
     {
-        $map = $this->map[$name];
         $instance = null;
+        $map = $this->map[$name];
 
-        //TODO build logic
+        if (is_array($map)) {
+            $params = $this->getParamsFromMap($map);
+            $instance = new $name(...$params);
+        } elseif ($map instanceof \Closure) {
+            $instance = $map($this);
+        } elseif (is_object($map)) {
+            $instance = clone $map;
+        } elseif (is_string($map)){
+            $instance = $this->get($map);
+        } else {
+            throw new \Exception('Invalid map');
+        }
 
         return $instance;
+    }
+
+    /**
+     * Generates a map that wil be used by 'build()' method
+     * to generate the args.
+     *
+     * @param mixed $class
+     * @param string $method
+     *
+     * @return array
+     *
+     * @throws \Exception
+     */
+    private function generateArgumentsMap(
+        $class,
+        string $method = '__construct'
+    ) : array {
+        $arguments = [];
+        $refMethod = new \ReflectionMethod($class, $method);
+
+        /* @var $parameter \ReflectionParameter */
+        foreach ($refMethod->getParameters() as $parameter) {
+            $arg = [
+                'value' => null,
+                'isClass' => false
+            ];
+
+            if ($parameter->isDefaultValueAvailable()) {
+                //Parameter has a default value, just pass it
+                $arg['value'] = $parameter->getDefaultValue();
+            } elseif ($parameter->hasType()) {
+                /* @var $pClass \ReflectionClass */
+                $pClass = $parameter->getClass();
+
+                //Only possible to pass get classes
+                if (is_null($pClass)) {
+                    $pName = $parameter->getName();
+                    throw new \Exception("Parameter '$pName' is not a class");
+                }
+
+                $arg['value'] = $pClass->getName();
+                $arg['isClass'] = true;
+            } else {
+                throw new \Exception('Could not define a value');
+            }
+
+            $arguments []= $arg;
+        }
+
+        return $arguments;
+    }
+
+    /**
+     * @param array $mapArray
+     *
+     * @return array
+     */
+    private function getParamsFromMap(array &$mapArray)
+    {
+        $params = [];
+
+        foreach ($mapArray as $item) {
+            $params []= $item['isClass'] ?
+                $this->get($item['value']) : $item['value'];
+        }
+
+        return $params;
     }
 
     /**
