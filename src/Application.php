@@ -5,9 +5,7 @@ namespace Corviz;
 use Corviz\Behaviour\Runnable;
 
 /**
- * Main app controller
- *
- * @package Corviz
+ * Main app controller.
  */
 class Application implements Runnable
 {
@@ -18,7 +16,6 @@ class Application implements Runnable
 
     public function run(...$args)
     {
-
     }
 
     /**

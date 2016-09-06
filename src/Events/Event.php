@@ -28,7 +28,7 @@ abstract class Event implements Observable
     private $type;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public static function register(Observer $observer)
     {
@@ -36,12 +36,12 @@ abstract class Event implements Observable
             throw new \Exception('$observer must be an instance of EventHandler');
         }
 
-        self::$handlers []= $observer;
+        self::$handlers [] = $observer;
     }
 
     /**
      * Stop the execution from the next
-     * handlers
+     * handlers.
      */
     public function cancel()
     {
@@ -85,7 +85,7 @@ abstract class Event implements Observable
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function notifyObservers()
     {

@@ -9,9 +9,10 @@ use Corviz\Behaviour\Runnable;
 abstract class EventHandler implements Observer, Runnable
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    final public function notify(Observable $observable, ...$args) {
+    final public function notify(Observable $observable, ...$args)
+    {
         if ($observable instanceof Event) {
             $this->run($observable, ...$args);
         }

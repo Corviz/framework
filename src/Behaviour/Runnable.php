@@ -7,5 +7,5 @@ interface Runnable
     /**
      * @return mixed
      */
-    public function run(... $args);
+    public function run(...$args);
 }

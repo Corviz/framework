@@ -17,23 +17,18 @@ class Container
     public function get(string $name)
     {
         if ($this->isSingleton($name)) {
-
             /*
              * Object is instantiated as
              * singleton already. Just fetch it.
              */
             return $this->singletonObjects[$name];
-
         } elseif ($this->isDefined($name)) {
-
             /*
              * Creates a new instance
              * using map information.
              */
             return $this->build($name);
-
         } elseif (class_exists($name)) {
-
             /*
              * Class exists but it is
              * not mapped yet.
@@ -43,8 +38,8 @@ class Container
                 method_exists($name, '__construct') ?
                     $this->generateArgumentsMap($name) : []
             );
-            return $this->get($name);
 
+            return $this->get($name);
         }
 
         throw new \Exception("Couldn't create '$name'");
@@ -80,9 +75,9 @@ class Container
      *
      * @param string $name
      *
-     * @return object
-     *
      * @throws \Exception
+     *
+     * @return object
      */
     private function build(string $name)
     {
@@ -96,7 +91,7 @@ class Container
             $instance = $map($this);
         } elseif (is_object($map)) {
             $instance = clone $map;
-        } elseif (is_string($map)){
+        } elseif (is_string($map)) {
             $instance = $this->get($map);
         } else {
             throw new \Exception('Invalid map');
@@ -109,12 +104,12 @@ class Container
      * Generates a map that wil be used by 'build()' method
      * to generate the args.
      *
-     * @param mixed $class
+     * @param mixed  $class
      * @param string $method
      *
-     * @return array
-     *
      * @throws \Exception
+     *
+     * @return array
      */
     private function generateArgumentsMap(
         $class,
@@ -126,8 +121,8 @@ class Container
         /* @var $parameter \ReflectionParameter */
         foreach ($refMethod->getParameters() as $parameter) {
             $arg = [
-                'value' => null,
-                'isClass' => false
+                'value'   => null,
+                'isClass' => false,
             ];
 
             if ($parameter->isDefaultValueAvailable()) {
@@ -149,7 +144,7 @@ class Container
                 throw new \Exception('Could not define a value');
             }
 
-            $arguments []= $arg;
+            $arguments [] = $arg;
         }
 
         return $arguments;
@@ -165,7 +160,7 @@ class Container
         $params = [];
 
         foreach ($mapArray as $item) {
-            $params []= $item['isClass'] ?
+            $params [] = $item['isClass'] ?
                 $this->get($item['value']) : $item['value'];
         }
 
