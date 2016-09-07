@@ -90,7 +90,7 @@ class Container
         } elseif ($map instanceof \Closure) {
             $instance = $map($this);
         } elseif (is_object($map)) {
-            $instance = clone $map;
+            $instance = $map;
         } elseif (is_string($map)) {
             $instance = $this->get($map);
         } else {
@@ -160,8 +160,12 @@ class Container
         $params = [];
 
         foreach ($mapArray as $item) {
+            if (!isset($item['isClass']) || !isset($item['value'])) {
+                continue;
+            }
+
             $params [] = $item['isClass'] ?
-                $this->get($item['value']) : $item['value'];
+                $this->get((string) $item['value']) : $item['value'];
         }
 
         return $params;
