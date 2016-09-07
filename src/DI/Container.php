@@ -4,7 +4,14 @@ namespace Corviz\DI;
 
 class Container
 {
+    /**
+     * @var array
+     */
     private $map = [];
+
+    /**
+     * @var array
+     */
     private $singletonObjects = [];
 
     /**
@@ -43,6 +50,42 @@ class Container
         }
 
         throw new \Exception("Couldn't create '$name'");
+    }
+
+    /**
+     * Calls an object method,
+     * injecting its dependencies.
+     *
+     * @param mixed  $obj
+     * @param string $method
+     * @param array  $params
+     *
+     * @throws \Exception
+     *
+     * @return mixed
+     */
+    public function invoke(
+        $obj,
+        string $method,
+        array $params = []
+    ) {
+        if (is_string($obj)) {
+            //Attempt to retrieve object from
+            //the container.
+            $obj = $this->get($obj);
+        } elseif (!is_object($obj)) {
+            //Not a valid argument.
+            throw new \Exception('Invalid object');
+        }
+
+        $map = $this->generateArgumentsMap(
+            $obj,
+            $method,
+            $params
+        );
+        $mapParams = $this->getParamsFromMap($map);
+
+        return $obj->$method(...$mapParams);
     }
 
     /**
@@ -90,7 +133,7 @@ class Container
         } elseif ($map instanceof \Closure) {
             $instance = $map($this);
         } elseif (is_object($map)) {
-            $instance = clone $map;
+            $instance = $map;
         } elseif (is_string($map)) {
             $instance = $this->get($map);
         } else {
@@ -101,11 +144,12 @@ class Container
     }
 
     /**
-     * Generates a map that wil be used by 'build()' method
+     * Generates a map that will be used by 'build()' method
      * to generate the args.
      *
      * @param mixed  $class
      * @param string $method
+     * @param array  $predefined
      *
      * @throws \Exception
      *
@@ -113,7 +157,8 @@ class Container
      */
     private function generateArgumentsMap(
         $class,
-        string $method = '__construct'
+        string $method = '__construct',
+        array $predefined = []
     ) : array {
         $arguments = [];
         $refMethod = new \ReflectionMethod($class, $method);
@@ -125,7 +170,10 @@ class Container
                 'isClass' => false,
             ];
 
-            if ($parameter->isDefaultValueAvailable()) {
+            if (isset($predefined[$parameter->getName()])) {
+                //Get a predefined parameter
+                $arg['value'] = $predefined[$parameter->getName()];
+            } elseif ($parameter->isDefaultValueAvailable()) {
                 //Parameter has a default value, just pass it
                 $arg['value'] = $parameter->getDefaultValue();
             } elseif ($parameter->hasType()) {
@@ -160,8 +208,12 @@ class Container
         $params = [];
 
         foreach ($mapArray as $item) {
+            if (!isset($item['isClass']) || !isset($item['value'])) {
+                continue;
+            }
+
             $params [] = $item['isClass'] ?
-                $this->get($item['value']) : $item['value'];
+                $this->get((string) $item['value']) : $item['value'];
         }
 
         return $params;
