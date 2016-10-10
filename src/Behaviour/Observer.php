@@ -6,7 +6,7 @@ interface Observer
 {
     /**
      * @param \Corviz\Behaviour\Observable $observable
-     * @param array $data
+     * @param array                        $data
      *
      * @return mixed
      */
