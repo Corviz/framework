@@ -87,12 +87,13 @@ abstract class Event implements Observable
     /**
      * {@inheritdoc}
      */
-    public function notifyObservers()
+    public function notifyObservers(array $data = [])
     {
         /* @var $handler EventHandler */
         foreach (self::$handlers as $handler) {
             //Execute
-            $handler->notify($this, $this->getData());
+            $data['data'] = $this->getData();
+            $handler->notify($this, $data);
 
             //Check if this was canceled
             if ($this->isCancelled()) {

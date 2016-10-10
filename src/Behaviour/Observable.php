@@ -12,7 +12,9 @@ interface Observable
     public static function register(Observer $observer);
 
     /**
+     * @param array $data
+     *
      * @return void
      */
-    public function notifyObservers();
+    public function notifyObservers(array $data = []);
 }

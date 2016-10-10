@@ -11,10 +11,10 @@ abstract class EventHandler implements Observer, Runnable
     /**
      * {@inheritdoc}
      */
-    final public function notify(Observable $observable, ...$args)
+    final public function notify(Observable $observable, array $data)
     {
         if ($observable instanceof Event) {
-            $this->run($observable, ...$args);
+            $this->run($observable, $data);
         }
     }
 
