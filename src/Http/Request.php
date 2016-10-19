@@ -233,7 +233,7 @@ class Request
     /**
      * @return string
      */
-    public function getContentType(): string
+    public function getContentType() : string
     {
         return $this->contentType;
     }

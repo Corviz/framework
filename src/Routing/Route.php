@@ -200,7 +200,7 @@ final class Route
     /**
      * @return string
      */
-    public function getAction(): string
+    public function getAction() : string
     {
         return $this->action;
     }
@@ -208,7 +208,7 @@ final class Route
     /**
      * @return string
      */
-    public function getAlias(): string
+    public function getAlias() : string
     {
         return $this->alias;
     }
@@ -216,7 +216,7 @@ final class Route
     /**
      * @return string
      */
-    public function getControllerName(): string
+    public function getControllerName() : string
     {
         return $this->controllerName;
     }
@@ -224,7 +224,7 @@ final class Route
     /**
      * @return array
      */
-    public function getMethods(): array
+    public function getMethods() : array
     {
         return $this->methods;
     }
@@ -232,7 +232,7 @@ final class Route
     /**
      * @return string
      */
-    public function getRouteStr(): string
+    public function getRouteStr() : string
     {
         return $this->routeStr;
     }
