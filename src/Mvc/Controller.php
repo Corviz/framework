@@ -2,7 +2,7 @@
 
 namespace Corviz\Mvc;
 
-class Controller
+abstract class Controller
 {
     //TODO refactoring
 }

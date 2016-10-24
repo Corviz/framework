@@ -4,6 +4,10 @@ namespace Corviz;
 
 use Corviz\Behaviour\Runnable;
 use Corviz\DI\Container;
+use Corviz\Http\Request;
+use Corviz\Mvc\ControllerDispatcher;
+use Corviz\Routing\Map;
+use Corviz\String\ParametrizedString;
 
 /**
  * Main app controller.
@@ -16,6 +20,11 @@ class Application implements Runnable
     private static $current;
 
     /**
+     * @var array
+     */
+    private $configs = [];
+
+    /**
      * @var Container
      */
     private $container;
@@ -24,6 +33,11 @@ class Application implements Runnable
      * @var string
      */
     private $directory;
+
+    /**
+     * @var Request
+     */
+    private $request;
 
     /**
      * Get the current running application.
@@ -56,7 +70,72 @@ class Application implements Runnable
      */
     public function run(...$args)
     {
+        //TODO: turn code into parts (methods)
         self::$current = $this;
+
+        //Load application definitions.
+        $this->loadRoutes();
+        $this->registerRequestParsers();
+
+        //Call controller action.
+        $this->request = Request::current();
+        $route = Map::getCurrentRoute();
+
+        if ($route) {
+            $controllerPrefix = $this->getConf('app')['controllersPrefix'];
+            $routeStr = ParametrizedString::make(
+                $route['route']
+            );
+
+            $params = array_replace(
+                $routeStr->getValues($this->request->getRouteStr()),
+                $this->request->getQueryParams()
+            );
+
+            ControllerDispatcher::dispatch(
+                $controllerPrefix.$route['controller'],
+                $route['action'],
+                $params
+            );
+        }
+
+        self::$current = null;
+    }
+
+    /**
+     * Load configurations from $conf basename file.
+     *
+     * @param $conf
+     *
+     * @return mixed
+     */
+    private function getConf($conf)
+    {
+        if (!isset($this->configs[$conf])) {
+            $file = $this->getDirectory()."configs/$conf.php";
+            $this->configs[$conf] = require $file;
+        }
+
+        return $this->configs[$conf];
+    }
+
+    /**
+     * Load user defined routes.
+     */
+    private function loadRoutes()
+    {
+        require $this->getDirectory().'application/routes.php';
+    }
+
+    /**
+     * Load request parsers.
+     */
+    private function registerRequestParsers()
+    {
+        $parsers = $this->getConf('app')['requestParsers'];
+        foreach ($parsers as $parser) {
+            Request::registerParser($parser);
+        }
     }
 
     /**
@@ -66,7 +145,7 @@ class Application implements Runnable
      */
     public function __construct(string $directory)
     {
-        $this->directory = $directory;
+        $this->directory = realpath($directory).'/';
         $this->container = new Container();
     }
 }
