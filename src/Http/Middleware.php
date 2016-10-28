@@ -16,7 +16,7 @@ abstract class Middleware
      *
      * @return void
      */
-    public abstract function handle(Closure $next);
+    abstract public function handle(Closure $next);
 
     /**
      * @return \Corviz\Http\Request
