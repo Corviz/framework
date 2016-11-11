@@ -36,6 +36,11 @@ final class Route
     private $methods;
 
     /**
+     * @var array
+     */
+    private $middlewareList;
+
+    /**
      * @var string
      */
     private $routeStr;
@@ -79,6 +84,7 @@ final class Route
         $route->setMethods($methods);
         $route->setAction(isset($info['action']) ? $info['action'] : 'index');
         $route->setAlias(isset($info['alias']) ? $info['alias'] : '');
+        $route->setMiddlewareList(isset($info['middleware']) ? (array) $info['middleware'] : []);
         $route->setControllerName($info['controller']);
         $route->setMethods($methods);
         $route->setRouteStr($routeStr);
@@ -230,6 +236,14 @@ final class Route
     }
 
     /**
+     * @return array
+     */
+    public function getMiddlewareList() : array
+    {
+        return $this->middlewareList;
+    }
+
+    /**
      * @return string
      */
     public function getRouteStr() : string
@@ -267,6 +281,14 @@ final class Route
     public function setMethods(array $methods)
     {
         $this->methods = $methods;
+    }
+
+    /**
+     * @param array $middlewareList
+     */
+    public function setMiddlewareList(array $middlewareList)
+    {
+        $this->middlewareList = $middlewareList;
     }
 
     /**

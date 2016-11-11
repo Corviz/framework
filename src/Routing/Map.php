@@ -18,11 +18,12 @@ class Map
     public static function addRoute(Route $route)
     {
         self::$routes [] = [
-            'action'     => $route->getAction(),
-            'alias'      => $route->getAlias(),
-            'controller' => $route->getControllerName(),
-            'methods'    => $route->getMethods(),
-            'route'      => $route->getRouteStr(),
+            'action'         => $route->getAction(),
+            'alias'          => $route->getAlias(),
+            'controller'     => $route->getControllerName(),
+            'methods'        => $route->getMethods(),
+            'route'          => $route->getRouteStr(),
+            'middlewareList' => $route->getMiddlewareList(),
         ];
     }
 
