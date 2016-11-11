@@ -7,7 +7,6 @@ use Corviz\DI\Container;
 use Corviz\Http\Middleware;
 use Corviz\Http\Request;
 use Corviz\Mvc\Controller;
-use Corviz\Mvc\ControllerDispatcher;
 use Corviz\Routing\Map;
 use Corviz\String\ParametrizedString;
 
@@ -105,10 +104,10 @@ class Application implements Runnable
              */
             $middlewareList = $this->buildMiddlewareQueue([
                 $route['middlewareList'],
-                $controller->getMiddlewareList()
+                $controller->getMiddlewareList(),
             ]);
 
-            $fn = function() use ($controller, &$params, &$route) {
+            $fn = function () use ($controller, &$params, &$route) {
                 return Application::current()
                     ->getContainer()
                     ->invoke($controller, $route['action'], $params);
@@ -140,7 +139,7 @@ class Application implements Runnable
             if (is_array($current)) {
                 $queue += $current;
             } else {
-                $queue []= $current;
+                $queue [] = $current;
             }
         }
 
@@ -148,11 +147,12 @@ class Application implements Runnable
     }
 
     /**
-     * @param array $queue
+     * @param array    $queue
      * @param \Closure $controllerClosure
      *
-     * @return mixed
      * @throws \Exception
+     *
+     * @return mixed
      */
     private function proccessMiddlewareQueue(array $queue, \Closure $controllerClosure)
     {
@@ -167,12 +167,10 @@ class Application implements Runnable
                 $obj = $this->container->get($middleware);
 
                 if ($obj instanceof Middleware) {
-
-                    $fn = function() use ($obj, $previousFn){
+                    $fn = function () use ($obj, $previousFn) {
                         return $obj->handle($previousFn);
                     };
                     $previousFn = $fn;
-
                 } else {
                     throw new \Exception("Invalid middleware: '$middleware'");
                 }
