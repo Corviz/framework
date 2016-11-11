@@ -23,6 +23,7 @@ class Map
             'controller' => $route->getControllerName(),
             'methods'    => $route->getMethods(),
             'route'      => $route->getRouteStr(),
+            'middlewareList' => $route->getMiddlewareList()
         ];
     }
 

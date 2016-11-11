@@ -4,7 +4,9 @@ namespace Corviz;
 
 use Corviz\Behaviour\Runnable;
 use Corviz\DI\Container;
+use Corviz\Http\Middleware;
 use Corviz\Http\Request;
+use Corviz\Mvc\Controller;
 use Corviz\Mvc\ControllerDispatcher;
 use Corviz\Routing\Map;
 use Corviz\String\ParametrizedString;
@@ -82,7 +84,6 @@ class Application implements Runnable
         $route = Map::getCurrentRoute();
 
         if ($route) {
-            $controllerPrefix = $this->getConf('app')['controllersPrefix'];
             $routeStr = ParametrizedString::make(
                 $route['route']
             );
@@ -92,24 +93,108 @@ class Application implements Runnable
                 $this->request->getQueryParams()
             );
 
-            ControllerDispatcher::dispatch(
-                $controllerPrefix.$route['controller'],
-                $route['action'],
-                $params
-            );
+            $controller = $this->container->get($route['controller']);
+
+            //Check controller
+            if (!$controller instanceof Controller) {
+                throw new \Exception("Invalid controller: {$route['controller']}");
+            }
+
+            /*
+             * Call controller and process midware list
+             */
+            $middlewareList = $this->buildMiddlewareQueue([
+                $route['middlewareList'],
+                $controller->getMiddlewareList()
+            ]);
+
+            $fn = function() use ($controller, &$params, &$route) {
+                return Application::current()
+                    ->getContainer()
+                    ->invoke($controller, $route['action'], $params);
+            };
+
+            $this->proccessMiddlewareQueue($middlewareList, $fn);
         }
 
         self::$current = null;
     }
 
     /**
+     * @param array $groups
+     *
+     * @return array
+     */
+    private function buildMiddlewareQueue(array $groups)
+    {
+        $queue = [];
+        $middlewareList = $this->getConf('app')['middleware'];
+
+        $groupsIterator = new \RecursiveIteratorIterator(
+            new \RecursiveArrayIterator($groups)
+        );
+
+        foreach ($groupsIterator as $middleware) {
+            $current = $middlewareList[$middleware];
+
+            if (is_array($current)) {
+                $queue += $current;
+            } else {
+                $queue []= $current;
+            }
+        }
+
+        return $queue;
+    }
+
+    /**
+     * @param array $queue
+     * @param \Closure $controllerClosure
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    private function proccessMiddlewareQueue(array $queue, \Closure $controllerClosure)
+    {
+        $return = null;
+
+        if (!empty($queue)) {
+            //Proccess queue
+            $previousFn = $controllerClosure;
+
+            foreach ($queue as $middleware) {
+                //Middleware instance
+                $obj = $this->container->get($middleware);
+
+                if ($obj instanceof Middleware) {
+
+                    $fn = function() use ($obj, $previousFn){
+                        return $obj->handle($previousFn);
+                    };
+                    $previousFn = $fn;
+
+                } else {
+                    throw new \Exception("Invalid middleware: '$middleware'");
+                }
+            }
+
+            $return = $previousFn();
+        } else {
+            //Run controller immediately
+            $return = $controllerClosure();
+        }
+
+        return $return;
+    }
+
+    /**
      * Load configurations from $conf basename file.
      *
-     * @param $conf
+     * @param string $conf
      *
      * @return mixed
      */
-    private function getConf($conf)
+    private function getConf(string $conf)
     {
         if (!isset($this->configs[$conf])) {
             $file = $this->getDirectory()."configs/$conf.php";
@@ -132,7 +217,7 @@ class Application implements Runnable
      */
     private function registerRequestParsers()
     {
-        $parsers = $this->getConf('app')['requestParsers'];
+        $parsers = $this->getConf('app')['requestParser'];
         foreach ($parsers as $parser) {
             Request::registerParser($parser);
         }
