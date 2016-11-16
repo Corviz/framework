@@ -41,6 +41,23 @@ class Application implements Runnable
     private $request;
 
     /**
+     * Load configurations from $conf file.
+     *
+     * @param string $conf
+     *
+     * @return mixed
+     */
+    public function config(string $conf)
+    {
+        if (!isset($this->configs[$conf])) {
+            $file = $this->getDirectory()."configs/$conf.php";
+            $this->configs[$conf] = require $file;
+        }
+
+        return $this->configs[$conf];
+    }
+
+    /**
      * Get the current running application.
      *
      * @return \Corviz\Application
@@ -127,7 +144,7 @@ class Application implements Runnable
     private function buildMiddlewareQueue(array $groups)
     {
         $queue = [];
-        $middlewareList = $this->getConf('app')['middleware'];
+        $middlewareList = $this->config('app')['middleware'];
 
         $groupsIterator = new \RecursiveIteratorIterator(
             new \RecursiveArrayIterator($groups)
@@ -144,6 +161,14 @@ class Application implements Runnable
         }
 
         return $queue;
+    }
+
+    /**
+     * Load user defined routes.
+     */
+    private function loadRoutes()
+    {
+        require $this->getDirectory().'application/routes.php';
     }
 
     /**
@@ -186,36 +211,11 @@ class Application implements Runnable
     }
 
     /**
-     * Load configurations from $conf basename file.
-     *
-     * @param string $conf
-     *
-     * @return mixed
-     */
-    private function getConf(string $conf)
-    {
-        if (!isset($this->configs[$conf])) {
-            $file = $this->getDirectory()."configs/$conf.php";
-            $this->configs[$conf] = require $file;
-        }
-
-        return $this->configs[$conf];
-    }
-
-    /**
-     * Load user defined routes.
-     */
-    private function loadRoutes()
-    {
-        require $this->getDirectory().'application/routes.php';
-    }
-
-    /**
      * Load request parsers.
      */
     private function registerRequestParsers()
     {
-        $parsers = $this->getConf('app')['requestParser'];
+        $parsers = $this->config('app')['requestParser'];
         foreach ($parsers as $parser) {
             Request::registerParser($parser);
         }
