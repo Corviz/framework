@@ -16,7 +16,6 @@ abstract class Provider
      */
     public function register()
     {
-        return;
     }
 
     /**
