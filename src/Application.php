@@ -4,6 +4,7 @@ namespace Corviz;
 
 use Corviz\Behaviour\Runnable;
 use Corviz\DI\Container;
+use Corviz\DI\Provider;
 use Corviz\Http\Middleware;
 use Corviz\Http\Request;
 use Corviz\Mvc\Controller;
@@ -94,6 +95,7 @@ class Application implements Runnable
         //Load application definitions.
         $this->loadRoutes();
         $this->registerRequestParsers();
+        $this->registerProviders();
 
         //Call controller action.
         $this->request = Request::current();
@@ -211,6 +213,23 @@ class Application implements Runnable
     }
 
     /**
+     * Register application providers.
+     */
+    private function registerProviders()
+    {
+        $providers = $this->config('app')['providers'];
+        foreach ($providers as $provider) {
+            $obj = new $provider($this);
+
+            if (!$obj instanceof Provider) {
+                throw new \Exception("Invalid provider: $provider");
+            }
+
+            $this->container->invoke($obj, 'register');
+        }
+    }
+
+    /**
      * Load request parsers.
      */
     private function registerRequestParsers()
@@ -226,7 +245,7 @@ class Application implements Runnable
      *
      * @param string $directory
      */
-    public function __construct(string $directory)
+    final public function __construct(string $directory)
     {
         $this->directory = realpath($directory).'/';
         $this->container = new Container();
