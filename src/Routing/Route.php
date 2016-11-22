@@ -144,7 +144,7 @@ final class Route
 
         //Prepend prefixes
         if ($prefix) {
-           self::$prefixGroupStack [] = $prefix;
+            self::$prefixGroupStack [] = $prefix;
         }
 
         //Add group middleware
