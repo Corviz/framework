@@ -155,10 +155,8 @@ class Application implements Runnable
         foreach ($groupsIterator as $middleware) {
             $current = $middlewareList[$middleware];
 
-            if (is_array($current)) {
-                $queue += $current;
-            } else {
-                $queue [] = $current;
+            foreach ((array) $current as $curr) {
+                $queue [] = $curr;
             }
         }
 
