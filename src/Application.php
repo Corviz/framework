@@ -4,6 +4,7 @@ namespace Corviz;
 
 use Corviz\Behaviour\Runnable;
 use Corviz\DI\Container;
+use Corviz\DI\Provider;
 use Corviz\Http\Middleware;
 use Corviz\Http\Request;
 use Corviz\Mvc\Controller;
@@ -39,6 +40,23 @@ class Application implements Runnable
      * @var Request
      */
     private $request;
+
+    /**
+     * Load configurations from $conf file.
+     *
+     * @param string $conf
+     *
+     * @return mixed
+     */
+    public function config(string $conf)
+    {
+        if (!isset($this->configs[$conf])) {
+            $file = $this->getDirectory()."configs/$conf.php";
+            $this->configs[$conf] = require $file;
+        }
+
+        return $this->configs[$conf];
+    }
 
     /**
      * Get the current running application.
@@ -77,6 +95,7 @@ class Application implements Runnable
         //Load application definitions.
         $this->loadRoutes();
         $this->registerRequestParsers();
+        $this->registerProviders();
 
         //Call controller action.
         $this->request = Request::current();
@@ -127,7 +146,7 @@ class Application implements Runnable
     private function buildMiddlewareQueue(array $groups)
     {
         $queue = [];
-        $middlewareList = $this->getConf('app')['middleware'];
+        $middlewareList = $this->config('app')['middleware'];
 
         $groupsIterator = new \RecursiveIteratorIterator(
             new \RecursiveArrayIterator($groups)
@@ -136,14 +155,20 @@ class Application implements Runnable
         foreach ($groupsIterator as $middleware) {
             $current = $middlewareList[$middleware];
 
-            if (is_array($current)) {
-                $queue += $current;
-            } else {
-                $queue [] = $current;
+            foreach ((array) $current as $curr) {
+                $queue [] = $curr;
             }
         }
 
         return $queue;
+    }
+
+    /**
+     * Load user defined routes.
+     */
+    private function loadRoutes()
+    {
+        require $this->getDirectory().'application/routes.php';
     }
 
     /**
@@ -186,28 +211,20 @@ class Application implements Runnable
     }
 
     /**
-     * Load configurations from $conf basename file.
-     *
-     * @param string $conf
-     *
-     * @return mixed
+     * Register application providers.
      */
-    private function getConf(string $conf)
+    private function registerProviders()
     {
-        if (!isset($this->configs[$conf])) {
-            $file = $this->getDirectory()."configs/$conf.php";
-            $this->configs[$conf] = require $file;
+        $providers = $this->config('app')['providers'];
+        foreach ($providers as $provider) {
+            $obj = new $provider($this);
+
+            if (!$obj instanceof Provider) {
+                throw new \Exception("Invalid provider: $provider");
+            }
+
+            $this->container->invoke($obj, 'register');
         }
-
-        return $this->configs[$conf];
-    }
-
-    /**
-     * Load user defined routes.
-     */
-    private function loadRoutes()
-    {
-        require $this->getDirectory().'application/routes.php';
     }
 
     /**
@@ -215,7 +232,7 @@ class Application implements Runnable
      */
     private function registerRequestParsers()
     {
-        $parsers = $this->getConf('app')['requestParser'];
+        $parsers = $this->config('app')['requestParser'];
         foreach ($parsers as $parser) {
             Request::registerParser($parser);
         }
@@ -226,7 +243,7 @@ class Application implements Runnable
      *
      * @param string $directory
      */
-    public function __construct(string $directory)
+    final public function __construct(string $directory)
     {
         $this->directory = realpath($directory).'/';
         $this->container = new Container();

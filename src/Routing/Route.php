@@ -11,14 +11,19 @@ final class Route
     const SEPARATOR = '/';
 
     /**
-     * @var string
+     * @var array
      */
-    private $action;
+    private static $middlewareGroupStack = [];
 
     /**
      * @var array
      */
-    private static $groupStack = [];
+    private static $prefixGroupStack = [];
+
+    /**
+     * @var string
+     */
+    private $action;
 
     /**
      * @var string
@@ -80,11 +85,19 @@ final class Route
         string $routeStr,
         array $info
     ) {
+        $middlewareList = isset($info['middleware']) ? (array) $info['middleware'] : [];
+        array_walk_recursive(
+            self::$middlewareGroupStack,
+            function ($middleware) use (&$middlewareList) {
+                $middlewareList [] = $middleware;
+            }
+        );
+
         $route = new self();
         $route->setMethods($methods);
         $route->setAction(isset($info['action']) ? $info['action'] : 'index');
         $route->setAlias(isset($info['alias']) ? $info['alias'] : '');
-        $route->setMiddlewareList(isset($info['middleware']) ? (array) $info['middleware'] : []);
+        $route->setMiddlewareList($middlewareList);
         $route->setControllerName($info['controller']);
         $route->setMethods($methods);
         $route->setRouteStr($routeStr);
@@ -121,22 +134,35 @@ final class Route
     /**
      * Creates a route group.
      *
-     * @param string  $prefix
-     * @param Closure $closure
+     * @param string       $prefix
+     * @param Closure      $closure
+     * @param array|string $middleware
      */
-    public static function group(string $prefix, Closure $closure)
+    public static function group(string $prefix, Closure $closure, $middleware = [])
     {
         $prefix = trim($prefix, self::SEPARATOR);
 
+        //Prepend prefixes
         if ($prefix) {
-            array_push(self::$groupStack, $prefix);
+            self::$prefixGroupStack [] = $prefix;
+        }
+
+        //Add group middleware
+        if ($middleware) {
+            self::$middlewareGroupStack [] = $middleware;
         }
 
         //Call group closure
         $closure();
 
+        //Remove prefix
         if ($prefix) {
-            array_pop(self::$groupStack);
+            array_pop(self::$prefixGroupStack);
+        }
+
+        //Remove current group middleware from the list
+        if ($middleware) {
+            array_pop(self::$middlewareGroupStack);
         }
     }
 
@@ -305,9 +331,9 @@ final class Route
         }
         $routeStr = $sep.$routeStr;
 
-        //prepend group pieces
-        if (!empty(self::$groupStack)) {
-            $groupStr = implode($sep, self::$groupStack);
+        //Prepend group prefix pieces
+        if (!empty(self::$prefixGroupStack)) {
+            $groupStr = implode($sep, self::$prefixGroupStack);
             $routeStr = $sep.$groupStr.$routeStr;
         }
 
