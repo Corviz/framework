@@ -29,7 +29,7 @@ abstract class Controller
     }
 
     /**
-     * Get an class/service from the container;
+     * Get an class/service from the container;.
      *
      * @param string $className
      *
@@ -44,7 +44,7 @@ abstract class Controller
      * Outputs a view file/template.
      *
      * @param string $file
-     * @param array $data
+     * @param array  $data
      *
      * @return View
      */
@@ -53,6 +53,7 @@ abstract class Controller
         $view = new View($this->container(TemplateEngine::class));
         $view->setData($data);
         $view->setFile($file);
+
         return $view;
     }
 }

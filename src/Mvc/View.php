@@ -17,7 +17,7 @@ class View
     private $file;
 
     /**
-     * @var $data
+     * @var
      */
     private $data;
 
