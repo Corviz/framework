@@ -43,16 +43,20 @@ abstract class Controller
     /**
      * Outputs a view file/template.
      *
-     * @param string $file
+     * @param string $templateName
      * @param array $data
      *
      * @return View
      */
-    protected function view(string $file, array &$data)
+    protected function view(string $templateName, array &$data = [])
     {
+        $file = Application::current()->getDirectory();
+        $file .= "views/$templateName.phtml";
+
         $view = new View($this->container(TemplateEngine::class));
         $view->setData($data);
         $view->setFile($file);
+
         return $view;
     }
 }
