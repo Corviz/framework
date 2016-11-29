@@ -10,7 +10,7 @@ interface TemplateEngine
      * @param string $file
      * @param array  $data
      *
-     * @return void
+     * @return string
      */
-    public function draw(string $file, array $data);
+    public function draw(string $file, array $data) : string;
 }

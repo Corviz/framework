@@ -9,7 +9,7 @@ abstract class Middleware
     /**
      * @param \Closure $next
      *
-     * @return void
+     * @return Response
      */
-    abstract public function handle(Closure $next);
+    abstract public function handle(Closure $next) : Response;
 }

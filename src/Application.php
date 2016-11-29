@@ -7,6 +7,8 @@ use Corviz\DI\Container;
 use Corviz\DI\Provider;
 use Corviz\Http\Middleware;
 use Corviz\Http\Request;
+use Corviz\Http\Response;
+use Corviz\Http\ResponseFactory;
 use Corviz\Mvc\Controller;
 use Corviz\Routing\Map;
 use Corviz\String\ParametrizedString;
@@ -126,13 +128,17 @@ class Application implements Runnable
                 $controller->getMiddlewareList(),
             ]);
 
-            $fn = function () use ($controller, &$params, &$route) {
-                return Application::current()
+            $application = $this;
+            $fn = function () use ($controller, &$params, &$route, $application) {
+                $response = $application
                     ->getContainer()
                     ->invoke($controller, $route['action'], $params);
+
+                return ResponseFactory::createResponse($response);
             };
 
-            $this->proccessMiddlewareQueue($middlewareList, $fn);
+            $response = $this->proccessMiddlewareQueue($middlewareList, $fn);
+            $response->send();
         }
 
         self::$current = null;
@@ -177,7 +183,7 @@ class Application implements Runnable
      *
      * @throws \Exception
      *
-     * @return mixed
+     * @return Response
      */
     private function proccessMiddlewareQueue(array $queue, \Closure $controllerClosure)
     {
