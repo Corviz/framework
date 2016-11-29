@@ -155,4 +155,12 @@ class Response
     {
         $this->code = $code;
     }
+
+    /**
+     * @param string $contents
+     */
+    public function write(string $contents)
+    {
+        $this->body .= $contents;
+    }
 }

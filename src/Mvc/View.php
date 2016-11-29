@@ -2,10 +2,17 @@
 
 namespace Corviz\Mvc;
 
+use Corviz\Application;
 use Corviz\Mvc\View\TemplateEngine;
+use Exception;
 
 class View
 {
+    /**
+     * @var string
+     */
+    private static $extension = 'phtml';
+
     /**
      * @var TemplateEngine
      */
@@ -14,40 +21,57 @@ class View
     /**
      * @var string
      */
-    private $file;
+    private $templateName;
 
     /**
-     * @var
+     * @var array
      */
     private $data;
+
+    /**
+     * @param string $extension
+     */
+    public static function setExtension(string $extension)
+    {
+        self::$extension = $extension;
+    }
 
     /**
      * Draw a template using application defined
      * template engine.
      *
-     * @return void
+     * @return string
+     * @throws \Exception
      */
     public function draw()
     {
-        $this->templateEngine->draw(
-            $this->file, $this->data
+        $file = Application::current()->getDirectory();
+        $file .= "views/{$this->templateName}.";
+        $file .= self::$extension;
+
+        if (!file_exists($file)) {
+            throw new Exception("Template file not found: $file");
+        }
+
+        return $this->templateEngine->draw(
+            $file, $this->data
         );
     }
 
     /**
-     * @param mixed $data
+     * @param array $data
      */
-    public function setData(array &$data)
+    public function setData(array $data)
     {
         $this->data = $data;
     }
 
     /**
-     * @param string $file
+     * @param string $templateName
      */
-    public function setFile(string $file)
+    public function setTemplateName(string $templateName)
     {
-        $this->file = $file;
+        $this->templateName = $templateName;
     }
 
     /**
