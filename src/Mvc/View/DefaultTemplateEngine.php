@@ -18,7 +18,7 @@ class DefaultTemplateEngine implements TemplateEngine
      * Proccess and render a template.
      *
      * @param string $file
-     * @param array $data
+     * @param array  $data
      *
      * @return string
      */
@@ -26,6 +26,7 @@ class DefaultTemplateEngine implements TemplateEngine
     {
         $this->file = $file;
         $this->data = $data;
+
         return $this->getOutputs();
     }
 
