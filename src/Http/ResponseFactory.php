@@ -41,7 +41,7 @@ class ResponseFactory
 
     /**
      * @param \Corviz\Http\Response $response
-     * @param array $input
+     * @param array                 $input
      */
     private static function createFromArray(Response $response, array $input)
     {
@@ -50,7 +50,7 @@ class ResponseFactory
     }
 
     /**
-     * @param \Corviz\Http\Response $response
+     * @param \Corviz\Http\Response            $response
      * @param \Corviz\Behaviour\ConvertsToJson $input
      */
     private static function createFromJsonable(Response $response, ConvertsToJson $input)

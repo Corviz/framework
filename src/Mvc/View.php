@@ -40,8 +40,9 @@ class View
      * Draw a template using application defined
      * template engine.
      *
-     * @return string
      * @throws \Exception
+     *
+     * @return string
      */
     public function draw()
     {
