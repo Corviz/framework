@@ -93,7 +93,7 @@ class Application implements Runnable
     {
         //TODO: turn code into parts (methods)
         self::$current = $this;
-        $this->container->set(Application::class, $this);
+        $this->container->set(self::class, $this);
 
         //Load application definitions.
         $this->registerProviders();
