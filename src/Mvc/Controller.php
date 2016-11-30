@@ -29,7 +29,7 @@ abstract class Controller
     }
 
     /**
-     * Get an class/service from the container;
+     * Get an class/service from the container;.
      *
      * @param string $className
      *
@@ -44,7 +44,7 @@ abstract class Controller
      * Outputs a view file/template.
      *
      * @param string $templateName
-     * @param array $data
+     * @param array  $data
      *
      * @return View
      */
