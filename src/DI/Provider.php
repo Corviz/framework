@@ -14,9 +14,7 @@ abstract class Provider
     /**
      * Init dependencies in the application container.
      */
-    public function register()
-    {
-    }
+    abstract public function register();
 
     /**
      * @param string $conf

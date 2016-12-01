@@ -93,10 +93,9 @@ class Application implements Runnable
     {
         //TODO: turn code into parts (methods)
         self::$current = $this;
+        $this->container->set(self::class, $this);
 
         //Load application definitions.
-        $this->loadRoutes();
-        $this->registerRequestParsers();
         $this->registerProviders();
 
         //Call controller action.
@@ -170,14 +169,6 @@ class Application implements Runnable
     }
 
     /**
-     * Load user defined routes.
-     */
-    private function loadRoutes()
-    {
-        require $this->getDirectory().'application/routes.php';
-    }
-
-    /**
      * @param array    $queue
      * @param \Closure $controllerClosure
      *
@@ -230,17 +221,6 @@ class Application implements Runnable
             }
 
             $this->container->invoke($obj, 'register');
-        }
-    }
-
-    /**
-     * Load request parsers.
-     */
-    private function registerRequestParsers()
-    {
-        $parsers = $this->config('app')['requestParser'];
-        foreach ($parsers as $parser) {
-            Request::registerParser($parser);
         }
     }
 
