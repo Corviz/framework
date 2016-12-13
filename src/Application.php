@@ -161,7 +161,7 @@ class Application implements Runnable
             $current = $middlewareList[$middleware];
 
             foreach ((array) $current as $curr) {
-                $queue [] = $curr;
+                $queue[] = $curr;
             }
         }
 

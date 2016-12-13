@@ -36,7 +36,7 @@ abstract class Event implements Observable
             throw new \Exception('$observer must be an instance of EventHandler');
         }
 
-        self::$handlers [] = $observer;
+        self::$handlers[] = $observer;
     }
 
     /**
