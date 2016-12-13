@@ -192,7 +192,7 @@ class Container
                 throw new \Exception('Could not define a value');
             }
 
-            $arguments [] = $arg;
+            $arguments[] = $arg;
         }
 
         return $arguments;
@@ -212,7 +212,7 @@ class Container
                 continue;
             }
 
-            $params [] = $item['isClass'] ?
+            $params[] = $item['isClass'] ?
                 $this->get((string) $item['value']) : $item['value'];
         }
 

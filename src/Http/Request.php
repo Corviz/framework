@@ -129,7 +129,7 @@ class Request
         $parser = new $parserName();
 
         if ($parser instanceof ContentTypeParser) {
-            self::$registeredParsers [] = $parser;
+            self::$registeredParsers[] = $parser;
         } else {
             throw new \Exception("$parserName is not a valid parser");
         }

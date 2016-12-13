@@ -17,7 +17,7 @@ class Map
      */
     public static function addRoute(Route $route)
     {
-        self::$routes [] = [
+        self::$routes[] = [
             'action'         => $route->getAction(),
             'alias'          => $route->getAlias(),
             'controller'     => $route->getControllerName(),

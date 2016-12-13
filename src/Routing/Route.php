@@ -89,7 +89,7 @@ final class Route
         array_walk_recursive(
             self::$middlewareGroupStack,
             function ($middleware) use (&$middlewareList) {
-                $middlewareList [] = $middleware;
+                $middlewareList[] = $middleware;
             }
         );
 
@@ -144,12 +144,12 @@ final class Route
 
         //Prepend prefixes
         if ($prefix) {
-            self::$prefixGroupStack [] = $prefix;
+            self::$prefixGroupStack[] = $prefix;
         }
 
         //Add group middleware
         if ($middleware) {
-            self::$middlewareGroupStack [] = $middleware;
+            self::$middlewareGroupStack[] = $middleware;
         }
 
         //Call group closure
