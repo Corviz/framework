@@ -133,7 +133,7 @@ class Application implements Runnable
                     ->getContainer()
                     ->invoke($controller, $route['action'], $params);
 
-                return ResponseFactory::createResponse($response);
+                return ResponseFactory::build($response);
             };
 
             $response = $this->proccessMiddlewareQueue($middlewareList, $fn);
