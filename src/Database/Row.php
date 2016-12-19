@@ -10,7 +10,7 @@ class Row implements \ArrayAccess
     private $data;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function offsetExists($offset)
     {
@@ -18,7 +18,7 @@ class Row implements \ArrayAccess
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function offsetGet($offset)
     {
@@ -26,7 +26,7 @@ class Row implements \ArrayAccess
     }
 
     /**
-     * Not allowed to set values in a row
+     * Not allowed to set values in a row.
      */
     public function offsetSet($offset, $value)
     {
@@ -34,7 +34,7 @@ class Row implements \ArrayAccess
     }
 
     /**
-     * Not allowed to unset values from a row
+     * Not allowed to unset values from a row.
      */
     public function offsetUnset($offset)
     {

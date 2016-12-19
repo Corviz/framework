@@ -53,7 +53,7 @@ interface Connection
     public function execute(Query $query, array $params = []);
 
     /**
-     * The id
+     * The id.
      *
      * @return string
      */

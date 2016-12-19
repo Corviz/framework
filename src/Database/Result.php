@@ -19,7 +19,6 @@ class Result implements \Iterator
      */
     public function fetch()
     {
-        return null;
     }
 
     /**
