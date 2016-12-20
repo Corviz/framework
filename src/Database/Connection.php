@@ -48,9 +48,9 @@ interface Connection
      * @param Query $query
      * @param array $params
      *
-     * @return Result|null
+     * @return Result
      */
-    public function execute(Query $query, array $params = []);
+    public function execute(Query $query, array $params = []) : Result;
 
     /**
      * The id of the last stored document.
