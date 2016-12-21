@@ -46,11 +46,10 @@ interface Connection
      * Execute query.
      *
      * @param Query $query
-     * @param array $params
      *
      * @return Result
      */
-    public function execute(Query $query, array $params = []) : Result;
+    public function execute(Query $query) : Result;
 
     /**
      * The id of the last stored document.
