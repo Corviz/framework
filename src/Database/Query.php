@@ -2,10 +2,7 @@
 
 namespace Corviz\Database;
 
-interface Query
+class Query
 {
-    /**
-     * @return mixed
-     */
-    public function generate();
+    //TODO implement query
 }
