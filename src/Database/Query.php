@@ -4,5 +4,28 @@ namespace Corviz\Database;
 
 class Query
 {
-    //TODO implement query
+    /**
+     * @var array
+     */
+    private $fields;
+
+    /**
+     * @var array
+     */
+    private $filters;
+
+    /**
+     * @var int
+     */
+    private $limit;
+
+    /**
+     * @var int
+     */
+    private $offset;
+
+    /**
+     * @var array
+     */
+    private $sources;
 }
