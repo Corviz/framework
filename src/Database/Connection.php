@@ -59,6 +59,15 @@ abstract class Connection
     abstract public function lastId() : string;
 
     /**
+     * Execute a native query.
+     *
+     * @param array ...$args
+     *
+     * @return Result
+     */
+    abstract public function nativeQuery(...$args) : Result;
+
+    /**
      * Rollback transaction.
      *
      * @return bool
