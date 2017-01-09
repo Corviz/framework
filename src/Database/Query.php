@@ -3,7 +3,6 @@
 namespace Corviz\Database;
 
 use Corviz\Database\Query\Join;
-use Corviz\Database\Query\Translator;
 use Corviz\Database\Query\Where;
 
 class Query
@@ -112,7 +111,7 @@ class Query
     }
 
     /**
-     * @param string $table
+     * @param string        $table
      * @param \Closure|null $joinConstructor
      *
      * @return Query
@@ -135,16 +134,19 @@ class Query
     public function limit(int $limit)
     {
         $this->queryLimit = $limit;
+
         return $this;
     }
 
     /**
      * @param int $offset
+     *
      * @return Query
      */
     public function offset(int $offset)
     {
         $this->queryOffset = $offset;
+
         return $this;
     }
 
@@ -177,6 +179,7 @@ class Query
     public function select(...$fields)
     {
         $this->fields = $fields;
+
         return $this;
     }
 

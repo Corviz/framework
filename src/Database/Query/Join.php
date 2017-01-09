@@ -24,7 +24,7 @@ class Join
     private $where;
 
     /**
-     * Switches type to INNER JOIN
+     * Switches type to INNER JOIN.
      */
     public function inner()
     {
@@ -32,7 +32,7 @@ class Join
     }
 
     /**
-     * Switches type to LEFT JOIN
+     * Switches type to LEFT JOIN.
      */
     public function left()
     {
@@ -40,7 +40,7 @@ class Join
     }
 
     /**
-     * Switches type to RIGHT JOIN
+     * Switches type to RIGHT JOIN.
      */
     public function right()
     {
