@@ -23,6 +23,11 @@ class Query
     private $joins = [];
 
     /**
+     * @var array
+     */
+    private $ordination = [];
+
+    /**
      * @var int
      */
     private $queryLimit = null;
@@ -33,9 +38,9 @@ class Query
     private $queryOffset = 0;
 
     /**
-     * @var array
+     * @var null
      */
-    private $ordination = [];
+    private $queryUnion = null;
 
     /**
      * @var Where
@@ -57,7 +62,7 @@ class Query
     /**
      * @return array
      */
-    public function getFields(): array
+    public function getFields() : array
     {
         return $this->fields;
     }
@@ -65,7 +70,7 @@ class Query
     /**
      * @return string
      */
-    public function getFrom(): string
+    public function getFrom() : string
     {
         return $this->from;
     }
@@ -73,7 +78,7 @@ class Query
     /**
      * @return Join[]
      */
-    public function getJoins(): array
+    public function getJoins() : array
     {
         return $this->joins;
     }
@@ -81,7 +86,7 @@ class Query
     /**
      * @return int
      */
-    public function getQueryLimit(): int
+    public function getQueryLimit() : int
     {
         return $this->queryLimit;
     }
@@ -89,15 +94,23 @@ class Query
     /**
      * @return int
      */
-    public function getQueryOffset(): int
+    public function getQueryOffset() : int
     {
         return $this->queryOffset;
     }
 
     /**
+     * @return Query
+     */
+    public function getQueryUnion() : Query
+    {
+        return $this->queryUnion;
+    }
+
+    /**
      * @return array
      */
-    public function getOrdination(): array
+    public function getOrdination() : array
     {
         return $this->ordination;
     }
@@ -105,7 +118,7 @@ class Query
     /**
      * @return Where
      */
-    public function getWhere(): Where
+    public function getWhere() : Where
     {
         return $this->where;
     }
@@ -164,11 +177,6 @@ class Query
         return $this;
     }
 
-    public function orWhere()
-    {
-        //TODO implement method.
-    }
-
     /**
      * The fields that will be selected.
      *
@@ -183,9 +191,28 @@ class Query
         return $this;
     }
 
-    public function where()
+    /**
+     * @param Query $query
+     *
+     * @return Query
+     */
+    public function union(Query $query)
     {
-        //TODO implement method.
+        $this->queryUnion = $query;
+        return $this;
+    }
+
+    /**
+     * Starts where clause.
+     *
+     * @param \Closure $constructor
+     *
+     * @return Query
+     */
+    public function where(\Closure $constructor)
+    {
+        $constructor($this->where);
+        return $this;
     }
 
     /**
