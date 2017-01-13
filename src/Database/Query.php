@@ -3,7 +3,7 @@
 namespace Corviz\Database;
 
 use Corviz\Database\Query\Join;
-use Corviz\Database\Query\Where;
+use Corviz\Database\Query\WhereClause;
 
 class Query
 {
@@ -43,9 +43,9 @@ class Query
     private $queryUnion = null;
 
     /**
-     * @var Where
+     * @var WhereClause
      */
-    private $where;
+    private $whereClause;
 
     /**
      * Starts building a query.
@@ -116,11 +116,11 @@ class Query
     }
 
     /**
-     * @return Where
+     * @return WhereClause
      */
-    public function getWhere() : Where
+    public function getWhereClause() : WhereClause
     {
-        return $this->where;
+        return $this->whereClause;
     }
 
     /**
@@ -147,7 +147,6 @@ class Query
     public function limit(int $limit)
     {
         $this->queryLimit = $limit;
-
         return $this;
     }
 
@@ -159,7 +158,6 @@ class Query
     public function offset(int $offset)
     {
         $this->queryOffset = $offset;
-
         return $this;
     }
 
@@ -187,7 +185,6 @@ class Query
     public function select(...$fields)
     {
         $this->fields = $fields;
-
         return $this;
     }
 
@@ -211,7 +208,7 @@ class Query
      */
     public function where(\Closure $constructor)
     {
-        $constructor($this->where);
+        $constructor($this->whereClause);
         return $this;
     }
 
@@ -223,6 +220,6 @@ class Query
     private function __construct(string $from)
     {
         $this->from = $from;
-        $this->where = new Where();
+        $this->whereClause = new WhereClause();
     }
 }

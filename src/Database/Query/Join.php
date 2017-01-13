@@ -19,9 +19,9 @@ class Join
     private $type;
 
     /**
-     * @var Where
+     * @var WhereClause
      */
-    private $where;
+    private $whereClause;
 
     /**
      * Switches type to INNER JOIN.
@@ -59,6 +59,6 @@ class Join
     ) {
         $this->type = $type;
         $this->table = $table;
-        $this->where = new Where();
+        $this->whereClause = new WhereClause();
     }
 }
