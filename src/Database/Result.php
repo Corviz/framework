@@ -2,7 +2,7 @@
 
 namespace Corviz\Database;
 
-class Result implements \Iterator
+class Result implements \Countable
 {
     /**
      * The number of rows.
@@ -19,45 +19,6 @@ class Result implements \Iterator
      */
     public function fetch()
     {
-    }
-
-    /**
-     * @return mixed
-     */
-    public function current()
-    {
-        // TODO: Implement current() method.
-    }
-
-    /**
-     * @return mixed
-     */
-    public function next()
-    {
-        // TODO: Implement next() method.
-    }
-
-    /**
-     * @return mixed
-     */
-    public function key()
-    {
-        // TODO: Implement key() method.
-    }
-
-    /**
-     * @return mixed
-     */
-    public function valid()
-    {
-        // TODO: Implement valid() method.
-    }
-
-    /**
-     * @return mixed
-     */
-    public function rewind()
-    {
-        // TODO: Implement rewind() method.
+        return null;
     }
 }
