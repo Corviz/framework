@@ -93,4 +93,11 @@ abstract class Connection
      * @return Result
      */
     abstract public function select(Query $query) : Result;
+
+    /**
+     * Connection constructor.
+     *
+     * @param array $options
+     */
+    abstract public function __construct(array $options);
 }
