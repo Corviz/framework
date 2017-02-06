@@ -48,6 +48,14 @@ class WhereClause
     }
 
     /**
+     * @return array
+     */
+    public function getClauses() : array
+    {
+        return $this->clauses;
+    }
+
+    /**
      * @param string $field
      * @param array  $values
      * @param array  $params
@@ -74,7 +82,7 @@ class WhereClause
     {
         $this->addClause(
             'inQuery',
-            compact('query'),
+            compact('field', 'query'),
             $params
         );
         return $this;
