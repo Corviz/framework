@@ -31,11 +31,9 @@ abstract class Connection
     /**
      * Start a connection.
      *
-     * @param array ...$options
-     *
      * @return mixed
      */
-    abstract public function connect(...$options) : bool;
+    abstract public function connect() : bool;
 
     /**
      * Inform if the current connection is active.
