@@ -98,6 +98,17 @@ class WhereClause
 
     /**
      * @param \Closure $constructor
+     */
+    public function nested(\Closure $constructor)
+    {
+        $whereClause = new WhereClause();
+        $constructor($whereClause);
+
+        $this->addClause('nested', compact('whereClause'));
+    }
+
+    /**
+     * @param \Closure $constructor
      *
      * @return WhereClause
      */
@@ -159,6 +170,18 @@ class WhereClause
     }
 
     /**
+     * @param \Closure $constructor
+     *
+     * @return $this
+     */
+    public function orNested(\Closure $constructor)
+    {
+        $this->nested($constructor);
+        $this->convertToOrJunction();
+        return $this;
+    }
+
+    /**
      * Create a new clause.
      *
      * @param string $type
@@ -168,6 +191,7 @@ class WhereClause
     private function addClause(string $type, $value, array $params = null)
     {
         $junction = 'and';
+        $params = $params ?: [];
         $this->clauses[] = compact('type','value', 'junction','params');
     }
 
