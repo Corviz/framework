@@ -8,6 +8,11 @@ use Corviz\Database\Query\WhereClause;
 class Query
 {
     /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
      * @var array
      */
     private $fields = ['*'];
@@ -15,7 +20,7 @@ class Query
     /**
      * @var string
      */
-    private $from = '';
+    private $fromClause = '';
 
     /**
      * @var Join[]
@@ -48,15 +53,24 @@ class Query
     private $whereClause;
 
     /**
+     * @return Result
+     */
+    public function execute() : Result
+    {
+        return $this->connection->select($this);
+    }
+
+    /**
      * Starts building a query.
      *
      * @param string $from
      *
      * @return Query
      */
-    public static function from(string $from)
+    public function from(string $from)
     {
-        return new self($from);
+        $this->fromClause = $from;
+        return $this;
     }
 
     /**
@@ -72,7 +86,7 @@ class Query
      */
     public function getFrom() : string
     {
-        return $this->from;
+        return $this->fromClause;
     }
 
     /**
@@ -215,11 +229,10 @@ class Query
     /**
      * Query constructor.
      *
-     * @param string $from
+     * @param Connection $connection
      */
-    private function __construct(string $from)
+    public function __construct(Connection $connection)
     {
-        $this->from = $from;
         $this->whereClause = new WhereClause();
     }
 }
