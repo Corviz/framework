@@ -2,23 +2,45 @@
 
 namespace Corviz\Database;
 
-class Result implements \Countable
+abstract class Result implements \Countable
 {
+    /**
+     * @var Connection
+     */
+    private $connection;
+
     /**
      * The number of rows.
      *
      * @return int
      */
-    public function count() : int
-    {
-        return 0;
-    }
+    abstract public function count() : int;
 
     /**
      * @return Row|null
      */
-    public function fetch()
+    abstract public function fetch();
+
+    /**
+     * @return array
+     */
+    abstract public function fetchAll() : array;
+
+    /**
+     * @return Connection
+     */
+    public function getConnection() : Connection
     {
-        return null;
+        return $this->connection;
+    }
+
+    /**
+     * Result constructor.
+     *
+     * @param Connection $connection
+     */
+    public function __construct(Connection $connection)
+    {
+        $this->connection = $connection;
     }
 }

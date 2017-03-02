@@ -50,4 +50,14 @@ class Row implements \ArrayAccess
     {
         $this->data = $data;
     }
+
+    /**
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->data[$name];
+    }
 }
