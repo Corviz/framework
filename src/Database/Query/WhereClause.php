@@ -15,16 +15,14 @@ class WhereClause
      * @param string $field
      * @param string $operator
      * @param string $field2
-     * @param array  $params
      *
      * @return WhereClause
      */
-    public function and(string $field, string $operator, string $field2, array $params = null)
+    public function and(string $field, string $operator, string $field2)
     {
         $this->addClause(
             'where',
-            compact('field', 'operator', 'field2'),
-            $params
+            compact('field', 'operator', 'field2')
         );
         return $this;
     }
@@ -33,16 +31,14 @@ class WhereClause
      * @param string $value
      * @param string $field1
      * @param string $field2
-     * @param array  $params
      *
      * @return WhereClause
      */
-    public function between(string $value, string $field1, string $field2, array $params = null)
+    public function between(string $value, string $field1, string $field2)
     {
         $this->addClause(
             'between',
-            compact('value', 'field1', 'field2'),
-            $params
+            compact('value', 'field1', 'field2')
         );
         return $this;
     }
@@ -58,32 +54,28 @@ class WhereClause
     /**
      * @param string $field
      * @param array  $values
-     * @param array  $params
      *
      * @return WhereClause
      */
-    public function in(string $field, array $values, array $params = null)
+    public function in(string $field, array $values)
     {
         $this->addClause(
             'in',
-            compact('field', 'values'),
-            $params
+            compact('field', 'values')
         );
         return $this;
     }
 
     /**
      * @param Query $query
-     * @param array $params
      *
      * @return WhereClause
      */
-    public function inQuery(string $field, Query $query, array $params = null)
+    public function inQuery(string $field, Query $query)
     {
         $this->addClause(
             'inQuery',
-            compact('field', 'query'),
-            $params
+            compact('field', 'query')
         );
         return $this;
     }
@@ -129,13 +121,12 @@ class WhereClause
      * @param string $field
      * @param string $operator
      * @param string $field2
-     * @param array  $params
      *
      * @return WhereClause
      */
-    public function or(string $field, string $operator, string $field2, array $params = null)
+    public function or(string $field, string $operator, string $field2)
     {
-        $this->and($field, $operator, $field2, $params);
+        $this->and($field, $operator, $field2);
         $this->convertToOrJunction();
         return $this;
     }
@@ -144,13 +135,12 @@ class WhereClause
      * @param string $value
      * @param string $field1
      * @param string $field2
-     * @param array  $params
      *
      * @return WhereClause
      */
-    public function orBetween(string $value, string $field1, string $field2, array $params = null)
+    public function orBetween(string $value, string $field1, string $field2)
     {
-        $this->between($value, $field1, $field2, $params);
+        $this->between($value, $field1, $field2);
         $this->convertToOrJunction();
         return $this;
     }
@@ -158,13 +148,12 @@ class WhereClause
     /**
      * @param string $field
      * @param array $values
-     * @param array|null $params
      *
      * @return WhereClause
      */
-    public function orIn(string $field, array $values, array $params = null)
+    public function orIn(string $field, array $values)
     {
-        $this->in($field, $values, $params);
+        $this->in($field, $values);
         $this->convertToOrJunction();
         return $this;
     }
@@ -186,13 +175,11 @@ class WhereClause
      *
      * @param string $type
      * @param mixed  $value
-     * @param array  $params
      */
-    private function addClause(string $type, $value, array $params = null)
+    private function addClause(string $type, $value)
     {
         $junction = 'and';
-        $params = $params ?: [];
-        $this->clauses[] = compact('type','value', 'junction','params');
+        $this->clauses[] = compact('type','value', 'junction');
     }
 
     /**

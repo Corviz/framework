@@ -95,10 +95,11 @@ abstract class Connection
      * to the parameters provided by the query.
      *
      * @param Query $query
+     * @param array $params
      *
      * @return Result
      */
-    abstract public function select(Query $query) : Result;
+    abstract public function select(Query $query, array $params) : Result;
 
     /**
      * Connection constructor.

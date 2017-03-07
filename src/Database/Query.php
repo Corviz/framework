@@ -53,11 +53,13 @@ class Query
     private $whereClause;
 
     /**
+     * @param array $params
+     *
      * @return Result
      */
-    public function execute() : Result
+    public function execute(array $params = []) : Result
     {
-        return $this->connection->select($this);
+        return $this->connection->select($this, $params);
     }
 
     /**
