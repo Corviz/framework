@@ -43,6 +43,14 @@ abstract class Connection
     abstract public function connected() : bool;
 
     /**
+     * @return Query
+     */
+    final public function createQuery() : Query
+    {
+        return new Query($this);
+    }
+
+    /**
      * @param Model $model
      *
      * @return Result
