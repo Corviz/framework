@@ -235,6 +235,7 @@ class Query
      */
     public function __construct(Connection $connection)
     {
+        $this->connection = $connection;
         $this->whereClause = new WhereClause();
     }
 }
