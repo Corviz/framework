@@ -24,6 +24,7 @@ class WhereClause
             'where',
             compact('field', 'operator', 'field2')
         );
+
         return $this;
     }
 
@@ -40,6 +41,7 @@ class WhereClause
             'between',
             compact('value', 'field1', 'field2')
         );
+
         return $this;
     }
 
@@ -63,6 +65,7 @@ class WhereClause
             'in',
             compact('field', 'values')
         );
+
         return $this;
     }
 
@@ -77,6 +80,7 @@ class WhereClause
             'inQuery',
             compact('field', 'query')
         );
+
         return $this;
     }
 
@@ -93,7 +97,7 @@ class WhereClause
      */
     public function nested(\Closure $constructor)
     {
-        $whereClause = new WhereClause();
+        $whereClause = new self();
         $constructor($whereClause);
 
         $this->addClause('nested', compact('whereClause'));
@@ -128,6 +132,7 @@ class WhereClause
     {
         $this->and($field, $operator, $field2);
         $this->convertToOrJunction();
+
         return $this;
     }
 
@@ -142,12 +147,13 @@ class WhereClause
     {
         $this->between($value, $field1, $field2);
         $this->convertToOrJunction();
+
         return $this;
     }
 
     /**
      * @param string $field
-     * @param array $values
+     * @param array  $values
      *
      * @return WhereClause
      */
@@ -155,6 +161,7 @@ class WhereClause
     {
         $this->in($field, $values);
         $this->convertToOrJunction();
+
         return $this;
     }
 
@@ -167,6 +174,7 @@ class WhereClause
     {
         $this->nested($constructor);
         $this->convertToOrJunction();
+
         return $this;
     }
 
@@ -179,7 +187,7 @@ class WhereClause
     private function addClause(string $type, $value)
     {
         $junction = 'and';
-        $this->clauses[] = compact('type','value', 'junction');
+        $this->clauses[] = compact('type', 'value', 'junction');
     }
 
     /**
