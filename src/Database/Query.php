@@ -72,6 +72,7 @@ class Query
     public function from(string $from)
     {
         $this->fromClause = $from;
+
         return $this;
     }
 
@@ -163,6 +164,7 @@ class Query
     public function limit(int $limit)
     {
         $this->queryLimit = $limit;
+
         return $this;
     }
 
@@ -174,6 +176,7 @@ class Query
     public function offset(int $offset)
     {
         $this->queryOffset = $offset;
+
         return $this;
     }
 
@@ -201,6 +204,7 @@ class Query
     public function select(...$fields)
     {
         $this->fields = $fields;
+
         return $this;
     }
 
@@ -212,6 +216,7 @@ class Query
     public function union(Query $query)
     {
         $this->queryUnion = $query;
+
         return $this;
     }
 
@@ -225,6 +230,7 @@ class Query
     public function where(\Closure $constructor)
     {
         $constructor($this->whereClause);
+
         return $this;
     }
 
