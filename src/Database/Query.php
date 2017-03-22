@@ -40,7 +40,7 @@ class Query
     /**
      * @var int
      */
-    private $queryOffset = 0;
+    private $queryOffset = null;
 
     /**
      * @var null
@@ -101,17 +101,17 @@ class Query
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getQueryLimit() : int
+    public function getQueryLimit()
     {
         return $this->queryLimit;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getQueryOffset() : int
+    public function getQueryOffset()
     {
         return $this->queryOffset;
     }
