@@ -103,7 +103,7 @@ class Query
     /**
      * @return int|null
      */
-    public function getQueryLimit()
+    public function getLimit()
     {
         return $this->queryLimit;
     }
@@ -111,17 +111,9 @@ class Query
     /**
      * @return int|null
      */
-    public function getQueryOffset()
+    public function getOffset()
     {
         return $this->queryOffset;
-    }
-
-    /**
-     * @return Query
-     */
-    public function getQueryUnion() : Query
-    {
-        return $this->queryUnion;
     }
 
     /**
@@ -130,6 +122,14 @@ class Query
     public function getOrdination() : array
     {
         return $this->ordination;
+    }
+
+    /**
+     * @return Query
+     */
+    public function getUnion() : Query
+    {
+        return $this->queryUnion;
     }
 
     /**
