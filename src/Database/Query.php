@@ -48,6 +48,11 @@ class Query
     private $queryUnion = null;
 
     /**
+     * @var bool
+     */
+    private $queryUnionAll = false;
+
+    /**
      * @var WhereClause
      */
     private $whereClause;
@@ -141,6 +146,22 @@ class Query
     }
 
     /**
+     * @return bool
+     */
+    public function isUnionAll() : bool
+    {
+        return $this->queryUnionAll;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasUnion() : bool
+    {
+        return !is_null($this->queryUnion);
+    }
+
+    /**
      * @param string        $table
      * @param \Closure|null $joinConstructor
      *
@@ -210,14 +231,26 @@ class Query
 
     /**
      * @param Query $query
+     * @param bool  $isUnionAll
      *
      * @return Query
      */
-    public function union(Query $query)
+    public function union(Query $query, $isUnionAll = false)
     {
         $this->queryUnion = $query;
+        $this->queryUnionAll = $isUnionAll;
 
         return $this;
+    }
+
+    /**
+     * @param Query $query
+     *
+     * @return Query
+     */
+    public function unionAll(Query $query)
+    {
+        return $this->union($query, true);
     }
 
     /**
