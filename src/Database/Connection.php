@@ -58,6 +58,11 @@ abstract class Connection
     abstract public function delete(Model $model) : Result;
 
     /**
+     * @return string
+     */
+    abstract public function getDateFormat() : string;
+
+    /**
      * The id of the last stored document.
      *
      * @return string

@@ -10,6 +10,14 @@ class Row implements \ArrayAccess, \JsonSerializable
     private $data;
 
     /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
      * Specify data which should be serialized to JSON.
      *
      * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
@@ -21,7 +29,7 @@ class Row implements \ArrayAccess, \JsonSerializable
      */
     public function jsonSerialize()
     {
-        return $this->data;
+        return $this->getData();
     }
 
     /**
