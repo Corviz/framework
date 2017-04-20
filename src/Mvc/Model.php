@@ -3,6 +3,7 @@
 namespace Corviz\Mvc;
 
 use Corviz\Database\Connection;
+use Corviz\Database\ConnectionFactory;
 use Corviz\Database\Query;
 use Corviz\Database\Query\WhereClause;
 
@@ -11,7 +12,7 @@ class Model
     /**
      * @var string
      */
-    protected static $connection;
+    protected static $connection = null;
 
     /**
      * @var array
@@ -72,24 +73,8 @@ class Model
      */
     public static function load($primary)
     {
+        $primary = self::normalizePrimaryKeys($primary);
         $object = new static();
-
-        //Check for non-arrays passed in $primary
-        if (count(self::$primaryKey) == 1) {
-
-            if (!is_array($primary)) {
-                $primary = [
-                    static::$primaryKey[0] => $primary
-                ];
-            }
-
-        }
-
-        //Has differences between parameter keys and primary keys indexes
-        $pkDiffs = array_diff(array_keys($primary), self::$primaryKey);
-        if (!empty($pkDiffs)) {
-            throw new \Exception('Wrong primary key format');
-        }
 
         $query = self::$connectionObject->createQuery();
         $result = $query->from(self::$table)
@@ -137,6 +122,30 @@ class Model
         if (empty(self::$primaryKey)) {
             throw new \Exception("Could not proceed: Object has no primary keys.");
         }
+
+        //Initialize database connection
+        if (!self::$connectionObject) {
+            self::$connectionObject = ConnectionFactory::build(self::$connection);
+        }
+    }
+
+    /**
+     * @param $primary
+     *
+     * @return array
+     * @throws \Exception
+     */
+    private static function normalizePrimaryKeys($primary) : array
+    {
+        $pks = self::getPrimaryKeys();
+
+        if (!is_array($primary) && count($pks) == 1) {
+            $primary = [ $pks[0] => $primary ];
+        } elseif (array_diff(array_keys($primary), $pks)) {
+            throw new \Exception('Invalid primary key.');
+        }
+
+        return $primary;
     }
 
     /**
