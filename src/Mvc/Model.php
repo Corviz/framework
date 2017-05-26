@@ -55,7 +55,7 @@ class Model
 
     /**
      * @param \Closure|null $filterFn An anonymous function that receives
-     * an instance of \Corviz\Database\Query as parameter
+     *                                an instance of \Corviz\Database\Query as parameter
      *
      * @return array
      */
@@ -90,8 +90,9 @@ class Model
     /**
      * @param int|string|array $primary
      *
-     * @return static
      * @throws \Exception
+     *
+     * @return static
      */
     public static function load($primary)
     {
@@ -100,7 +101,7 @@ class Model
 
         $query = self::$connectionObject->createQuery();
         $result = $query->from(static::$table)
-            ->where(function(WhereClause $whereClause) use ($primary){
+            ->where(function (WhereClause $whereClause) use ($primary) {
                 foreach ($primary as $key => $value) {
                     $whereClause->and($key, '=', '?');
                 }
@@ -122,9 +123,6 @@ class Model
         return $object;
     }
 
-    /**
-     *
-     */
     private static function initAttibutes()
     {
         //stop
@@ -148,15 +146,16 @@ class Model
     /**
      * @param $primary
      *
-     * @return array
      * @throws \Exception
+     *
+     * @return array
      */
     private static function normalizePrimaryKeys($primary) : array
     {
         $pks = static::getPrimaryKeys();
 
         if (!is_array($primary) && count($pks) == 1) {
-            $primary = [ $pks[0] => $primary ];
+            $primary = [$pks[0] => $primary];
         } elseif (array_diff(array_keys($primary), $pks)) {
             throw new \Exception('Invalid primary key.');
         }
@@ -167,7 +166,8 @@ class Model
     /**
      * @param array $data
      */
-    final public function fill(array $data) {
+    final public function fill(array $data)
+    {
         if (empty($data)) {
             return;
         }
@@ -181,12 +181,13 @@ class Model
     }
 
     /**
-     * @return array
      * @throws \Exception
+     *
+     * @return array
      */
     final public function getPrimaryKeys() : array
     {
-        if (!is_array(static::$primaryKey)){
+        if (!is_array(static::$primaryKey)) {
             static::$primaryKey = (array) static::$primaryKey;
 
             if (empty(static::$primaryKey)) {

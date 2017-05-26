@@ -16,8 +16,9 @@ class ConnectionFactory
      *
      * @param string|null $connectionName
      *
-     * @return \Corviz\Database\Connection
      * @throws \Exception
+     *
+     * @return \Corviz\Database\Connection
      */
     public static function build(string $connectionName = null) : Connection
     {
@@ -33,7 +34,6 @@ class ConnectionFactory
             $options = $configs[$connectionName]['options'];
             self::$connections[$connectionName] = new $connectionClass($options);
         }
-
 
         return self::$connections[$connectionName];
     }
