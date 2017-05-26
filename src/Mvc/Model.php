@@ -4,7 +4,6 @@ namespace Corviz\Mvc;
 
 use Corviz\Database\Connection;
 use Corviz\Database\ConnectionFactory;
-use Corviz\Database\Query;
 use Corviz\Database\Query\WhereClause;
 
 class Model
@@ -55,14 +54,37 @@ class Model
     private $data = [];
 
     /**
-     * @return Query
+     * @param \Closure|null $filterFn An anonymous function that receives
+     * an instance of \Corviz\Database\Query as parameter
+     *
+     * @return array
      */
-    public static function find() : Query
+    public static function find(\Closure $filterFn = null) : array
     {
-        $query = self::$connectionObject->createQuery()
-            ->from(self::$table);
+        $query = static::$connectionObject->createQuery()
+            ->from(static::$table);
 
-        return $query;
+        //Filter results
+        if (!is_null($filterFn)) {
+            $filterFn($query);
+        }
+
+        $objList = [];
+        $searchKeys = static::getPrimaryKeys();
+        foreach ($searchKeys as &$key) {
+            $key = static::$table.'.'.$key;
+        }
+
+        $query->select(...$searchKeys);
+        $result = $query->execute();
+
+        if ($result->count()) {
+            while ($row = $result->fetch()) {
+                $objList[] = static::load($row->getData());
+            }
+        }
+
+        return $objList;
     }
 
     /**
@@ -73,11 +95,11 @@ class Model
      */
     public static function load($primary)
     {
-        $primary = self::normalizePrimaryKeys($primary);
+        $primary = static::normalizePrimaryKeys($primary);
         $object = new static();
 
         $query = self::$connectionObject->createQuery();
-        $result = $query->from(self::$table)
+        $result = $query->from(static::$table)
             ->where(function(WhereClause $whereClause) use ($primary){
                 foreach ($primary as $key => $value) {
                     $whereClause->and($key, '=', '?');
@@ -87,9 +109,9 @@ class Model
         if ($result->count()) {
             $rowData = $result->fetch()->getData();
 
-            foreach (self::$dates as $dateField) {
+            foreach (static::$dates as $dateField) {
                 $rowData[$dateField] = date_parse_from_format(
-                    self::$connectionObject->getDateFormat(),
+                    static::$connectionObject->getDateFormat(),
                     $rowData[$dateField]
                 );
             }
@@ -111,16 +133,10 @@ class Model
         }
 
         //Add timestamps
-        if (self::$timestamps) {
-            self::$dates[] = 'createdAt';
-            self::$dates[] = 'updatedAt';
-            self::$dates[] = 'deletedAt';
-        }
-
-        //Standardize primaryKey attribute
-        self::$primaryKey = (array) self::$primaryKey;
-        if (empty(self::$primaryKey)) {
-            throw new \Exception("Could not proceed: Object has no primary keys.");
+        if (static::$timestamps) {
+            static::$dates[] = 'createdAt';
+            static::$dates[] = 'updatedAt';
+            static::$dates[] = 'deletedAt';
         }
 
         //Initialize database connection
@@ -137,7 +153,7 @@ class Model
      */
     private static function normalizePrimaryKeys($primary) : array
     {
-        $pks = self::getPrimaryKeys();
+        $pks = static::getPrimaryKeys();
 
         if (!is_array($primary) && count($pks) == 1) {
             $primary = [ $pks[0] => $primary ];
@@ -158,7 +174,7 @@ class Model
 
         $filtered = array_intersect_key(
             $data,
-            array_flip(self::$fields)
+            array_flip(static::$fields)
         );
 
         $this->data = array_replace($this->data, $filtered);
@@ -166,9 +182,18 @@ class Model
 
     /**
      * @return array
+     * @throws \Exception
      */
     final public function getPrimaryKeys() : array
     {
+        if (!is_array(static::$primaryKey)){
+            static::$primaryKey = (array) static::$primaryKey;
+
+            if (empty(static::$primaryKey)) {
+                throw new \Exception('Primary key attribute can\'t be empty');
+            }
+        }
+
         return self::$primaryKey;
     }
 
@@ -190,11 +215,15 @@ class Model
 
     /**
      * @param array $data
+     *
+     * @return bool
      */
-    public function save(array $data = [])
+    public function save(array $data = []) : bool
     {
         $this->fill($data);
-        self::$connectionObject->save($this);
+        $result = static::$connectionObject->save($this);
+
+        return $result->count() > 0;
     }
 
     /**
@@ -204,7 +233,7 @@ class Model
      */
     final public function __construct(array $data = [])
     {
-        self::initAttibutes();
+        static::initAttibutes();
         $this->fill($data);
     }
 
@@ -247,5 +276,13 @@ class Model
         }
 
         $this->data[$name] = $value;
+    }
+
+    /**
+     * @param $name
+     */
+    final public function __unset($name)
+    {
+        unset($this->data[$name]);
     }
 }

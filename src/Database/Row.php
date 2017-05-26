@@ -69,7 +69,7 @@ class Row implements \ArrayAccess, \JsonSerializable
      *
      * @param array $data
      */
-    public function __construct(array $data)
+    public function __construct(array $data = [])
     {
         $this->data = $data;
     }
@@ -79,7 +79,7 @@ class Row implements \ArrayAccess, \JsonSerializable
      *
      * @return mixed
      */
-    public function __get($name)
+    public function &__get($name)
     {
         return $this->data[$name];
     }
