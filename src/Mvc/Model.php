@@ -6,7 +6,7 @@ use Corviz\Database\Connection;
 use Corviz\Database\ConnectionFactory;
 use Corviz\Database\Query\WhereClause;
 
-class Model
+abstract class Model
 {
     /**
      * @var string
@@ -41,12 +41,12 @@ class Model
     /**
      * @var Connection
      */
-    private static $connectionObject;
+    protected static $connectionObject;
 
     /**
      * @var bool
      */
-    private static $initializedAttrs = false;
+    protected static $initializedAttrs = false;
 
     /**
      * @var array
@@ -99,7 +99,7 @@ class Model
         $primary = static::normalizePrimaryKeys($primary);
         $object = new static();
 
-        $query = self::$connectionObject->createQuery();
+        $query = static::$connectionObject->createQuery();
         $result = $query->from(static::$table)
             ->where(function (WhereClause $whereClause) use ($primary) {
                 foreach ($primary as $key => $value) {
@@ -126,20 +126,19 @@ class Model
     private static function initAttibutes()
     {
         //stop
-        if (self::$initializedAttrs) {
+        if (static::$initializedAttrs) {
             return;
         }
 
         //Add timestamps
         if (static::$timestamps) {
-            static::$dates[] = 'createdAt';
-            static::$dates[] = 'updatedAt';
-            static::$dates[] = 'deletedAt';
+            static::$dates[] = 'created_at';
+            static::$dates[] = 'updated_at';
         }
 
         //Initialize database connection
-        if (!self::$connectionObject) {
-            self::$connectionObject = ConnectionFactory::build(self::$connection);
+        if (!static::$connectionObject) {
+            static::$connectionObject = ConnectionFactory::build(static::$connection);
         }
     }
 
@@ -177,7 +176,13 @@ class Model
             array_flip(static::$fields)
         );
 
-        $this->data = array_replace($this->data, $filtered);
+        if (empty($filtered)) {
+            return;
+        }
+
+        foreach ($filtered as $field => $value) {
+            $this->$field = $value;
+        }
     }
 
     /**
@@ -195,7 +200,7 @@ class Model
             }
         }
 
-        return self::$primaryKey;
+        return static::$primaryKey;
     }
 
     /**
@@ -211,7 +216,7 @@ class Model
      */
     final public function getTable() : string
     {
-        return self::$table;
+        return static::$table;
     }
 
     /**
@@ -225,6 +230,37 @@ class Model
         $result = static::$connectionObject->save($this);
 
         return $result->count() > 0;
+    }
+
+    /**
+     * Apply getters/setters for specific fields.
+     *
+     * @param string $fieldName
+     * @param $value
+     * @param $methodPrefix
+     */
+    private function applyModifier(string $fieldName, &$value, $methodPrefix)
+    {
+        $methodName = $methodPrefix.$this->fieldNameToUpperCamelCase($fieldName);
+        if (method_exists($this, $methodName)) {
+            $value = $this->$methodName($value);
+        }
+    }
+
+    /**
+     * @param string $fieldName
+     *
+     * @return string
+     */
+    private function fieldNameToUpperCamelCase(string $fieldName) : string
+    {
+        $handler = function($matches) {
+            return strtoupper($matches[0][1]);
+        };
+        $result = (string) preg_replace_callback('#\\_[a-zA-Z]#', $handler, $fieldName);
+        $result = ucfirst($result);
+
+        return $result;
     }
 
     /**
@@ -246,6 +282,9 @@ class Model
     final public function &__get($name)
     {
         $value = $this->data[$name];
+
+        //Apply accessor
+        $this->applyModifier($name, $value, 'get');
 
         return $value;
     }
@@ -275,6 +314,9 @@ class Model
         ) {
             throw new \Exception("Field '$name' should be a DateTime instance.");
         }
+
+        //Apply modifier
+        $this->applyModifier($name, $value, 'set');
 
         $this->data[$name] = $value;
     }
