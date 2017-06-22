@@ -75,12 +75,14 @@ abstract class Model
             $key = static::$table.'.'.$key;
         }
 
-        $query->select(...$searchKeys);
         $result = $query->execute();
 
         if ($result->count()) {
             while ($row = $result->fetch()) {
-                $objList[] = static::load($row->getData());
+                $instance = new static();
+                $instance->fill($row->getData(), false);
+
+                $objList[] = $instance;
             }
         }
 
