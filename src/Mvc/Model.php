@@ -117,7 +117,7 @@ abstract class Model
                 );
             }
 
-            $object->fill($rowData);
+            $object->fill($rowData, false);
         }
 
         return $object;
@@ -164,8 +164,9 @@ abstract class Model
 
     /**
      * @param array $data
+     * @param bool  $applySetters
      */
-    final public function fill(array $data)
+    final public function fill(array $data, $applySetters = true)
     {
         if (empty($data)) {
             return;
@@ -180,8 +181,12 @@ abstract class Model
             return;
         }
 
-        foreach ($filtered as $field => $value) {
-            $this->$field = $value;
+        if ($applySetters) {
+            foreach ($filtered as $field => $value) {
+                $this->$field = $value;
+            }
+        } else {
+            $this->data = array_replace($this->data, $filtered);
         }
     }
 
