@@ -61,6 +61,8 @@ abstract class Model
      */
     public static function find(\Closure $filterFn = null) : array
     {
+        static::initAttibutes();
+
         $query = static::$connectionObject->createQuery()
             ->from(static::$table);
 
@@ -94,12 +96,14 @@ abstract class Model
      *
      * @throws \Exception
      *
-     * @return static
+     * @return static|null
      */
     public static function load($primary)
     {
+        static::initAttibutes();
+
         $primary = static::normalizePrimaryKeys($primary);
-        $object = new static();
+        $object = null;
 
         $query = static::$connectionObject->createQuery();
         $result = $query->from(static::$table)
@@ -119,12 +123,16 @@ abstract class Model
                 );
             }
 
+            $object = new static();
             $object->fill($rowData, false);
         }
 
         return $object;
     }
 
+    /**
+     * Initialize static properties.
+     */
     private static function initAttibutes()
     {
         //stop
