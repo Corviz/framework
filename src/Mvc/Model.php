@@ -56,10 +56,11 @@ abstract class Model
     /**
      * @param \Closure|null $filterFn An anonymous function that receives
      *                                an instance of \Corviz\Database\Query as parameter
+     * @param bool          $applySetters
      *
      * @return array
      */
-    public static function find(\Closure $filterFn = null) : array
+    public static function find(\Closure $filterFn = null, bool $applySetters = false) : array
     {
         static::initAttibutes();
 
@@ -82,7 +83,7 @@ abstract class Model
         if ($result->count()) {
             while ($row = $result->fetch()) {
                 $instance = new static();
-                $instance->fill($row->getData(), false);
+                $instance->fill($row->getData(), $applySetters);
 
                 $objList[] = $instance;
             }
@@ -93,12 +94,13 @@ abstract class Model
 
     /**
      * @param int|string|array $primary
+     * @param bool             $applySetters
      *
      * @throws \Exception
      *
      * @return static|null
      */
-    public static function load($primary)
+    public static function load($primary, bool $applySetters = false)
     {
         static::initAttibutes();
 
@@ -124,7 +126,7 @@ abstract class Model
             }
 
             $object = new static();
-            $object->fill($rowData, false);
+            $object->fill($rowData, $applySetters);
         }
 
         return $object;
