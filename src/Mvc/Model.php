@@ -54,8 +54,8 @@ abstract class Model
     private $data = [];
 
     /**
-     * @param \Closure|null $filterFn An anonymous function that receives
-     *                                an instance of \Corviz\Database\Query as parameter
+     * @param \Closure|null $filterFn     An anonymous function that receives
+     *                                    an instance of \Corviz\Database\Query as parameter
      * @param bool          $applySetters
      *
      * @return array
@@ -271,7 +271,7 @@ abstract class Model
      */
     private function fieldNameToUpperCamelCase(string $fieldName) : string
     {
-        $handler = function($matches) {
+        $handler = function ($matches) {
             return strtoupper($matches[0][1]);
         };
         $result = (string) preg_replace_callback('#\\_[a-zA-Z]#', $handler, $fieldName);
