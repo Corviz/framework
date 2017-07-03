@@ -4,6 +4,7 @@ namespace Corviz\Mvc;
 
 use Corviz\Database\Connection;
 use Corviz\Database\ConnectionFactory;
+use Corviz\Database\Query;
 use Corviz\Database\Query\WhereClause;
 
 abstract class Model
@@ -234,6 +235,67 @@ abstract class Model
     final public function getTable() : string
     {
         return static::$table;
+    }
+
+    /**
+     * @param string $otherClass
+     * @param array $fieldsMap
+     * @param bool $applySetters
+     *
+     * @return Model[]
+     */
+    public function relatedToMany(
+        string $otherClass,
+        array $fieldsMap,
+        bool $applySetters = false
+    ) {
+        $thatFields = array_values($fieldsMap);
+        $thisValues = array_intersect_key($this->data, $fieldsMap);
+
+        $filterFn = function(Query $query) use (&$thatFields, &$thisValues){
+            $query->where(function(WhereClause $where) use(&$thatFields, &$query, &$thisValues){
+                foreach ($thatFields as $field) {
+                    $where->and($field, '=', '?');
+                    $query->bind($thisValues[$field]);
+                }
+            });
+        };
+
+        /* @var $otherClass Model */
+        return $otherClass::find($filterFn, $applySetters);
+    }
+
+    /**
+     * @param string $otherClass
+     * @param array $fieldsMap
+     * @param bool $applySetters
+     *
+     * @return Model|null
+     */
+    public function relatedToOne(
+        string $otherClass,
+        array $fieldsMap,
+        bool $applySetters = false
+    ) {
+        //TODO remove duplicated code
+
+        $thatFields = array_values($fieldsMap);
+        $thisValues = array_intersect_key($this->data, $fieldsMap);
+
+        $filterFn = function(Query $query) use (&$thatFields, &$thisValues){
+            $query->where(function(WhereClause $where) use(&$thatFields, &$query, &$thisValues){
+                foreach ($thatFields as $field) {
+                    $where->and($field, '=', '?');
+                    $query->bind($thisValues[$field]);
+                }
+            });
+
+            $query->limit(1);
+        };
+
+        /* @var $otherClass Model */
+        $search = $otherClass::find($filterFn, $applySetters);
+        return !(empty($search)) ? $search[0] : null;
     }
 
     /**

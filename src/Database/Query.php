@@ -33,6 +33,11 @@ class Query
     private $ordination = [];
 
     /**
+     * @var array
+     */
+    private $parameters = [];
+
+    /**
      * @var int
      */
     private $queryLimit = null;
@@ -58,12 +63,26 @@ class Query
     private $whereClause;
 
     /**
+     * @param $paramValue
+     * @param null $paramKey
+     */
+    public function bind($paramValue, $paramKey = null)
+    {
+        if (is_null($paramKey)) {
+            $this->parameters[] = $paramValue;
+        } else {
+            $this->parameters[$paramKey] = $paramValue;
+        }
+    }
+
+    /**
      * @param array $params
      *
      * @return Result
      */
     public function execute(array $params = []) : Result
     {
+        $params = array_replace($this->parameters, $params);
         return $this->connection->select($this, $params);
     }
 
@@ -127,6 +146,14 @@ class Query
     public function getOrdination() : array
     {
         return $this->ordination;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters() : array
+    {
+        return $this->parameters;
     }
 
     /**
