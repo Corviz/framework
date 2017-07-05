@@ -59,7 +59,7 @@ abstract class Model
      *                                    an instance of \Corviz\Database\Query as parameter
      * @param bool          $applySetters
      *
-     * @return array
+     * @return static[]
      */
     public static function find(\Closure $filterFn = null, bool $applySetters = false) : array
     {
@@ -208,7 +208,7 @@ abstract class Model
      *
      * @return array
      */
-    final public function getPrimaryKeys() : array
+    final public static function getPrimaryKeys() : array
     {
         if (!is_array(static::$primaryKey)) {
             static::$primaryKey = (array) static::$primaryKey;
@@ -249,14 +249,13 @@ abstract class Model
         array $fieldsMap,
         bool $applySetters = false
     ) {
-        $thatFields = array_values($fieldsMap);
         $thisValues = array_intersect_key($this->data, $fieldsMap);
 
-        $filterFn = function(Query $query) use (&$thatFields, &$thisValues){
-            $query->where(function(WhereClause $where) use(&$thatFields, &$query, &$thisValues){
-                foreach ($thatFields as $field) {
-                    $where->and($field, '=', '?');
-                    $query->bind($thisValues[$field]);
+        $filterFn = function(Query $query) use (&$thisValues, &$fieldsMap){
+            $query->where(function(WhereClause $where) use(&$query, &$thisValues, &$fieldsMap){
+                foreach ($fieldsMap as $thisKey => $thatKey) {
+                    $where->and($thatKey, '=', '?');
+                    $query->bind($thisValues[$thisKey]);
                 }
             });
         };
@@ -279,14 +278,13 @@ abstract class Model
     ) {
         //TODO remove duplicated code
 
-        $thatFields = array_values($fieldsMap);
         $thisValues = array_intersect_key($this->data, $fieldsMap);
 
-        $filterFn = function(Query $query) use (&$thatFields, &$thisValues){
-            $query->where(function(WhereClause $where) use(&$thatFields, &$query, &$thisValues){
-                foreach ($thatFields as $field) {
-                    $where->and($field, '=', '?');
-                    $query->bind($thisValues[$field]);
+        $filterFn = function(Query $query) use (&$thisValues, &$fieldsMap){
+            $query->where(function(WhereClause $where) use(&$query, &$thisValues, &$fieldsMap){
+                foreach ($fieldsMap as $thisKey => $thatKey) {
+                    $where->and($thatKey, '=', '?');
+                    $query->bind($thisValues[$thisKey]);
                 }
             });
 
