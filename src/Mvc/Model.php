@@ -83,7 +83,7 @@ abstract class Model
                 $rowData = $row->getData();
 
                 foreach (self::getDateFields() as $dateField) {
-                    $rowData[$dateField] = date_parse_from_format(
+                    $rowData[$dateField] = date_create_from_format(
                         $connection->getDateFormat(),
                         $rowData[$dateField]
                     );
@@ -164,7 +164,7 @@ abstract class Model
             $rowData = $result->fetch()->getData();
 
             foreach (self::getDateFields() as $dateField) {
-                $rowData[$dateField] = date_parse_from_format(
+                $rowData[$dateField] = date_create_from_format(
                     $connection->getDateFormat(),
                     $rowData[$dateField]
                 );
@@ -210,6 +210,8 @@ abstract class Model
         ];
 
         if ($properties['timestamps']) {
+            $properties['fields'][] = 'created_at';
+            $properties['fields'][] = 'updated_at';
             $properties['dateFields'][] = 'created_at';
             $properties['dateFields'][] = 'updated_at';
         }
