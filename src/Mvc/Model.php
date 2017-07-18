@@ -40,14 +40,9 @@ abstract class Model
     protected static $timestamps = false;
 
     /**
-     * @var Connection
+     * @var array
      */
-    protected static $connectionObject;
-
-    /**
-     * @var bool
-     */
-    protected static $initializedAttrs = false;
+    private static $modelProperties = [];
 
     /**
      * @var array
@@ -63,10 +58,10 @@ abstract class Model
      */
     public static function find(\Closure $filterFn = null, bool $applySetters = false) : array
     {
-        static::initAttibutes();
-
-        $query = static::$connectionObject->createQuery()
-            ->from(static::$table);
+        $connection = self::getConnection();
+        $table = self::getModelProperty('table');
+        $query = $connection->createQuery()
+            ->from($table);
 
         //Filter results
         if (!is_null($filterFn)) {
@@ -76,7 +71,7 @@ abstract class Model
         $objList = [];
         $searchKeys = static::getPrimaryKeys();
         foreach ($searchKeys as &$key) {
-            $key = static::$table.'.'.$key;
+            $key = $table.'.'.$key;
         }
 
         $result = $query->execute();
@@ -84,13 +79,63 @@ abstract class Model
         if ($result->count()) {
             while ($row = $result->fetch()) {
                 $instance = new static();
-                $instance->fill($row->getData(), $applySetters);
+
+                $rowData = $row->getData();
+
+                foreach (self::getDateFields() as $dateField) {
+                    $rowData[$dateField] = date_parse_from_format(
+                        $connection->getDateFormat(),
+                        $rowData[$dateField]
+                    );
+                }
+
+                $instance->fill($rowData, $applySetters);
 
                 $objList[] = $instance;
             }
         }
 
         return $objList;
+    }
+
+    /**
+     * @return Connection
+     */
+    final public static function getConnection() : Connection
+    {
+        return self::getModelProperty('connection');
+    }
+
+    /**
+     * @return array
+     */
+    final public static function getDateFields() : array
+    {
+        return self::getModelProperty('dateFields');
+    }
+
+    /**
+     * @return array
+     */
+    final public static function getPrimaryKeys() : array
+    {
+        return self::getModelProperty('primaryKeys');
+    }
+
+    /**
+     * @return string
+     */
+    final public static function getTable() : string
+    {
+        return self::getModelProperty('table');
+    }
+
+    /**
+     * @return bool
+     */
+    final public static function hasTimestamps() : bool
+    {
+        return self::getModelProperty('timestamps');
     }
 
     /**
@@ -103,12 +148,11 @@ abstract class Model
      */
     public static function load($primary, bool $applySetters = false)
     {
-        static::initAttibutes();
-
+        $connection = self::getConnection();
         $primary = static::normalizePrimaryKeys($primary);
         $object = null;
 
-        $query = static::$connectionObject->createQuery();
+        $query = $connection->createQuery();
         $result = $query->from(static::$table)
             ->where(function (WhereClause $whereClause) use ($primary) {
                 foreach ($primary as $key => $value) {
@@ -119,9 +163,9 @@ abstract class Model
         if ($result->count()) {
             $rowData = $result->fetch()->getData();
 
-            foreach (static::$dates as $dateField) {
+            foreach (self::getDateFields() as $dateField) {
                 $rowData[$dateField] = date_parse_from_format(
-                    static::$connectionObject->getDateFormat(),
+                    $connection->getDateFormat(),
                     $rowData[$dateField]
                 );
             }
@@ -134,25 +178,43 @@ abstract class Model
     }
 
     /**
+     * @param $name
+     *
+     * @return mixed
+     */
+    private static function getModelProperty($name)
+    {
+        self::initModelProperties();
+        return isset(self::$modelProperties[static::class][$name]) ?
+            self::$modelProperties[static::class][$name] : null;
+    }
+
+    /**
      * Initialize static properties.
      */
-    private static function initAttibutes()
+    private static function initModelProperties()
     {
-        //stop
-        if (static::$initializedAttrs) {
+        $currentModel = static::class;
+
+        if (isset(self::$modelProperties[$currentModel])) {
             return;
         }
 
-        //Add timestamps
-        if (static::$timestamps) {
-            static::$dates[] = 'created_at';
-            static::$dates[] = 'updated_at';
+        $properties = [
+            'connection' => ConnectionFactory::build(static::$connection),
+            'dateFields' => static::$dates ?: [],
+            'fields' => static::$fields ?: [],
+            'primaryKeys' => (array) static::$primaryKey,
+            'table' => static::$table,
+            'timestamps' => (bool) static::$timestamps,
+        ];
+
+        if ($properties['timestamps']) {
+            $properties['dateFields'][] = 'created_at';
+            $properties['dateFields'][] = 'updated_at';
         }
 
-        //Initialize database connection
-        if (!static::$connectionObject) {
-            static::$connectionObject = ConnectionFactory::build(static::$connection);
-        }
+        self::$modelProperties[$currentModel] = $properties;
     }
 
     /**
@@ -164,7 +226,7 @@ abstract class Model
      */
     private static function normalizePrimaryKeys($primary) : array
     {
-        $pks = static::getPrimaryKeys();
+        $pks = self::getPrimaryKeys();
 
         if (!is_array($primary) && count($pks) == 1) {
             $primary = [$pks[0] => $primary];
@@ -187,7 +249,7 @@ abstract class Model
 
         $filtered = array_intersect_key(
             $data,
-            array_flip(static::$fields)
+            array_flip(self::getModelProperty('fields'))
         );
 
         if (empty($filtered)) {
@@ -204,37 +266,11 @@ abstract class Model
     }
 
     /**
-     * @throws \Exception
-     *
-     * @return array
-     */
-    final public static function getPrimaryKeys() : array
-    {
-        if (!is_array(static::$primaryKey)) {
-            static::$primaryKey = (array) static::$primaryKey;
-
-            if (empty(static::$primaryKey)) {
-                throw new \Exception('Primary key attribute can\'t be empty');
-            }
-        }
-
-        return static::$primaryKey;
-    }
-
-    /**
      * @return array
      */
     final public function getData() : array
     {
         return $this->data;
-    }
-
-    /**
-     * @return string
-     */
-    final public function getTable() : string
-    {
-        return static::$table;
     }
 
     /**
@@ -304,7 +340,7 @@ abstract class Model
     public function save(array $data = []) : bool
     {
         $this->fill($data);
-        $result = static::$connectionObject->save($this);
+        $result = self::getConnection()->save($this);
 
         return $result->count() > 0;
     }
@@ -347,7 +383,7 @@ abstract class Model
      */
     final public function __construct(array $data = [])
     {
-        static::initAttibutes();
+        static::initModelProperties();
         $this->fill($data);
     }
 
@@ -386,7 +422,7 @@ abstract class Model
     {
         //is date?
         if (
-            in_array($name, $this->dates)
+            in_array($name, self::getDateFields())
             && !($value instanceof \DateTime)
         ) {
             throw new \Exception("Field '$name' should be a DateTime instance.");
