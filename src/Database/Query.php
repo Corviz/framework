@@ -25,7 +25,7 @@ class Query
     /**
      * @var array
      */
-    private $fields = ['*'];
+    private $fields = [];
 
     /**
      * @var string
@@ -132,6 +132,18 @@ class Query
     public function execute(array $params = []) : Result
     {
         $params = array_replace($this->parameters, $params);
+
+        if (
+            empty($this->fields)
+            && empty($this->avgAggregate)
+            && empty($this->countAggregate)
+            && empty($this->minAggregate)
+            && empty($this->maxAggregate)
+            && empty($this->sumAggregate)
+        ) {
+            $this->fields = ['*'];
+        }
+
         return $this->connection->select($this, $params);
     }
 
