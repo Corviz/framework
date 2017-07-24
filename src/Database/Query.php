@@ -87,9 +87,16 @@ class Query
      */
     private $whereClause;
 
+    /**
+     * @param string $avgField
+     *
+     * @return $this
+     */
     public function avg(string $avgField)
     {
         $this->avgAggregate = $avgField;
+
+        return $this;
     }
 
     /**
@@ -107,10 +114,14 @@ class Query
 
     /**
      * @param string $countField
+     *
+     * @return $this
      */
     public function count(string $countField)
     {
         $this->countAggregate = $countField;
+
+        return $this;
     }
 
     /**
@@ -296,18 +307,26 @@ class Query
 
     /**
      * @param string $maxAggregate
+     *
+     * @return $this
      */
     public function max(string $maxAggregate)
     {
         $this->maxAggregate = $maxAggregate;
+
+        return $this;
     }
 
     /**
      * @param string $minAggregate
+     *
+     * @return $this
      */
     public function min(string $minAggregate)
     {
         $this->minAggregate = $minAggregate;
+
+        return $this;
     }
 
     /**
@@ -352,10 +371,14 @@ class Query
 
     /**
      * @param string $sumAggregate
+     *
+     * @return $this
      */
     public function sum(string $sumAggregate)
     {
         $this->sumAggregate = $sumAggregate;
+
+        return $this;
     }
 
     /**
