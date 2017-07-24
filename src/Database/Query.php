@@ -8,9 +8,19 @@ use Corviz\Database\Query\WhereClause;
 class Query
 {
     /**
+     * @var string
+     */
+    private $avgAggregate = '';
+
+    /**
      * @var Connection
      */
     private $connection;
+
+    /**
+     * @var string
+     */
+    private $countAggregate = '';
 
     /**
      * @var array
@@ -26,6 +36,16 @@ class Query
      * @var Join[]
      */
     private $joins = [];
+
+    /**
+     * @var string
+     */
+    private $maxAggregate = '';
+
+    /**
+     * @var string
+     */
+    private $minAggregate = '';
 
     /**
      * @var array
@@ -58,9 +78,19 @@ class Query
     private $queryUnionAll = false;
 
     /**
+     * @var string
+     */
+    private $sumAggregate = '';
+
+    /**
      * @var WhereClause
      */
     private $whereClause;
+
+    public function avg(string $avgField)
+    {
+        $this->avgAggregate = $avgField;
+    }
 
     /**
      * @param $paramValue
@@ -73,6 +103,14 @@ class Query
         } else {
             $this->parameters[$paramKey] = $paramValue;
         }
+    }
+
+    /**
+     * @param string $countField
+     */
+    public function count(string $countField)
+    {
+        $this->countAggregate = $countField;
     }
 
     /**
@@ -98,6 +136,22 @@ class Query
         $this->fromClause = $from;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvgAggregate(): string
+    {
+        return $this->avgAggregate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountAggregate(): string
+    {
+        return $this->countAggregate;
     }
 
     /**
@@ -133,6 +187,22 @@ class Query
     }
 
     /**
+     * @return string
+     */
+    public function getMaxAggregate(): string
+    {
+        return $this->maxAggregate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMinAggregate(): string
+    {
+        return $this->minAggregate;
+    }
+
+    /**
      * @return int|null
      */
     public function getOffset()
@@ -154,6 +224,14 @@ class Query
     public function getParameters() : array
     {
         return $this->parameters;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSumAggregate(): string
+    {
+        return $this->sumAggregate;
     }
 
     /**
@@ -217,6 +295,22 @@ class Query
     }
 
     /**
+     * @param string $maxAggregate
+     */
+    public function max(string $maxAggregate)
+    {
+        $this->maxAggregate = $maxAggregate;
+    }
+
+    /**
+     * @param string $minAggregate
+     */
+    public function min(string $minAggregate)
+    {
+        $this->minAggregate = $minAggregate;
+    }
+
+    /**
      * @param int $offset
      *
      * @return Query
@@ -254,6 +348,14 @@ class Query
         $this->fields = $fields;
 
         return $this;
+    }
+
+    /**
+     * @param string $sumAggregate
+     */
+    public function sum(string $sumAggregate)
+    {
+        $this->sumAggregate = $sumAggregate;
     }
 
     /**
