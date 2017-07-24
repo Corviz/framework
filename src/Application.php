@@ -91,7 +91,7 @@ class Application implements Runnable
      */
     public function run(...$args)
     {
-        //TODO: turn code into parts (methods)
+        //@TODO: turn code into parts (submethods)
         self::$current = $this;
         $this->container->set(self::class, $this);
 
