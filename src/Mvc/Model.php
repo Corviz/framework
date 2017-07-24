@@ -50,6 +50,17 @@ abstract class Model
     private $data = [];
 
     /**
+     * @return Query
+     */
+    public static function createQuery() : Query
+    {
+        $query = self::getConnection()->createQuery();
+        $query->from(self::getTable());
+
+        return $query;
+    }
+
+    /**
      * @param \Closure|null $filterFn     An anonymous function that receives
      *                                    an instance of \Corviz\Database\Query as parameter
      * @param bool          $applySetters
