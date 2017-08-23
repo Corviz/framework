@@ -263,6 +263,34 @@ abstract class Model
     }
 
     /**
+     * Checks if the current Model exists in the storage.
+     * @return bool
+     */
+    public function exists() : bool
+    {
+        $query = static::createQuery();
+        $pks = static::getPrimaryKeys();
+        $pkValues = $this->getPrimaryKeyValues();
+
+        if (count($pks) != count($pkValues)) {
+            return false;
+        }
+
+        $filterFunction = function(WhereClause $whereClause) use (&$pkValues, $query){
+            foreach ($pkValues as $field => $value) {
+                $whereClause->and($field, '=', '?');
+                $query->bind($value);
+            }
+        };
+        $query->where($filterFunction)
+            ->count('*');
+
+        $row =$query->execute()->fetch();
+
+        return $row['all_count'] > 0;
+    }
+
+    /**
      * @param array $data
      * @param bool  $applySetters
      */
@@ -296,6 +324,20 @@ abstract class Model
     final public function getData() : array
     {
         return $this->data;
+    }
+
+    /**
+     * Get the current primary key(s) value(s)
+     * in an associative array.
+     *
+     * @return array
+     */
+    final public function getPrimaryKeyValues() : array
+    {
+        $keys = static::getPrimaryKeys();
+        $values = array_intersect_key($this->data, array_flip($keys));
+
+        return $values;
     }
 
     /**
