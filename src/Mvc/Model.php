@@ -251,6 +251,18 @@ abstract class Model
     }
 
     /**
+     * Delete stored entry related to the current model.
+     *
+     * @return bool
+     */
+    public function delete() : bool
+    {
+        $result = self::getConnection()->delete($this);
+
+        return $result->count() > 0;
+    }
+
+    /**
      * @param array $data
      * @param bool  $applySetters
      */
@@ -346,6 +358,8 @@ abstract class Model
     }
 
     /**
+     * Create or update a record in the database/storage.
+     *
      * @param array $data
      *
      * @return bool
