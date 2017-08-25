@@ -6,6 +6,7 @@ use Corviz\Database\Connection;
 use Corviz\Database\ConnectionFactory;
 use Corviz\Database\Query;
 use Corviz\Database\Query\WhereClause;
+use Corviz\Database\Result;
 
 abstract class Model
 {
@@ -341,6 +342,16 @@ abstract class Model
     }
 
     /**
+     * Insert data in the database.
+     *
+     * @return Result
+     */
+    public function insert() : Result
+    {
+        return self::getConnection()->insert($this);
+    }
+
+    /**
      * @param string $otherClass
      * @param array $fieldsMap
      * @param bool $applySetters
@@ -409,9 +420,25 @@ abstract class Model
     public function save(array $data = []) : bool
     {
         $this->fill($data);
-        $result = self::getConnection()->save($this);
+        $result = null;
+
+        if ($this->exists()) {
+            $result = $this->update();
+        } else {
+            $result = $this->insert();
+        }
 
         return $result->count() > 0;
+    }
+
+    /**
+     * Update row in the database.
+     *
+     * @return Result
+     */
+    public function update() : Result
+    {
+        return self::getConnection()->update($this);
     }
 
     /**

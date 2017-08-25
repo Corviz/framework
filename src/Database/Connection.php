@@ -86,14 +86,14 @@ abstract class Connection
     abstract public function rollback() : bool;
 
     /**
-     * Save the model data in its respective
+     * Insert the model data in it's respective
      * table or collection.
      *
      * @param Model $model
      *
      * @return Result
      */
-    abstract public function save(Model $model) : Result;
+    abstract public function insert(Model $model) : Result;
 
     /**
      * Execute a select (or find) operation according
@@ -105,6 +105,16 @@ abstract class Connection
      * @return Result
      */
     abstract public function select(Query $query, array $params) : Result;
+
+    /**
+     * Update the model data in it's respective
+     * table or collection.
+     *
+     * @param Model $model
+     *
+     * @return Result
+     */
+    abstract public function update(Model $model) : Result;
 
     /**
      * Connection constructor.
