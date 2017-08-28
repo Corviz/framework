@@ -355,7 +355,7 @@ abstract class Model
          * current model.
          */
         if ($result->count()) {
-            $pks = static::getPrimaryKeyValues();
+            $pks = static::getPrimaryKeys();
 
             if (count($pks) == 1) {
                 $this->data[$pks[0]] = static::getConnection()->lastId();
