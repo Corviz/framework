@@ -348,7 +348,21 @@ abstract class Model
      */
     public function insert() : Result
     {
-        return self::getConnection()->insert($this);
+        $result = self::getConnection()->insert($this);
+
+        /*
+         * In a successful insert operation, assign the new id to
+         * current model.
+         */
+        if ($result->count()) {
+            $pks = static::getPrimaryKeyValues();
+
+            if (count($pks) == 1) {
+                $this->data[$pks[0]] = static::getConnection()->lastId();
+            }
+        }
+
+        return $result;
     }
 
     /**
