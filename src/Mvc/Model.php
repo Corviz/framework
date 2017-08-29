@@ -197,6 +197,7 @@ abstract class Model
     private static function getModelProperty($name)
     {
         self::initModelProperties();
+
         return isset(self::$modelProperties[static::class][$name]) ?
             self::$modelProperties[static::class][$name] : null;
     }
@@ -213,12 +214,12 @@ abstract class Model
         }
 
         $properties = [
-            'connection' => ConnectionFactory::build(static::$connection),
-            'dateFields' => static::$dates ?: [],
-            'fields' => static::$fields ?: [],
+            'connection'  => ConnectionFactory::build(static::$connection),
+            'dateFields'  => static::$dates ?: [],
+            'fields'      => static::$fields ?: [],
             'primaryKeys' => (array) static::$primaryKey,
-            'table' => static::$table,
-            'timestamps' => (bool) static::$timestamps,
+            'table'       => static::$table,
+            'timestamps'  => (bool) static::$timestamps,
         ];
 
         if ($properties['timestamps']) {
@@ -265,6 +266,7 @@ abstract class Model
 
     /**
      * Checks if the current Model exists in the storage.
+     *
      * @return bool
      */
     public function exists() : bool
@@ -277,7 +279,7 @@ abstract class Model
             return false;
         }
 
-        $filterFunction = function(WhereClause $whereClause) use (&$pkValues, $query){
+        $filterFunction = function (WhereClause $whereClause) use (&$pkValues, $query) {
             foreach ($pkValues as $field => $value) {
                 $whereClause->and($field, '=', '?');
                 $query->bind($value);
@@ -286,7 +288,7 @@ abstract class Model
         $query->where($filterFunction)
             ->count('*');
 
-        $row =$query->execute()->fetch();
+        $row = $query->execute()->fetch();
 
         return $row['all_count'] > 0;
     }
@@ -367,8 +369,8 @@ abstract class Model
 
     /**
      * @param string $otherClass
-     * @param array $fieldsMap
-     * @param bool $applySetters
+     * @param array  $fieldsMap
+     * @param bool   $applySetters
      *
      * @return Model[]
      */
@@ -379,8 +381,8 @@ abstract class Model
     ) {
         $thisValues = array_intersect_key($this->data, $fieldsMap);
 
-        $filterFn = function(Query $query) use (&$thisValues, &$fieldsMap){
-            $query->where(function(WhereClause $where) use(&$query, &$thisValues, &$fieldsMap){
+        $filterFn = function (Query $query) use (&$thisValues, &$fieldsMap) {
+            $query->where(function (WhereClause $where) use (&$query, &$thisValues, &$fieldsMap) {
                 foreach ($fieldsMap as $thisKey => $thatKey) {
                     $where->and($thatKey, '=', '?');
                     $query->bind($thisValues[$thisKey]);
@@ -394,8 +396,8 @@ abstract class Model
 
     /**
      * @param string $otherClass
-     * @param array $fieldsMap
-     * @param bool $applySetters
+     * @param array  $fieldsMap
+     * @param bool   $applySetters
      *
      * @return Model|null
      */
@@ -408,8 +410,8 @@ abstract class Model
 
         $thisValues = array_intersect_key($this->data, $fieldsMap);
 
-        $filterFn = function(Query $query) use (&$thisValues, &$fieldsMap){
-            $query->where(function(WhereClause $where) use(&$query, &$thisValues, &$fieldsMap){
+        $filterFn = function (Query $query) use (&$thisValues, &$fieldsMap) {
+            $query->where(function (WhereClause $where) use (&$query, &$thisValues, &$fieldsMap) {
                 foreach ($fieldsMap as $thisKey => $thatKey) {
                     $where->and($thatKey, '=', '?');
                     $query->bind($thisValues[$thisKey]);
@@ -421,6 +423,7 @@ abstract class Model
 
         /* @var $otherClass Model */
         $search = $otherClass::find($filterFn, $applySetters);
+
         return !(empty($search)) ? $search[0] : null;
     }
 

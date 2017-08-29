@@ -183,6 +183,7 @@ class Container
                 //Only possible to pass get classes
                 if (is_null($pClass)) {
                     $pName = $parameter->getName();
+
                     throw new \Exception("Parameter '$pName' is not a class");
                 }
 
