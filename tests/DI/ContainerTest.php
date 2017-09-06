@@ -3,8 +3,9 @@
 namespace Tests\Corviz\Framework\DI;
 
 use Corviz\DI\Container;
+use PHPUnit\Framework\TestCase;
 
-class ContainerTest extends \PHPUnit_Framework_TestCase
+class ContainerTest extends TestCase
 {
     public function testCallToDeclaredDependency()
     {

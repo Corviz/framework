@@ -3,8 +3,9 @@
 namespace Tests\Corviz\Framework\String;
 
 use Corviz\String\StringUtils;
+use PHPUnit\Framework\TestCase;
 
-class StringUtilsTest extends \PHPUnit_Framework_TestCase
+class StringUtilsTest extends TestCase
 {
     /*
      * Method: endsWith

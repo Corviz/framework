@@ -5,8 +5,9 @@ namespace Tests\Corviz\Framework\Routing;
 use Corviz\Http\Request;
 use Corviz\Routing\Map;
 use Corviz\Routing\Route;
+use PHPUnit\Framework\TestCase;
 
-class MapTest extends \PHPUnit_Framework_TestCase
+class MapTest extends TestCase
 {
     /*
      * Method: getCurrentRoute
