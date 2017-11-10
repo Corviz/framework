@@ -70,6 +70,28 @@ class Map
     }
 
     /**
+     * @param $alias
+     *
+     * @return string|null
+     */
+    public static function getRouteByAlias($alias)
+    {
+        //No routes
+        if (empty(self::$routes)) {
+            return null;
+        }
+
+        //Search in the map
+        $route = null;
+
+        if (($index = array_search($alias, array_column(self::$routes, 'alias'))) !== false) {
+            $route = self::$routes[$index]['route'];
+        }
+
+        return $route;
+    }
+
+    /**
      * Map constructor.
      */
     private function __construct()
