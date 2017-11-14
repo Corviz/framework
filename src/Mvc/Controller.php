@@ -76,7 +76,12 @@ abstract class Controller
             }
 
             //clear route
-            $routePos = strpos(rtrim($completeUrl, '/'), rtrim($routeStr, '/'));
+            $trimmedCompUrl = rtrim($completeUrl, '/');
+            $trimmedRouteStr = rtrim($routeStr, '/');
+
+            $routePos = $trimmedCompUrl && $trimmedRouteStr ?
+                strpos($trimmedCompUrl, $trimmedRouteStr) : false;
+
             if ($routePos !== false) {
                 $completeUrl = substr($completeUrl, 0, $routePos);
             }
