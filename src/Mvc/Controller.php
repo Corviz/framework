@@ -45,22 +45,24 @@ abstract class Controller
     }
 
     /**
-     * @param $ref
+     * @param string $ref
      * @param array $params
+     * @param string $schema
      *
      * @return string
      */
-    protected function link($ref, array $params = []) : string
+    protected function link(string $ref, array $params = [], string $schema = null) : string
     {
         $link = null;
-        $getBaseUrl = function() {
+        $getBaseUrl = function() use ($schema) {
+
+            //Guess url schema, in case it was not informed
+            if (!$schema) {
+                $schema = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http';
+            }
+
             //Capture complete URL
-            $completeUrl = sprintf(
-                "%s://%s%s",
-                isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http',
-                $_SERVER['SERVER_NAME'],
-                $_SERVER['REQUEST_URI']
-            );
+            $completeUrl = "$schema://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
             $routeStr = Request::current()->getRouteStr();
 
             //clear params from complete url
@@ -97,19 +99,21 @@ abstract class Controller
         //Is alias?
         $route = Map::getRouteByAlias($ref);
         if ($route) {
-            $pString = new ParametrizedString($route);
-            $route = $pString->parse($params);
-
             $link = $getBaseUrl().$route;
-            foreach ($pString->getParameters() as $parameterName) {
-                unset($params[$parameterName]);
-            }
         } elseif (StringUtils::startsWith($ref,'/')) {
             //Is a route?
             $link = $getBaseUrl().$ref;
         } else {
             //Neither route or alias;
             $link = $ref;
+        }
+
+        //Parse
+        $pString = new ParametrizedString($link);
+        $link = $pString->parse($params);
+
+        foreach ($pString->getParameters() as $parameterName) {
+            unset($params[$parameterName]);
         }
 
         //Add remaining params
