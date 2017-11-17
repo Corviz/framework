@@ -3,8 +3,8 @@
 namespace Corviz\Mvc;
 
 use Corviz\Application;
-use Corviz\Mvc\View\TemplateEngine;
 use Corviz\Http\Request;
+use Corviz\Mvc\View\TemplateEngine;
 use Corviz\Routing\Map;
 use Corviz\String\ParametrizedString;
 use Corviz\String\StringUtils;
@@ -46,7 +46,7 @@ abstract class Controller
 
     /**
      * @param string $ref
-     * @param array $params
+     * @param array  $params
      * @param string $schema
      *
      * @return string
@@ -54,7 +54,7 @@ abstract class Controller
     protected function link(string $ref, array $params = [], string $schema = null) : string
     {
         $link = null;
-        $getBaseUrl = function() use ($schema) {
+        $getBaseUrl = function () use ($schema) {
 
             //Guess url schema, in case it was not informed
             if (!$schema) {
@@ -100,7 +100,7 @@ abstract class Controller
         $route = Map::getRouteByAlias($ref);
         if ($route) {
             $link = $getBaseUrl().$route;
-        } elseif (StringUtils::startsWith($ref,'/')) {
+        } elseif (StringUtils::startsWith($ref, '/')) {
             //Is a route?
             $link = $getBaseUrl().$ref;
         } else {

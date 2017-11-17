@@ -65,7 +65,7 @@ class Application implements Runnable
      *
      * @return \Corviz\Application
      */
-    public static function current() : Application
+    public static function current() : self
     {
         return self::$current;
     }
