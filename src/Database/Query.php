@@ -260,7 +260,7 @@ class Query
     /**
      * @return Query
      */
-    public function getUnion() : Query
+    public function getUnion() : self
     {
         return $this->queryUnion;
     }
@@ -399,7 +399,7 @@ class Query
      *
      * @return Query
      */
-    public function union(Query $query, $isUnionAll = false)
+    public function union(self $query, $isUnionAll = false)
     {
         $this->queryUnion = $query;
         $this->queryUnionAll = $isUnionAll;
@@ -412,7 +412,7 @@ class Query
      *
      * @return Query
      */
-    public function unionAll(Query $query)
+    public function unionAll(self $query)
     {
         return $this->union($query, true);
     }

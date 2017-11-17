@@ -78,7 +78,7 @@ class Map
     {
         //No routes
         if (empty(self::$routes)) {
-            return null;
+            return;
         }
 
         //Search in the map

@@ -140,7 +140,7 @@ class Request
      *
      * @param Request $request
      */
-    private static function fillCurrentAjaxState(Request $request)
+    private static function fillCurrentAjaxState(self $request)
     {
         $request->setAjax(
             isset($_SERVER['HTTP_X_REQUESTED_WITH'])
@@ -154,7 +154,7 @@ class Request
      *
      * @param Request $request
      */
-    private static function fillCurrentIsSecure(Request $request)
+    private static function fillCurrentIsSecure(self $request)
     {
         $request->setSecure(
             !empty($_SERVER['HTTPS'])
@@ -168,7 +168,7 @@ class Request
      *
      * @param Request $request
      */
-    private static function fillCurrentHeaders(Request $request)
+    private static function fillCurrentHeaders(self $request)
     {
         $headers = [];
 
@@ -204,7 +204,7 @@ class Request
      *
      * @param Request $request
      */
-    private static function fillCurrentRouteString(Request $request)
+    private static function fillCurrentRouteString(self $request)
     {
         //Read data from $_SERVER array
         $requestUri = urldecode($_SERVER['REQUEST_URI']);
