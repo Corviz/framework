@@ -151,14 +151,6 @@ abstract class Model implements \JsonSerializable
     }
 
     /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->getData();
-    }
-
-    /**
      * @param int|string|array $primary
      * @param bool             $applySetters
      *
@@ -373,6 +365,14 @@ abstract class Model implements \JsonSerializable
         }
 
         return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->getData();
     }
 
     /**
