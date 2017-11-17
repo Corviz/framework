@@ -8,7 +8,7 @@ use Corviz\Database\Query;
 use Corviz\Database\Query\WhereClause;
 use Corviz\Database\Result;
 
-abstract class Model
+abstract class Model implements \JsonSerializable
 {
     /**
      * @var string
@@ -148,6 +148,14 @@ abstract class Model
     final public static function hasTimestamps() : bool
     {
         return self::getModelProperty('timestamps');
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->getData();
     }
 
     /**
