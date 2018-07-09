@@ -38,6 +38,8 @@ abstract class Controller
      * @param string $className
      *
      * @return mixed
+     *
+     * @throws \Exception
      */
     protected function container(string $className)
     {
@@ -133,6 +135,8 @@ abstract class Controller
      * @param array  $data
      *
      * @return View
+     *
+     * @throws \Exception
      */
     protected function view(string $templateName, array $data = [])
     {
