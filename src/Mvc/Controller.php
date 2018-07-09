@@ -38,9 +38,9 @@ abstract class Controller
      *
      * @param string $className
      *
-     * @return mixed
-     *
      * @throws \Exception
+     *
+     * @return mixed
      */
     protected function container(string $className)
     {
@@ -132,8 +132,8 @@ abstract class Controller
     /**
      * Creates a redirect response.
      *
-     * @param string $ref
-     * @param array $params
+     * @param string      $ref
+     * @param array       $params
      * @param string|null $schema
      *
      * @return Response
@@ -155,9 +155,9 @@ abstract class Controller
      * @param string $templateName
      * @param array  $data
      *
-     * @return View
-     *
      * @throws \Exception
+     *
+     * @return View
      */
     protected function view(string $templateName, array $data = [])
     {
