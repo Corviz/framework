@@ -143,7 +143,7 @@ abstract class Controller
         $url = $this->link($ref, $params, $schema);
 
         $response = new Response();
-        $response->setCode(Response::CODE_FOUND);
+        $response->setCode(Response::CODE_REDIRECT_SEE_OTHER);
         $response->addHeader('Location', $url);
 
         return $response;
