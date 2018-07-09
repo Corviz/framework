@@ -4,6 +4,7 @@ namespace Corviz\Mvc;
 
 use Corviz\Application;
 use Corviz\Http\Request;
+use Corviz\Http\Response;
 use Corviz\Mvc\View\TemplateEngine;
 use Corviz\Routing\Map;
 use Corviz\String\ParametrizedString;
@@ -126,6 +127,26 @@ abstract class Controller
         }
 
         return $link;
+    }
+
+    /**
+     * Creates a redirect response.
+     *
+     * @param string $ref
+     * @param array $params
+     * @param string|null $schema
+     *
+     * @return Response
+     */
+    protected function redirect(string $ref, array $params = [], string $schema = null)
+    {
+        $url = $this->link($ref, $params, $schema);
+
+        $response = new Response();
+        $response->setCode(Response::CODE_FOUND);
+        $response->addHeader('Location', $url);
+
+        return $response;
     }
 
     /**
