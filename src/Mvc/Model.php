@@ -545,6 +545,7 @@ abstract class Model implements \JsonSerializable
         if (
             in_array($name, self::getDateFields())
             && !($value instanceof \DateTime)
+            && !is_null($value)
         ) {
             throw new \Exception("Field '$name' should be a DateTime instance.");
         }
