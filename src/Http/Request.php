@@ -4,6 +4,8 @@ namespace Corviz\Http;
 
 use Corviz\Http\RequestParser\ContentTypeParser;
 use Corviz\Http\RequestParser\GenericParser;
+use Exception;
+use InvalidArgumentException;
 
 class Request
 {
@@ -12,6 +14,7 @@ class Request
     const METHOD_PUT = 'PUT';
     const METHOD_PATCH = 'PATCH';
     const METHOD_DELETE = 'DELETE';
+    const METHOD_OPTIONS = 'OPTIONS';
 
     /**
      * @var static
@@ -116,13 +119,14 @@ class Request
             self::METHOD_PUT,
             self::METHOD_PATCH,
             self::METHOD_DELETE,
+            self::METHOD_OPTIONS,
         ];
     }
 
     /**
      * @param string $parserName
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function registerParser(string $parserName)
     {
@@ -131,7 +135,7 @@ class Request
         if ($parser instanceof ContentTypeParser) {
             self::$registeredParsers[] = $parser;
         } else {
-            throw new \Exception("$parserName is not a valid parser");
+            throw new Exception("$parserName is not a valid parser");
         }
     }
 
@@ -351,7 +355,7 @@ class Request
         $validMethods = self::getValidMethods();
 
         if (!in_array($method, $validMethods)) {
-            throw new \InvalidArgumentException("Invalid method: $method");
+            throw new InvalidArgumentException("Invalid method: $method");
         }
 
         $this->method = $method;

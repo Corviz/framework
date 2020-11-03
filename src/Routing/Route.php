@@ -4,6 +4,7 @@ namespace Corviz\Routing;
 
 use Closure;
 use Corviz\Http\Request;
+use InvalidArgumentException;
 
 final class Route
 {
@@ -167,6 +168,19 @@ final class Route
     }
 
     /**
+     * Creates a route that listens to OPTIONS http method.
+     *
+     * @param string $routeStr
+     * @param array  $info
+     */
+    public static function options(
+        string $routeStr,
+        array $info
+    ) {
+        self::create([Request::METHOD_OPTIONS], $routeStr, $info);
+    }
+
+    /**
      * Creates a route that listens to POST http method.
      *
      * @param string $routeStr
@@ -221,11 +235,11 @@ final class Route
         }
 
         if (!$routeStr) {
-            throw new \InvalidArgumentException("Route can't be empty");
+            throw new InvalidArgumentException("Route can't be empty");
         }
 
         if (!preg_match(self::REGEXP_VALIDATE_STRING, $routeStr)) {
-            throw new \InvalidArgumentException("Invalid route: $routeStr");
+            throw new InvalidArgumentException("Invalid route: $routeStr");
         }
     }
 
