@@ -262,7 +262,7 @@ final class Route
     /**
      * @return string
      */
-    public function getControllerName() : string
+    public function getControllerName(): string
     {
         return $this->controllerName;
     }
