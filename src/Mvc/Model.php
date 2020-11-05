@@ -129,6 +129,14 @@ abstract class Model implements \JsonSerializable
     /**
      * @return array
      */
+    final public static function getFields() : array
+    {
+        return self::getModelProperty('fields');
+    }
+
+    /**
+     * @return array
+     */
     final public static function getPrimaryKeys() : array
     {
         return self::getModelProperty('primaryKeys');
