@@ -48,7 +48,7 @@ class WhereClause
     /**
      * @return array
      */
-    public function getClauses() : array
+    public function getClauses(): array
     {
         return $this->clauses;
     }
@@ -87,7 +87,7 @@ class WhereClause
     /**
      * @return bool
      */
-    public function isEmpty() : bool
+    public function isEmpty(): bool
     {
         return empty($this->clauses);
     }

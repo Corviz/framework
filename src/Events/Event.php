@@ -55,7 +55,7 @@ abstract class Event implements Observable
     /**
      * @return array
      */
-    public function getData() : array
+    public function getData(): array
     {
         return $this->data;
     }
@@ -63,7 +63,7 @@ abstract class Event implements Observable
     /**
      * @return string
      */
-    public function getType() : string
+    public function getType(): string
     {
         return $this->type;
     }
@@ -79,7 +79,7 @@ abstract class Event implements Observable
     /**
      * @return bool
      */
-    public function isCancelled() : bool
+    public function isCancelled(): bool
     {
         return $this->cancelled;
     }

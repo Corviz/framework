@@ -129,7 +129,7 @@ class Query
      *
      * @return Result
      */
-    public function execute(array $params = []) : Result
+    public function execute(array $params = []): Result
     {
         $params = array_replace($this->parameters, $params);
 
@@ -180,7 +180,7 @@ class Query
     /**
      * @return array
      */
-    public function getFields() : array
+    public function getFields(): array
     {
         return $this->fields;
     }
@@ -188,7 +188,7 @@ class Query
     /**
      * @return string
      */
-    public function getFrom() : string
+    public function getFrom(): string
     {
         return $this->fromClause;
     }
@@ -196,7 +196,7 @@ class Query
     /**
      * @return Join[]
      */
-    public function getJoins() : array
+    public function getJoins(): array
     {
         return $this->joins;
     }
@@ -236,7 +236,7 @@ class Query
     /**
      * @return array
      */
-    public function getOrdination() : array
+    public function getOrdination(): array
     {
         return $this->ordination;
     }
@@ -244,7 +244,7 @@ class Query
     /**
      * @return array
      */
-    public function getParameters() : array
+    public function getParameters(): array
     {
         return $this->parameters;
     }
@@ -260,7 +260,7 @@ class Query
     /**
      * @return Query
      */
-    public function getUnion() : self
+    public function getUnion(): self
     {
         return $this->queryUnion;
     }
@@ -268,7 +268,7 @@ class Query
     /**
      * @return WhereClause
      */
-    public function getWhereClause() : WhereClause
+    public function getWhereClause(): WhereClause
     {
         return $this->whereClause;
     }
@@ -276,7 +276,7 @@ class Query
     /**
      * @return bool
      */
-    public function isUnionAll() : bool
+    public function isUnionAll(): bool
     {
         return $this->queryUnionAll;
     }
@@ -284,7 +284,7 @@ class Query
     /**
      * @return bool
      */
-    public function hasUnion() : bool
+    public function hasUnion(): bool
     {
         return !is_null($this->queryUnion);
     }

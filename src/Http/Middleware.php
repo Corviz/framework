@@ -11,5 +11,5 @@ abstract class Middleware
      *
      * @return Response
      */
-    abstract public function handle(Closure $next) : Response;
+    abstract public function handle(Closure $next): Response;
 }

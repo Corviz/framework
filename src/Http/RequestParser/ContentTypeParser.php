@@ -23,7 +23,7 @@ abstract class ContentTypeParser
      *
      * @return bool
      */
-    public function canHandle(string $type) : bool
+    public function canHandle(string $type): bool
     {
         $response = false;
 
@@ -42,7 +42,7 @@ abstract class ContentTypeParser
      *
      * @return array
      */
-    abstract public function getData() : array;
+    abstract public function getData(): array;
 
     /**
      * @param Request $request
@@ -58,12 +58,12 @@ abstract class ContentTypeParser
      *
      * @return array
      */
-    abstract public function getFiles() : array;
+    abstract public function getFiles(): array;
 
     /**
      * @return \Corviz\Http\Request
      */
-    protected function getRequest() : Request
+    protected function getRequest(): Request
     {
         return $this->request;
     }

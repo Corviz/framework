@@ -18,7 +18,7 @@ class GenericParser extends ContentTypeParser
      *
      * @return bool
      */
-    public function canHandle(string $type) : bool
+    public function canHandle(string $type): bool
     {
         return true;
     }
@@ -36,7 +36,7 @@ class GenericParser extends ContentTypeParser
      *
      * @return array
      */
-    public function getData() : array
+    public function getData(): array
     {
         return !empty($_REQUEST) ? $_REQUEST : [];
     }
@@ -47,7 +47,7 @@ class GenericParser extends ContentTypeParser
      *
      * @return array
      */
-    public function getFiles() : array
+    public function getFiles(): array
     {
         return [];
     }

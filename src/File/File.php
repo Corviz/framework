@@ -20,7 +20,7 @@ class File
      *
      * @return bool
      */
-    public function copy(string $destination, $overwrite = false) : bool
+    public function copy(string $destination, $overwrite = false): bool
     {
         $copied = false;
 
@@ -39,7 +39,7 @@ class File
      *
      * @return bool
      */
-    public function delete() : bool
+    public function delete(): bool
     {
         $removed = null;
 
@@ -57,7 +57,7 @@ class File
      *
      * @return bool
      */
-    public function exists() : bool
+    public function exists(): bool
     {
         return $this->realPath && file_exists($this->realPath);
     }
@@ -70,7 +70,7 @@ class File
      *
      * @return string
      */
-    public function getMimeType() : string
+    public function getMimeType(): string
     {
         return mime_content_type($this->realPath);
     }
@@ -80,7 +80,7 @@ class File
      *
      * @return string
      */
-    public function getRealPath() : string
+    public function getRealPath(): string
     {
         return $this->realPath;
     }
@@ -91,7 +91,7 @@ class File
      *
      * @return int
      */
-    public function getSize() : int
+    public function getSize(): int
     {
         $size = -1;
 
@@ -107,7 +107,7 @@ class File
      *
      * @return bool
      */
-    public function isDirectory() : bool
+    public function isDirectory(): bool
     {
         return is_dir($this->realPath);
     }
@@ -117,7 +117,7 @@ class File
      *
      * @return bool
      */
-    public function isFile() : bool
+    public function isFile(): bool
     {
         return is_file($this->realPath);
     }
@@ -127,7 +127,7 @@ class File
      *
      * @return bool
      */
-    public function isReadable() : bool
+    public function isReadable(): bool
     {
         return is_readable($this->realPath);
     }
@@ -137,7 +137,7 @@ class File
      *
      * @return bool
      */
-    public function isWriteable() : bool
+    public function isWriteable(): bool
     {
         return is_writable($this->realPath);
     }
@@ -167,7 +167,7 @@ class File
      *
      * @return bool
      */
-    public function rename(string $newName) : bool
+    public function rename(string $newName): bool
     {
         $renamed = rename($this->realPath, $newName);
 
@@ -183,7 +183,7 @@ class File
      *
      * @return bool
      */
-    public function write($data) : bool
+    public function write($data): bool
     {
         $success = false;
 

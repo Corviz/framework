@@ -17,7 +17,7 @@ class StringUtils
         string $haystack,
         string $needle,
         $caseSensitive = true
-    ) : bool {
+    ): bool {
         $needleLength = strlen($needle);
         $cmp = substr_compare(
             $haystack,
@@ -43,7 +43,7 @@ class StringUtils
         string $haystack,
         string $needle,
         $caseSensitive = true
-    ) : bool {
+    ): bool {
         $fName = $caseSensitive ? 'strpos' : 'stripos';
 
         return $fName($haystack, $needle) === 0;

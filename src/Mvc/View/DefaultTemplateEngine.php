@@ -22,7 +22,7 @@ class DefaultTemplateEngine implements TemplateEngine
      *
      * @return string
      */
-    public function draw(string $file, array $data) : string
+    public function draw(string $file, array $data): string
     {
         $this->file = $file;
         $this->data = $data;
@@ -35,7 +35,7 @@ class DefaultTemplateEngine implements TemplateEngine
      *
      * @return string
      */
-    private function getOutputs() : string
+    private function getOutputs(): string
     {
         ob_start();
         extract($this->data);

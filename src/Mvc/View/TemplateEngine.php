@@ -12,5 +12,5 @@ interface TemplateEngine
      *
      * @return string
      */
-    public function draw(string $file, array $data) : string;
+    public function draw(string $file, array $data): string;
 }

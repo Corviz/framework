@@ -10,7 +10,7 @@ interface Cacheable
      *
      * @return bool
      */
-    public function isCached() : bool;
+    public function isCached(): bool;
 
     /**
      * Read and returns the contents from the cache.
@@ -27,5 +27,5 @@ interface Cacheable
      *
      * @return bool
      */
-    public function storeInCache() : bool;
+    public function storeInCache(): bool;
 }

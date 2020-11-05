@@ -41,7 +41,7 @@ class ParametrizedString
      *
      * @return array
      */
-    public function getParameters() : array
+    public function getParameters(): array
     {
         if (is_null($this->parameters)) {
             $matches = [];
@@ -81,7 +81,7 @@ class ParametrizedString
      *
      * @return bool
      */
-    public function matches(string $strCheck) : bool
+    public function matches(string $strCheck): bool
     {
         $regExp = $this->getStrRegExp();
 
@@ -95,7 +95,7 @@ class ParametrizedString
      *
      * @return string
      */
-    public function parse(array $args = []) : string
+    public function parse(array $args = []): string
     {
         $strAux = $this->str;
         $params = $this->getParameters();
@@ -112,7 +112,7 @@ class ParametrizedString
     /**
      * @return string
      */
-    private function getStrRegExp() : string
+    private function getStrRegExp(): string
     {
         if (is_null($this->strRegExp)) {
             $regExp = preg_replace(self::PARAMS_SEARCH_REGEXP, $this->uniqueReplacement, $this->str);

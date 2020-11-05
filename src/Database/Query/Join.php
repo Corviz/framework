@@ -35,7 +35,7 @@ class Join
     /**
      * @return string
      */
-    public function getTable() : string
+    public function getTable(): string
     {
         return $this->table;
     }
@@ -43,7 +43,7 @@ class Join
     /**
      * @return string
      */
-    public function getType() : string
+    public function getType(): string
     {
         return $this->type;
     }
@@ -51,7 +51,7 @@ class Join
     /**
      * @return WhereClause
      */
-    public function getWhereClause() : WhereClause
+    public function getWhereClause(): WhereClause
     {
         return $this->whereClause;
     }

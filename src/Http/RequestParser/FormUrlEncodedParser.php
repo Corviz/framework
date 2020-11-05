@@ -23,7 +23,7 @@ class FormUrlEncodedParser extends ContentTypeParser
      *
      * @return array
      */
-    public function getData() : array
+    public function getData(): array
     {
         $data = [];
         $request = $this->getRequest();
@@ -59,7 +59,7 @@ class FormUrlEncodedParser extends ContentTypeParser
      *
      * @return array
      */
-    public function getFiles() : array
+    public function getFiles(): array
     {
         return [];
     }

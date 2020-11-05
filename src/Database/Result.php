@@ -14,7 +14,7 @@ abstract class Result implements \Countable
      *
      * @return int
      */
-    abstract public function count() : int;
+    abstract public function count(): int;
 
     /**
      * @return Row|null
@@ -24,12 +24,12 @@ abstract class Result implements \Countable
     /**
      * @return array
      */
-    abstract public function fetchAll() : array;
+    abstract public function fetchAll(): array;
 
     /**
      * @return Connection
      */
-    public function getConnection() : Connection
+    public function getConnection(): Connection
     {
         return $this->connection;
     }

@@ -229,7 +229,7 @@ class Request
     /**
      * @return string
      */
-    public function getClientIp() : string
+    public function getClientIp(): string
     {
         return $this->clientIp ?: '';
     }
@@ -237,7 +237,7 @@ class Request
     /**
      * @return string
      */
-    public function getContentType() : string
+    public function getContentType(): string
     {
         return $this->contentType;
     }
@@ -245,7 +245,7 @@ class Request
     /**
      * @return array
      */
-    public function getData() : array
+    public function getData(): array
     {
         return $this->parser->getData();
     }
@@ -253,7 +253,7 @@ class Request
     /**
      * @return array
      */
-    public function getFiles() : array
+    public function getFiles(): array
     {
         return $this->parser->getFiles();
     }
@@ -261,7 +261,7 @@ class Request
     /**
      * @return array
      */
-    public function getHeaders() : array
+    public function getHeaders(): array
     {
         return $this->headers ?: [];
     }
@@ -269,7 +269,7 @@ class Request
     /**
      * @return string
      */
-    public function getMethod() : string
+    public function getMethod(): string
     {
         return $this->method ?: '';
     }
@@ -277,7 +277,7 @@ class Request
     /**
      * @return array
      */
-    public function getQueryParams() : array
+    public function getQueryParams(): array
     {
         return $this->queryParams ?: [];
     }
@@ -285,7 +285,7 @@ class Request
     /**
      * @return string
      */
-    public function getRequestBody() : string
+    public function getRequestBody(): string
     {
         return $this->requestBody ?: '';
     }
@@ -293,7 +293,7 @@ class Request
     /**
      * @return string
      */
-    public function getRouteStr() : string
+    public function getRouteStr(): string
     {
         return $this->routeStr ?: '';
     }
@@ -301,7 +301,7 @@ class Request
     /**
      * @return bool
      */
-    public function isAjax() : bool
+    public function isAjax(): bool
     {
         return $this->ajax;
     }
@@ -309,7 +309,7 @@ class Request
     /**
      * @return bool
      */
-    public function isSecure() : bool
+    public function isSecure(): bool
     {
         return $this->secure;
     }

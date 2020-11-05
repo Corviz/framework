@@ -14,7 +14,7 @@ class ResponseFactory
      *
      * @return Response
      */
-    public static function build($input = null) : Response
+    public static function build($input = null): Response
     {
         //Is a response object already
         if ($input instanceof Response) {

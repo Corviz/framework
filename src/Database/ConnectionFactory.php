@@ -20,7 +20,7 @@ class ConnectionFactory
      *
      * @return \Corviz\Database\Connection
      */
-    public static function build(string $connectionName = null) : Connection
+    public static function build(string $connectionName = null): Connection
     {
         $configs = Application::current()->config('database');
         $connectionName = $connectionName ?: $configs['default'];

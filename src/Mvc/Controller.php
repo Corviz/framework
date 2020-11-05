@@ -20,7 +20,7 @@ abstract class Controller
     /**
      * @return array
      */
-    public function getMiddlewareList() : array
+    public function getMiddlewareList(): array
     {
         return $this->middlewareList;
     }
@@ -54,7 +54,7 @@ abstract class Controller
      *
      * @return string
      */
-    protected function link(string $ref, array $params = [], string $schema = null) : string
+    protected function link(string $ref, array $params = [], string $schema = null): string
     {
         $link = null;
         $getBaseUrl = function () use ($schema) {

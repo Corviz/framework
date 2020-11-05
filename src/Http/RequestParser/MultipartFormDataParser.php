@@ -23,7 +23,7 @@ class MultipartFormDataParser extends ContentTypeParser
      *
      * @return array
      */
-    public function getData() : array
+    public function getData(): array
     {
         $data = [];
 
@@ -40,7 +40,7 @@ class MultipartFormDataParser extends ContentTypeParser
      *
      * @return array
      */
-    public function getFiles() : array
+    public function getFiles(): array
     {
         $files = [];
 
@@ -91,7 +91,7 @@ class MultipartFormDataParser extends ContentTypeParser
      *
      * @return array
      */
-    protected function handleMultipleFile($file) : array
+    protected function handleMultipleFile($file): array
     {
         $fileBag = [];
 

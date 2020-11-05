@@ -65,7 +65,7 @@ class Application implements Runnable
      *
      * @return \Corviz\Application
      */
-    public static function current() : self
+    public static function current(): self
     {
         return self::$current;
     }
@@ -73,7 +73,7 @@ class Application implements Runnable
     /**
      * @return \Corviz\DI\Container
      */
-    public function getContainer() : Container
+    public function getContainer(): Container
     {
         return $this->container;
     }
@@ -81,7 +81,7 @@ class Application implements Runnable
     /**
      * @return string
      */
-    public function getDirectory() : string
+    public function getDirectory(): string
     {
         return $this->directory;
     }

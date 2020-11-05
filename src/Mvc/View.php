@@ -55,7 +55,8 @@ class View
         }
 
         return $this->templateEngine->draw(
-            $file, $this->data
+            $file,
+            $this->data
         );
     }
 

@@ -27,7 +27,7 @@ class JsonParser extends ContentTypeParser
      *
      * @return array
      */
-    public function getData() : array
+    public function getData(): array
     {
         $data = json_decode($this->getRequest()->getRequestBody(), true);
 
@@ -40,7 +40,7 @@ class JsonParser extends ContentTypeParser
      *
      * @return array
      */
-    public function getFiles() : array
+    public function getFiles(): array
     {
         return [];
     }

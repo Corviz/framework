@@ -25,7 +25,7 @@ class UploadedFile extends File
      *
      * @return string
      */
-    public function getMimeType() : string
+    public function getMimeType(): string
     {
         return $this->mimeType;
     }
@@ -36,7 +36,7 @@ class UploadedFile extends File
      *
      * @return string
      */
-    public function getOriginalName() : string
+    public function getOriginalName(): string
     {
         return $this->originalName;
     }

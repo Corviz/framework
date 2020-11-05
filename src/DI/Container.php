@@ -159,7 +159,7 @@ class Container
         $class,
         string $method = '__construct',
         array $predefined = []
-    ) : array {
+    ): array {
         $arguments = [];
         $refMethod = new \ReflectionMethod($class, $method);
 
@@ -225,7 +225,7 @@ class Container
      *
      * @return bool
      */
-    private function isDefined(string $name) : bool
+    private function isDefined(string $name): bool
     {
         return isset($this->map[$name]);
     }
@@ -235,7 +235,7 @@ class Container
      *
      * @return bool
      */
-    private function isSingleton(string $name) : bool
+    private function isSingleton(string $name): bool
     {
         return isset($this->singletonObjects[$name]);
     }
