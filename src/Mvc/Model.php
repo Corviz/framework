@@ -184,10 +184,10 @@ abstract class Model implements \JsonSerializable
             $rowData = $result->fetch()->getData();
 
             foreach (self::getDateFields() as $dateField) {
-                $rowData[$dateField] = date_create_from_format(
-                    $connection->getDateFormat(),
-                    $rowData[$dateField]
-                );
+                if (!$rowData[$dateField]) {
+                    continue;
+                }
+                $rowData[$dateField] = new \DateTime($rowData[$dateField]);
             }
 
             $object = new static();
