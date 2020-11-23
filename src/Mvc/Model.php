@@ -95,10 +95,12 @@ abstract class Model implements \JsonSerializable
                 $rowData = $row->getData();
 
                 foreach (self::getDateFields() as $dateField) {
-                    if (!$rowData[$dateField]) {
-                        continue;
-                    }
-                    $rowData[$dateField] = new \DateTime($rowData[$dateField]);
+                    if (empty($rowData[$dateField])) continue;
+
+                    $rowData[$dateField] = date_create_from_format(
+                        $connection->getDateFormat(),
+                        $rowData[$dateField]
+                    );
                 }
 
                 $instance->fill($rowData, $applySetters);
@@ -184,6 +186,8 @@ abstract class Model implements \JsonSerializable
             $rowData = $result->fetch()->getData();
 
             foreach (self::getDateFields() as $dateField) {
+                if (empty($rowData[$dateField])) continue;
+
                 $rowData[$dateField] = date_create_from_format(
                     $connection->getDateFormat(),
                     $rowData[$dateField]
