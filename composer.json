@@ -15,4 +15,7 @@
             "Corviz\\": "./src"
         }
     }
+    "scripts": {
+        "test": "./vendor/bin/phpunit"
+    }
 }
