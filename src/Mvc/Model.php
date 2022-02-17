@@ -53,7 +53,7 @@ abstract class Model implements \JsonSerializable
     /**
      * @return Query
      */
-    public static function createQuery() : Query
+    public static function createQuery(): Query
     {
         $query = self::getConnection()->createQuery();
         $query->from(self::getTable());
@@ -68,7 +68,7 @@ abstract class Model implements \JsonSerializable
      *
      * @return static[]
      */
-    public static function find(\Closure $filterFn = null, bool $applySetters = false) : array
+    public static function find(\Closure $filterFn = null, bool $applySetters = false): array
     {
         $connection = self::getConnection();
         $table = self::getModelProperty('table');
@@ -95,7 +95,9 @@ abstract class Model implements \JsonSerializable
                 $rowData = $row->getData();
 
                 foreach (self::getDateFields() as $dateField) {
-                    if (empty($rowData[$dateField])) continue;
+                    if (empty($rowData[$dateField])) {
+                        continue;
+                    }
 
                     $rowData[$dateField] = date_create_from_format(
                         $connection->getDateFormat(),
@@ -115,7 +117,7 @@ abstract class Model implements \JsonSerializable
     /**
      * @return Connection
      */
-    final public static function getConnection() : Connection
+    final public static function getConnection(): Connection
     {
         return self::getModelProperty('connection');
     }
@@ -123,7 +125,7 @@ abstract class Model implements \JsonSerializable
     /**
      * @return array
      */
-    final public static function getDateFields() : array
+    final public static function getDateFields(): array
     {
         return self::getModelProperty('dateFields');
     }
@@ -131,7 +133,7 @@ abstract class Model implements \JsonSerializable
     /**
      * @return array
      */
-    final public static function getFields() : array
+    final public static function getFields(): array
     {
         return self::getModelProperty('fields');
     }
@@ -139,7 +141,7 @@ abstract class Model implements \JsonSerializable
     /**
      * @return array
      */
-    final public static function getPrimaryKeys() : array
+    final public static function getPrimaryKeys(): array
     {
         return self::getModelProperty('primaryKeys');
     }
@@ -147,7 +149,7 @@ abstract class Model implements \JsonSerializable
     /**
      * @return string
      */
-    final public static function getTable() : string
+    final public static function getTable(): string
     {
         return self::getModelProperty('table');
     }
@@ -155,7 +157,7 @@ abstract class Model implements \JsonSerializable
     /**
      * @return bool
      */
-    final public static function hasTimestamps() : bool
+    final public static function hasTimestamps(): bool
     {
         return self::getModelProperty('timestamps');
     }
@@ -186,7 +188,9 @@ abstract class Model implements \JsonSerializable
             $rowData = $result->fetch()->getData();
 
             foreach (self::getDateFields() as $dateField) {
-                if (empty($rowData[$dateField])) continue;
+                if (empty($rowData[$dateField])) {
+                    continue;
+                }
 
                 $rowData[$dateField] = date_create_from_format(
                     $connection->getDateFormat(),
@@ -251,7 +255,7 @@ abstract class Model implements \JsonSerializable
      *
      * @return array
      */
-    private static function normalizePrimaryKeys($primary) : array
+    private static function normalizePrimaryKeys($primary): array
     {
         $pks = self::getPrimaryKeys();
 
@@ -269,7 +273,7 @@ abstract class Model implements \JsonSerializable
      *
      * @return bool
      */
-    public function delete() : bool
+    public function delete(): bool
     {
         $result = self::getConnection()->delete($this);
 
@@ -281,7 +285,7 @@ abstract class Model implements \JsonSerializable
      *
      * @return bool
      */
-    public function exists() : bool
+    public function exists(): bool
     {
         $query = static::createQuery();
         $pks = static::getPrimaryKeys();
@@ -336,7 +340,7 @@ abstract class Model implements \JsonSerializable
     /**
      * @return array
      */
-    final public function getData() : array
+    final public function getData(): array
     {
         return $this->data;
     }
@@ -347,7 +351,7 @@ abstract class Model implements \JsonSerializable
      *
      * @return array
      */
-    final public function getPrimaryKeyValues() : array
+    final public function getPrimaryKeyValues(): array
     {
         $keys = static::getPrimaryKeys();
         $values = array_intersect_key($this->data, array_flip($keys));
@@ -360,7 +364,7 @@ abstract class Model implements \JsonSerializable
      *
      * @return Result
      */
-    public function insert() : Result
+    public function insert(): Result
     {
         $result = self::getConnection()->insert($this);
 
@@ -454,7 +458,7 @@ abstract class Model implements \JsonSerializable
      *
      * @return bool
      */
-    public function save(array $data = []) : bool
+    public function save(array $data = []): bool
     {
         $this->fill($data);
         $result = null;
@@ -473,7 +477,7 @@ abstract class Model implements \JsonSerializable
      *
      * @return Result
      */
-    public function update() : Result
+    public function update(): Result
     {
         return self::getConnection()->update($this);
     }
@@ -498,7 +502,7 @@ abstract class Model implements \JsonSerializable
      *
      * @return string
      */
-    private function fieldNameToUpperCamelCase(string $fieldName) : string
+    private function fieldNameToUpperCamelCase(string $fieldName): string
     {
         $handler = function ($matches) {
             return strtoupper($matches[0][1]);
