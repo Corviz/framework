@@ -14,7 +14,7 @@
         "psr-4": {
             "Corviz\\": "./src"
         }
-    }
+    },
     "scripts": {
         "test": "./vendor/bin/phpunit"
     }
