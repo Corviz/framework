@@ -64,8 +64,15 @@ abstract class Controller
                 $schema = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http';
             }
 
+            $defaultPort = ($schema == 'https') ? 443 : 80;
+
             //Capture complete URL
-            $completeUrl = "$schema://{$_SERVER['SERVER_NAME']}{$_SERVER['REQUEST_URI']}";
+            $completeUrl = "$schema://{$_SERVER['SERVER_NAME']}";
+            if (!$_SERVER['SERVER_PORT'] != $defaultPort) {
+                $completeUrl .= ":{$_SERVER['SERVER_PORT']}";
+            }
+            $completeUrl .= $_SERVER['REQUEST_URI'];
+
             $routeStr = Request::current()->getRouteStr();
 
             //clear params from complete url
