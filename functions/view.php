@@ -7,11 +7,11 @@ use Corviz\Mvc\View\TemplateEngine;
 if (!function_exists('view')) {
     /**
      * @param string $template
-     * @param array $data
+     * @param array  $data
      *
      * @return View
      */
-    function view(string $template, array $data = []) : View
+    function view(string $template, array $data = []): View
     {
         $container = Application::current()->getContainer();
         $view = new View($container->get(TemplateEngine::class));

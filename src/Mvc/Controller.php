@@ -3,12 +3,7 @@
 namespace Corviz\Mvc;
 
 use Corviz\Application;
-use Corviz\Http\Request;
 use Corviz\Http\Response;
-use Corviz\Mvc\View\TemplateEngine;
-use Corviz\Routing\Map;
-use Corviz\String\ParametrizedString;
-use Corviz\String\StringUtils;
 
 abstract class Controller
 {
@@ -68,7 +63,7 @@ abstract class Controller
      *
      * @return Response
      */
-    protected function redirect(string $ref, array $params = [], string $schema = null) : Response
+    protected function redirect(string $ref, array $params = [], string $schema = null): Response
     {
         return redirect($ref, $params, $schema);
     }
@@ -83,7 +78,7 @@ abstract class Controller
      *
      * @return View
      */
-    protected function view(string $templateName, array $data = []) : View
+    protected function view(string $templateName, array $data = []): View
     {
         return view($templateName, $data);
     }

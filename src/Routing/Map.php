@@ -57,8 +57,7 @@ class Map
 
             //Checks the route string
             if (
-                ParametrizedString
-                    ::make($route['route'])
+                ParametrizedString::make($route['route'])
                     ->matches($routeStr)
             ) {
                 $current = $route;

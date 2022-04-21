@@ -5,12 +5,12 @@ use Corviz\Http\Response;
 if (!function_exists('response')) {
     /**
      * @param string $body
-     * @param int $code
-     * @param array $headers
+     * @param int    $code
+     * @param array  $headers
      *
      * @return Response
      */
-    function response(string $body = null, int $code = Response::CODE_SUCCESS, array $headers = []) : Response
+    function response(string $body = null, int $code = Response::CODE_SUCCESS, array $headers = []): Response
     {
         $response = new Response();
 

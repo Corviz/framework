@@ -4,17 +4,18 @@ use Corviz\Http\Request;
 use Corviz\Routing\Map;
 use Corviz\String\ParametrizedString;
 use Corviz\String\StringUtils;
+
 //use function Corviz\Mvc\;
 
 if (!function_exists('url')) {
     /**
-     * @param string $ref
-     * @param array $params
+     * @param string      $ref
+     * @param array       $params
      * @param string|null $schema
      *
      * @return string
      */
-    function url(string $ref, array $params = [], string $schema = null) : string
+    function url(string $ref, array $params = [], string $schema = null): string
     {
         $link = null;
         $getBaseUrl = function () use ($schema) {
