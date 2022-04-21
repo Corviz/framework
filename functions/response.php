@@ -10,7 +10,7 @@ if (!function_exists('response')) {
      *
      * @return Response
      */
-    function response(string $body = '', int $code = Response::CODE_SUCCESS, array $headers = []) : Response
+    function response(string $body = null, int $code = Response::CODE_SUCCESS, array $headers = []) : Response
     {
         $response = new Response();
 
