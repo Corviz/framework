@@ -56,84 +56,7 @@ abstract class Controller
      */
     protected function link(string $ref, array $params = [], string $schema = null): string
     {
-        $link = null;
-        $getBaseUrl = function () use ($schema) {
-
-            //Guess url schema, in case it was not informed
-            if (!$schema) {
-                $schema = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http';
-            }
-
-            $defaultPort = ($schema == 'https') ? 443 : 80;
-
-            //Capture complete URL
-            $completeUrl = "$schema://{$_SERVER['SERVER_NAME']}";
-            if (!$_SERVER['SERVER_PORT'] != $defaultPort) {
-                $completeUrl .= ":{$_SERVER['SERVER_PORT']}";
-            }
-            $completeUrl .= $_SERVER['REQUEST_URI'];
-
-            $routeStr = Request::current()->getRouteStr();
-
-            //clear params from complete url
-            $paramsPos = strpos($completeUrl, '?');
-            if ($paramsPos !== false) {
-                $completeUrl = substr($completeUrl, 0, $paramsPos);
-            }
-
-            //clear anchor
-            $anchorPos = strpos($completeUrl, '#');
-            if ($anchorPos !== false) {
-                $completeUrl = substr($completeUrl, 0, $anchorPos);
-            }
-
-            //clear route
-            $trimmedCompUrl = rtrim($completeUrl, '/');
-            $trimmedRouteStr = rtrim($routeStr, '/');
-
-            $routePos = $trimmedCompUrl && $trimmedRouteStr ?
-                strpos($trimmedCompUrl, $trimmedRouteStr) : false;
-
-            if ($routePos !== false) {
-                $completeUrl = substr($completeUrl, 0, $routePos);
-            }
-
-            //remove final slash
-            if (StringUtils::endsWith($completeUrl, '/')) {
-                $completeUrl = substr($completeUrl, 0, -1);
-            }
-
-            return $completeUrl;
-        };
-
-        //Is alias?
-        $route = Map::getRouteByAlias($ref);
-        if ($route) {
-            $link = $getBaseUrl().$route;
-        } elseif (StringUtils::startsWith($ref, '/')) {
-            //Is a route?
-            $link = $getBaseUrl().$ref;
-        } else {
-            //Neither route or alias;
-            $link = $ref;
-        }
-
-        //Parse
-        $pString = new ParametrizedString($link);
-        $link = $pString->parse($params);
-
-        foreach ($pString->getParameters() as $parameterName) {
-            unset($params[$parameterName]);
-        }
-
-        //Add remaining params
-        if (!empty($params)) {
-            $httpQuery = http_build_query($params);
-            $link .= strpos($link, '?') === false ? '?' : '&';
-            $link .= $httpQuery;
-        }
-
-        return $link;
+        return url($ref, $params, $schema);
     }
 
     /**
@@ -145,15 +68,9 @@ abstract class Controller
      *
      * @return Response
      */
-    protected function redirect(string $ref, array $params = [], string $schema = null)
+    protected function redirect(string $ref, array $params = [], string $schema = null) : Response
     {
-        $url = $this->link($ref, $params, $schema);
-
-        $response = new Response();
-        $response->setCode(Response::CODE_REDIRECT_SEE_OTHER);
-        $response->addHeader('Location', $url);
-
-        return $response;
+        return redirect($ref, $params, $schema);
     }
 
     /**
@@ -166,12 +83,8 @@ abstract class Controller
      *
      * @return View
      */
-    protected function view(string $templateName, array $data = [])
+    protected function view(string $templateName, array $data = []) : View
     {
-        $view = new View($this->container(TemplateEngine::class));
-        $view->setData($data);
-        $view->setTemplateName($templateName);
-
-        return $view;
+        return view($templateName, $data);
     }
 }

@@ -3,7 +3,6 @@
     "description": "Low weight php framework",
     "type": "library",
     "license": "MIT",
-    "minimum-stability": "dev",
     "require": {
         "php": ">=7"
     },
@@ -13,7 +12,13 @@
     "autoload": {
         "psr-4": {
             "Corviz\\": "./src"
-        }
+        },
+        "files": [
+            "functions/redirect.php",
+            "functions/response.php",
+            "functions/url.php",
+            "functions/view.php"
+        ]
     },
     "scripts": {
         "test": "./vendor/bin/phpunit"
