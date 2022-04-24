@@ -14,6 +14,11 @@ class View
     private static $extension = 'phtml';
 
     /**
+     * @var array
+     */
+    private static $globals = [];
+
+    /**
      * @var TemplateEngine
      */
     private $templateEngine;
@@ -37,6 +42,14 @@ class View
     }
 
     /**
+     * @param array $globals
+     */
+    public static function setGlobals(array $globals)
+    {
+        self::$globals = $globals;
+    }
+
+    /**
      * Draw a template using application defined
      * template engine.
      *
@@ -56,7 +69,7 @@ class View
 
         return $this->templateEngine->draw(
             $file,
-            $this->data
+            array_merge(static::$globals, $this->data)
         );
     }
 
