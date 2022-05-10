@@ -2,6 +2,9 @@
 
 namespace Corviz\Http;
 
+use Exception;
+use JsonSerializable;
+
 class Response
 {
     /*
@@ -83,22 +86,51 @@ class Response
      *
      * @param string $key
      * @param string $value
+     *
+     * @return $this;
      */
-    public function addHeader($key, $value)
+    public function addHeader($key, $value): Response
     {
         $this->headers[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Builds a json response
+     *
+     * @param $data
+     *
+     * @return $this
+     */
+    public function json($data): Response
+    {
+        $json = json_encode($data);
+
+        if ($json === false) {
+            throw new Exception("Could not convert data to json!");
+        }
+
+        $this->addHeader('Content-Type', 'application/json');
+        $this->setBody($json);
+
+        return $this;
     }
 
     /**
      * Remove a header.
      *
      * @param string $key
+     *
+     * @return $this
      */
-    public function removeHeader(string $key)
+    public function removeHeader(string $key): Response
     {
         if (isset($this->headers[$key])) {
             unset($this->headers[$key]);
         }
+
+        return $this;
     }
 
     /**
@@ -125,12 +157,12 @@ class Response
      * Sends header to the client through 'header'
      * php function.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function sendHeaders()
     {
         if (headers_sent()) {
-            throw new \Exception('Headers already sent');
+            throw new Exception('Headers already sent');
         }
 
         foreach ($this->headers as $name => $value) {
@@ -140,27 +172,39 @@ class Response
 
     /**
      * @param string|null $body
+     *
+     * @return $this
      */
-    public function setBody(string $body = null)
+    public function setBody(string $body = null): Response
     {
         $this->body = $body;
+
+        return $this;
     }
 
     /**
      * Set response http code.
      *
      * @param int $code
+     *
+     * @return $this
      */
-    public function setCode(int $code)
+    public function setCode(int $code): Response
     {
         $this->code = $code;
+
+        return $this;
     }
 
     /**
      * @param string $contents
+     *
+     * @return $this
      */
-    public function write(string $contents)
+    public function write(string $contents): Response
     {
         $this->body .= $contents;
+
+        return $this;
     }
 }
