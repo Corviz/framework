@@ -3,7 +3,6 @@
 namespace Corviz\Http;
 
 use Exception;
-use JsonSerializable;
 
 class Response
 {
@@ -97,7 +96,7 @@ class Response
     }
 
     /**
-     * Builds a json response
+     * Builds a json response.
      *
      * @param $data
      *
@@ -108,7 +107,7 @@ class Response
         $json = json_encode($data);
 
         if ($json === false) {
-            throw new Exception("Could not convert data to json!");
+            throw new Exception('Could not convert data to json!');
         }
 
         $this->addHeader('Content-Type', 'application/json');
