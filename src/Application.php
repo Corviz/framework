@@ -2,6 +2,7 @@
 
 namespace Corviz;
 
+use Closure;
 use Corviz\Behaviour\Runnable;
 use Corviz\DI\Container;
 use Corviz\DI\Provider;
@@ -12,6 +13,9 @@ use Corviz\Http\ResponseFactory;
 use Corviz\Mvc\Controller;
 use Corviz\Routing\Map;
 use Corviz\String\ParametrizedString;
+use Exception;
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
 
 /**
  * Main app controller.
@@ -63,7 +67,7 @@ class Application implements Runnable
     /**
      * Get the current running application.
      *
-     * @return \Corviz\Application
+     * @return Application
      */
     public static function current(): self
     {
@@ -71,7 +75,7 @@ class Application implements Runnable
     }
 
     /**
-     * @return \Corviz\DI\Container
+     * @return Container
      */
     public function getContainer(): Container
     {
@@ -116,7 +120,7 @@ class Application implements Runnable
 
             //Check controller
             if (!$controller instanceof Controller) {
-                throw new \Exception("Invalid controller: {$route['controller']}");
+                throw new Exception("Invalid controller: {$route['controller']}");
             }
 
             /*
@@ -144,6 +148,25 @@ class Application implements Runnable
     }
 
     /**
+     * @param callable $proccess
+     * @return void
+     * @throws Exception
+     */
+    public function background(callable $proccess)
+    {
+        self::$current = $this;
+        $this->container->set(self::class, $this);
+
+        //Load application definitions.
+        $this->registerProviders();
+
+        $proccess = Closure::fromCallable($proccess);
+        $this->container->invoke($proccess, '__invoke');
+
+        self::$current = null;
+    }
+
+    /**
      * @param array $groups
      *
      * @return array
@@ -153,8 +176,8 @@ class Application implements Runnable
         $queue = [];
         $middlewareList = $this->config('app')['middleware'];
 
-        $groupsIterator = new \RecursiveIteratorIterator(
-            new \RecursiveArrayIterator($groups)
+        $groupsIterator = new RecursiveIteratorIterator(
+            new RecursiveArrayIterator($groups)
         );
 
         foreach ($groupsIterator as $middleware) {
@@ -170,13 +193,13 @@ class Application implements Runnable
 
     /**
      * @param array    $queue
-     * @param \Closure $controllerClosure
+     * @param Closure $controllerClosure
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return Response
      */
-    private function proccessMiddlewareQueue(array $queue, \Closure $controllerClosure)
+    private function proccessMiddlewareQueue(array $queue, Closure $controllerClosure)
     {
         $return = null;
 
@@ -194,7 +217,7 @@ class Application implements Runnable
                     };
                     $previousFn = $fn;
                 } else {
-                    throw new \Exception("Invalid middleware: '$middleware'");
+                    throw new Exception("Invalid middleware: '$middleware'");
                 }
             }
 
@@ -217,7 +240,7 @@ class Application implements Runnable
             $obj = new $provider($this);
 
             if (!$obj instanceof Provider) {
-                throw new \Exception("Invalid provider: $provider");
+                throw new Exception("Invalid provider: $provider");
             }
 
             $this->container->invoke($obj, 'register');
