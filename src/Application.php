@@ -95,18 +95,15 @@ class Application implements Runnable
      */
     public function run(...$args)
     {
-        //@TODO: turn code into parts (submethods)
-        self::$current = $this;
-        $this->container->set(self::class, $this);
+        $this->invoke(function(){
+            //Call controller action.
+            $this->request = Request::current();
+            $route = Map::getCurrentRoute();
 
-        //Load application definitions.
-        $this->registerProviders();
+            if (!$route) {
+                return;
+            }
 
-        //Call controller action.
-        $this->request = Request::current();
-        $route = Map::getCurrentRoute();
-
-        if ($route) {
             $routeStr = ParametrizedString::make(
                 $route['route']
             );
@@ -142,17 +139,15 @@ class Application implements Runnable
 
             $response = $this->proccessMiddlewareQueue($middlewareList, $fn);
             $response->send();
-        }
-
-        self::$current = null;
+        });
     }
 
     /**
-     * @param callable $proccess
+     * @param callable $fn
      * @return void
      * @throws Exception
      */
-    public function background(callable $proccess)
+    public function invoke(callable $fn): void
     {
         self::$current = $this;
         $this->container->set(self::class, $this);
@@ -160,8 +155,8 @@ class Application implements Runnable
         //Load application definitions.
         $this->registerProviders();
 
-        $proccess = Closure::fromCallable($proccess);
-        $this->container->invoke($proccess, '__invoke');
+        $fn = Closure::fromCallable($fn);
+        $this->container->invoke($fn, '__invoke');
 
         self::$current = null;
     }
