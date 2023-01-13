@@ -95,7 +95,7 @@ class Application implements Runnable
      */
     public function run(...$args)
     {
-        $this->invoke(function(){
+        $this->invoke(function () {
             //Call controller action.
             $this->request = Request::current();
             $route = Map::getCurrentRoute();
@@ -144,8 +144,10 @@ class Application implements Runnable
 
     /**
      * @param callable $fn
-     * @return void
+     *
      * @throws Exception
+     *
+     * @return void
      */
     public function invoke(callable $fn): void
     {
@@ -187,7 +189,7 @@ class Application implements Runnable
     }
 
     /**
-     * @param array    $queue
+     * @param array   $queue
      * @param Closure $controllerClosure
      *
      * @throws Exception
